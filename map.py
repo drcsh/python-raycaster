@@ -1,4 +1,5 @@
 from pygame import PixelArray
+import numpy as np
 import math
 
 PLAYER_WIDTH = 5
@@ -7,6 +8,9 @@ PLAYER_COLOR = (255, 255, 255)
 
 
 class Map:
+    """
+    :TODO: clear up the distinction between map coordinates and pixel coordinates
+    """
 
     default_width = 16
     default_height = 16
@@ -25,18 +29,31 @@ class Map:
         """
         assert (len(map_str) == width * height)
 
-        # We will be drawing some pixels over the surface
-        px_map = PixelArray(surface)
+        self.map_str = map_str
+        self.width = width
+        self.height = height
 
         # Each char in the map_str represents a rectangular area, which will have a certain size in pixels defined by
         # the surface x & y / map x & y
         # We will use these rectangles to divide up the map for locating things
-        self.rect_width = surface.get_width() / width
-        self.rect_height = surface.get_width() / height
+        self.rect_width = surface.get_width() / self.width
+        self.rect_height = surface.get_width() / self.height
 
-        for y in range(height):
-            for x in range(width):
-                if map_str[x + y * width] == ' ':
+        self.surface = self.draw_map_to_surface(surface)
+
+    def draw_map_to_surface(self, surface):
+        """
+        Given a surface, draws the map (defined in self.map_str) on top of it and returns the surface
+
+        :param surface:
+        :return:
+        """
+        # We will be drawing some pixels over the surface
+        px_map = PixelArray(surface)
+
+        for y in range(self.height):
+            for x in range(self.width):
+                if self.map_str[x + y * self.width] == ' ':
                     continue  # skip empty spaces
 
                 # Work out top left corner x, y and the bottom right x, y
@@ -49,8 +66,22 @@ class Map:
                 px_map[rect_tl_x:rect_br_x, rect_tl_y:rect_br_y] = (0, 255, 255)
 
         px_map.close()
+        return surface
 
-        self.surface = surface
+    def get_symbol_at_map_xy(self, x, y):
+        """
+        Get the map symbol at the map coordinate
+        :param x:
+        :param y:
+        :return:
+        """
+        map_index = math.floor(x) + math.floor(y)*self.width
+        return self.map_str[map_index]
+
+    def get_pixel_xy_from_map_xy(self, map_x, map_y):
+        px_x = math.floor(map_x * self.rect_width)
+        px_y = math.floor(map_y * self.rect_height)
+        return px_x, px_y
 
     def draw_player(self, player_x, player_y):
 
@@ -61,3 +92,25 @@ class Map:
 
         px_map = PixelArray(self.surface)
         px_map[player_tl_x:player_br_x, player_tl_y:player_br_y] = PLAYER_COLOR
+
+    def ray_cast(self, origin_x, origin_y, angle):
+
+        px_map = PixelArray(self.surface)
+
+        for c in np.arange(0, 20, 0.05):
+            ray_x = origin_x + c * math.cos(angle)
+            ray_y = origin_y + c * math.sin(angle)
+
+            #print(ray_x, ray_y)
+
+            map_symbol = self.get_symbol_at_map_xy(ray_x, ray_y)
+
+            # hit a wall
+            if map_symbol != " ":
+                break
+
+            px_x, px_y = self.get_pixel_xy_from_map_xy(ray_x, ray_y)
+
+            px_map[px_x:px_x+2, px_y:px_y+2] = (255, 255, 255)
+
+        px_map.close()

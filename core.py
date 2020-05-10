@@ -27,8 +27,16 @@ def main():
 
     surface = LevelImageGenerator.generate(win_w, win_h)
     game_map = Map(surface, map)
-    game_map.draw_player(3.456, 2.345)
-    pygame.image.save(surface, "out.bmp")
+
+    player_x = 3.456
+    player_y = 2.345
+    player_a = 1.523
+    game_map.draw_player(player_x, player_y)
+
+    # Raycast a single ray!
+    game_map.ray_cast(player_x, player_y, player_a)
+
+    pygame.image.save(game_map.surface, "out.bmp")
 
 
 if __name__ == "__main__":
