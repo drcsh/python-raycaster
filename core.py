@@ -1,12 +1,15 @@
+import math
 import pygame
 
 from images.level_image_generator import LevelImageGenerator
 from map import Map
+from raycaster import RayCaster
 
 
 def main():
     win_w = 512
     win_h = 512
+    fov = math.pi / 3  # fov is expressed as a fraction of pi, i.e. a fraction of a total 360 circular view
 
     map = "0000222222220000" \
           "1              0" \
@@ -27,6 +30,7 @@ def main():
 
     surface = LevelImageGenerator.generate(win_w, win_h)
     game_map = Map(surface, map)
+    raycaster = RayCaster(win_w, win_h, fov)
 
     player_x = 3.456
     player_y = 2.345
@@ -34,7 +38,7 @@ def main():
     game_map.draw_player(player_x, player_y)
 
     # Raycast a single ray!
-    game_map.ray_cast(player_x, player_y, player_a)
+    raycaster.cast(game_map, player_x, player_y, player_a)
 
     pygame.image.save(game_map.surface, "out.bmp")
 

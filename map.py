@@ -92,25 +92,3 @@ class Map:
 
         px_map = PixelArray(self.surface)
         px_map[player_tl_x:player_br_x, player_tl_y:player_br_y] = PLAYER_COLOR
-
-    def ray_cast(self, origin_x, origin_y, angle):
-
-        px_map = PixelArray(self.surface)
-
-        for c in np.arange(0, 20, 0.05):
-            ray_x = origin_x + c * math.cos(angle)
-            ray_y = origin_y + c * math.sin(angle)
-
-            #print(ray_x, ray_y)
-
-            map_symbol = self.get_symbol_at_map_xy(ray_x, ray_y)
-
-            # hit a wall
-            if map_symbol != " ":
-                break
-
-            px_x, px_y = self.get_pixel_xy_from_map_xy(ray_x, ray_y)
-
-            px_map[px_x:px_x+2, px_y:px_y+2] = (255, 255, 255)
-
-        px_map.close()
