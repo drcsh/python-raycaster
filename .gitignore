@@ -1,0 +1,12 @@
+# Python
+*.pyc
+
+# Django
+secret.py
+
+# DB
+db.sqlite3
+*.sql
+
+# Pycharm
+.idea/
