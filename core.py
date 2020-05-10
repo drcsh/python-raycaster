@@ -7,7 +7,7 @@ from raycaster import RayCaster
 
 
 def main():
-    win_w = 512
+    win_w = 1024
     win_h = 512
     fov = math.pi / 3  # fov is expressed as a fraction of pi, i.e. a fraction of a total 360 circular view
 
@@ -28,7 +28,8 @@ def main():
           "0              0" \
           "0002222222200000"
 
-    surface = LevelImageGenerator.generate(win_w, win_h)
+    surface = pygame.Surface((win_w, win_h))
+    surface.fill((255, 255, 255))
     game_map = Map(surface, map)
     raycaster = RayCaster(win_w, win_h, fov)
 

@@ -36,8 +36,8 @@ class Map:
         # Each char in the map_str represents a rectangular area, which will have a certain size in pixels defined by
         # the surface x & y / map x & y
         # We will use these rectangles to divide up the map for locating things
-        self.rect_width = surface.get_width() / self.width
-        self.rect_height = surface.get_width() / self.height
+        self.rect_width = surface.get_width() / (self.width * 2)  # temp for split screen
+        self.rect_height = surface.get_height() / self.height
 
         self.surface = self.draw_map_to_surface(surface)
 
