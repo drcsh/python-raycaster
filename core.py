@@ -26,7 +26,8 @@ def main():
           "0002222222200000"
 
     surface = LevelImageGenerator.generate(win_w, win_h)
-    surface = Map.draw_on_surface(surface, map)
+    game_map = Map(surface, map)
+    game_map.draw_player(3.456, 2.345)
     pygame.image.save(surface, "out.bmp")
 
 
