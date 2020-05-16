@@ -1,12 +1,14 @@
+import os
+
 import math
 import numpy as np
 from timeit import default_timer as timer
 import pygame
 
-from images.level_image_generator import LevelImageGenerator
 from map import Map
 from player import Player
 from raycaster import RayCaster
+from textures.texture import TextureLookupException, Texture, TextureLoader
 
 
 def main():
@@ -34,9 +36,10 @@ def main():
     pygame.init()
     screen = pygame.display.set_mode([win_w, win_h])
 
+    wall_textures = TextureLoader.get_texture(os.path.join("textures", "walls.png"))
     game_map = Map(win_w, win_h, map)
 
-    raycaster = RayCaster(win_w, win_h, fov)
+    raycaster = RayCaster(win_w, win_h, fov, wall_textures)
 
     player_x = 3.456
     player_y = 2.345
@@ -75,7 +78,6 @@ def main():
         end = timer()
 
         caster_ts.append(end - start)
-
 
         screen.blit(game_map.surface, (0, 0))
         pygame.display.flip()

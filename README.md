@@ -13,3 +13,6 @@ For performance and ease of image processing, I decided to use pygame.
 Basic version with fisheye correction: 
 
 ![](/screenshots/basic_version.gif)
+
+Now with textures!:
+![](/screenshots/textures_loading.gif)
