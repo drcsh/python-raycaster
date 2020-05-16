@@ -1,8 +1,11 @@
 import math
+import numpy as np
+from timeit import default_timer as timer
 import pygame
 
 from images.level_image_generator import LevelImageGenerator
 from map import Map
+from player import Player
 from raycaster import RayCaster
 
 
@@ -24,30 +27,26 @@ def main():
           "0       1      0" \
           "2       1      0" \
           "0       0      0" \
-          "0 0000000      0" \
+          "0 4444440      0" \
           "0              0" \
           "0002222222200000"
 
     pygame.init()
     screen = pygame.display.set_mode([win_w, win_h])
 
-    background = pygame.Surface((win_w, win_h))
-    background.fill((255, 255, 255))
-    game_map = Map(background, map)
+    game_map = Map(win_w, win_h, map)
+
     raycaster = RayCaster(win_w, win_h, fov)
 
     player_x = 3.456
     player_y = 2.345
     player_a = 1.523
-    game_map.draw_player(player_x, player_y)
-
-    # Raycast a single ray!
-    raycaster.cast(game_map, player_x, player_y, player_a)
-
-    screen.blit(game_map.surface, (0, 0))
+    player = Player(player_x, player_y, player_a)
 
     clock = pygame.time.Clock()
     running = True
+
+    caster_ts = []
     while running:
         # get input
         for event in pygame.event.get():
@@ -57,13 +56,38 @@ def main():
             if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
                 running = False
                 break
+            if event.type == pygame.KEYDOWN and event.key == pygame.K_w:
+                player.move_forward()
+                break
+            if event.type == pygame.KEYDOWN and event.key == pygame.K_a:
+                player.turn_left()
+                break
+            if event.type == pygame.KEYDOWN and event.key == pygame.K_d:
+                player.turn_right()
+                break
 
-        # cap the framerate at 40fps. Also called 40HZ or 40 times per second.
-        clock.tick(40)
+        game_map.reset_surface()
+
+        game_map.draw_player(player.x, player.y)
+
+        start = timer()
+        raycaster.cast(game_map, player.x, player.y, player.angle)
+        end = timer()
+
+        caster_ts.append(end - start)
+
 
         screen.blit(game_map.surface, (0, 0))
         pygame.display.flip()
 
+        if len(caster_ts) > 100:  # stop caster_ts becoming too long
+            print(f"Caster avg cast time (last 100):{np.average(caster_ts)}")
+            caster_ts = []
+
+        # cap the framerate
+        clock.tick(100)
+
+    print(f"Caster avg cast time (last {len(caster_ts)}):{np.average(caster_ts)}")
     pygame.image.save(game_map.surface, "out.bmp")
 
     pygame.quit()
