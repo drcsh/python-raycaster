@@ -7,3 +7,9 @@ internals of a raycaster, so I decided to convert ssloy's code to Python as I we
 My commits will (initially at least) follow ssloy's.  
 
 For performance and ease of image processing, I decided to use pygame. 
+
+# In Action
+
+Basic version with fisheye correction: 
+
+![](/screenshots/basic_version.gif)

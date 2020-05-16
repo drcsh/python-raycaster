@@ -47,7 +47,11 @@ class RayCaster:
 
                 # hit a wall
                 if map_symbol != " ":
-                    column_height = self.win_h / t  # height of the wall is inversely proportional to dist from player
+                    # if we're looking straight at the wall, the col_h is the win_h / distance. To correct fisheye
+                    # distortion we get the angle of the current col away from the centre line of the player's vision
+                    # (angle - the player angle). cos of that angle is a proportion of the height if we were looking
+                    # straight at it.
+                    column_height = self.win_h / (t * math.cos(angle - player_angle))
                     column_start_y = math.floor((self.win_h/2) - (column_height / 2))
                     col_end_y = math.floor(column_start_y + column_height)
 
