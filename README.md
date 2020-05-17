@@ -8,6 +8,37 @@ My commits will (initially at least) follow ssloy's.
 
 For performance and ease of image processing, I decided to use pygame. 
 
+# Raycasting Calculation
+
+In ssloy's original raycaster, we start at the player coordinates x,y with a player angle
+which is in relation to the x axis. This angle will be the center of the player's field of
+view.
+ 
+For each vertical column of pixels we want on the render area, we work out the angle of
+that column in relation to the player's angle, and do some trigonometry to work out a 
+point 0.05 of a map tile along a theoretical line (ray) at that angle from the player. 
+
+We then do this in a loop, basically travelling down the ray at 0.05 map tiles per 
+iteration until we hit a wall. We then work out where on the texture of that wall the
+ray has hit, and render it to scale depending on how far away the ray now is from the
+player.
+
+However, while this works well in C++, it's slow in Python, with each full raycast 
+of the screen averaging at about 0.56s. 
+
+To improve the situation I decided that rather than travelling the whole length of the
+ray, we're only really interested in where the ray passes into another map square, at
+that's the only location we may encounter a wall (since walls are always 1x1 square).
+
+To work out these points of interest, we solve the linear equation of the ray, and
+knowing which direction the ray is traveling in relation to the x and y axis, we can
+calculate where the ray will cross those lines. We then take the closest one as our
+ray location, and keep hopping along these 'points of interest' until we hit a wall.
+
+This is significantly more efficient, clocking in at 0.04 to 0.07s per full sweep. There
+is more to be done however, including removing unnecessary duplicate calculations (e.g.
+when we calculate our POIs, the further away POI is likely to come up repeatedly)
+
 # In Action
 
 Basic version with fisheye correction: 
@@ -15,4 +46,9 @@ Basic version with fisheye correction:
 ![](/screenshots/basic_version.gif)
 
 Now with textures!:
+
 ![](/screenshots/textures_loading.gif)
+
+Hopping along our points of interest for a faster render:
+
+![](/screenshots/efficient_casting.gif)

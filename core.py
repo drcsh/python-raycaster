@@ -42,7 +42,7 @@ def main():
     raycaster = RayCaster(win_w, win_h, fov, wall_textures)
 
     player_x = 3.456
-    player_y = 2.345
+    player_y = 1.345
     player_a = 1.523
     player = Player(player_x, player_y, player_a)
 
@@ -87,7 +87,7 @@ def main():
             caster_ts = []
 
         # cap the framerate
-        clock.tick(100)
+        clock.tick(60)
 
     print(f"Caster avg cast time (last {len(caster_ts)}):{np.average(caster_ts)}")
     pygame.image.save(game_map.surface, "out.bmp")
