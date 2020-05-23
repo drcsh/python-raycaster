@@ -15,6 +15,8 @@ class RayCaster:
         self.half_fov = self.fov / 2
         self.wall_textures = wall_textures
 
+        self.current_map = None
+
         self.colors = [(random.randint(0, 255), random.randint(0, 255), random.randint(0, 255)) for i in range(10)]
 
     def cast(self, game_map, origin_x, origin_y, player_angle):
@@ -26,10 +28,11 @@ class RayCaster:
         :param float player_angle:
         :return:
         """
+        self.current_map = game_map
         render_area_start_x = math.floor(self.win_w / 2)
 
-        px_x, px_y = game_map.get_pixel_xy_from_map_xy(origin_x, origin_y)
-        game_map.surface.set_at((px_x, px_y), (100, 255, 0))
+        px_x, px_y = self.current_map.get_pixel_xy_from_map_xy(origin_x, origin_y)
+        self.current_map.surface.set_at((px_x, px_y), (100, 255, 0))
 
         # for every pixel in the window width
         for i in range(render_area_start_x):  # draw the visibility cone AND the "3D" view
@@ -45,8 +48,8 @@ class RayCaster:
             ray_x = origin_x + 0.1 * cos_angle
             ray_y = origin_y + 0.1 * sin_angle
 
-            px_x, px_y = game_map.get_pixel_xy_from_map_xy(ray_x, ray_y)
-            game_map.surface.set_at((px_x, px_y), (100, 255, 0))
+            px_x, px_y = self.current_map.get_pixel_xy_from_map_xy(ray_x, ray_y)
+            self.current_map.surface.set_at((px_x, px_y), (100, 255, 0))
 
             # what I want to do is calculate the next point(s) of interest (POI) on the graph, which are where the ray
             # would cross into another map square. To do this, I need to figure out the direction of travel of the ray,
@@ -59,63 +62,42 @@ class RayCaster:
             x_increasing = False
             y_increasing = False
 
-            next_whole_x = None   # e.g. at x= 2.1 and x increasing, the next whole x the ray will cross is 3
-            y_at_next_whole_x = None  # where we will cross that line on the y axis
-
-            next_whole_y = None  # next whole y, e.g. if y=2.9 and y is decreasing, the next is 2
-            x_at_next_whole_y = None  # where we will cross it on the x axis
-
             intercept = None  # y intercept, if this line is not vertical
-
             gradient = None  # gradient of this line
 
-            if ray_x != origin_x:  # as long as it's not vertical
-                # get slope (depends on which point has greater x val)
-                # also work out our next major x line
+            # Work out the gradient + intercept (as long as not a vertical line) and whether the x and y values
+            # are increasing relative to the player
+            if ray_x != origin_x:
                 gradient = (ray_y - origin_y) / (ray_x - origin_x)
                 if ray_x > origin_x:
                     x_increasing = True
-                    next_whole_x = math.ceil(ray_x)
-                else:
-                    next_whole_x = math.floor(ray_x)
 
                 # y intercept
                 intercept = origin_y - (gradient * origin_x)
 
-                y_at_next_whole_x = self.get_y_for_x(next_whole_x, gradient, intercept)
-
             if ray_y != origin_y:  # as long as it's not horizontal
                 if ray_y > origin_y:
                     y_increasing = True
-                    next_whole_y = math.ceil(ray_y)
-                else:
-                    next_whole_y = math.floor(ray_y)
 
-                if gradient and intercept:
-                    x_at_next_whole_y = self.get_x_for_y(next_whole_y, gradient, intercept)
-                else:  # vertical line
-                    x_at_next_whole_y = origin_x
-
-            # if we found two potential points of interest, which is closer to the first ray point?
-            poi_x = (next_whole_x, y_at_next_whole_x)
-            poi_y = (x_at_next_whole_y, next_whole_y)
-            next_poi_x, next_poi_y = self.get_closest_poi((ray_x, ray_y), poi_x, poi_y)
+            ray_x_whole = ray_x % 1 == 0
+            ray_y_whole = ray_y % 1 == 0
 
             counter = 0
             while counter < self.DRAW_DISTANCE:
                 counter += 1
 
-                ray_x = next_poi_x
-                ray_y = next_poi_y
+                poi_x = self.get_next_x_poi(origin_x, ray_x, gradient, intercept, x_increasing, ray_x_whole)
+                poi_y = self.get_next_y_poi(origin_x, origin_y, ray_y, gradient, intercept, y_increasing, ray_y_whole)
+                ray_x, ray_y = self.get_closest_poi((ray_x, ray_y), poi_x, poi_y)
 
                 ray_x_whole = ray_x % 1 == 0
                 ray_y_whole = ray_y % 1 == 0
 
                 # get pixel location on map
-                px_x, px_y = game_map.get_pixel_xy_from_map_xy(ray_x, ray_y)
+                px_x, px_y = self.current_map.get_pixel_xy_from_map_xy(ray_x, ray_y)
 
                 # draw visibility cone on map
-                game_map.surface.set_at((px_x, px_y), (255, 100, 0))
+                self.current_map.surface.set_at((px_x, px_y), (255, 100, 0))
 
                 # If the Ray is at a whole number on the x/y grid, and is decreasing on that axis, the next wall it hits
                 # will actually be in the map square 1 over from the ray. I.e. if we're at square 2,1 and looking
@@ -128,7 +110,7 @@ class RayCaster:
                 if ray_y_whole and not y_increasing:
                     plot_y = ray_y - 1
 
-                map_symbol = game_map.get_symbol_at_map_xy(plot_x, plot_y)
+                map_symbol = self.current_map.get_symbol_at_map_xy(plot_x, plot_y)
 
                 # hit a wall
                 if map_symbol != " ":
@@ -157,65 +139,105 @@ class RayCaster:
 
                     tile_slice = self.wall_textures.get_tile_slice(int(map_symbol), 0, int(hit_x_coord), column_height)
 
-                    game_map.surface.blit(tile_slice, (px, column_start_y))
+                    self.current_map.surface.blit(tile_slice, (px, column_start_y))
 
                     break
 
-                # Look for next POI
-                # Note that this is similar to the code above, but not quite the same, since we already know the
-                # gradient and the y intercept
-                if ray_x == origin_x:  # vertical line
-                    next_whole_x = ray_x
+    def get_next_x_poi(self, origin_x, ray_x, gradient, intercept, x_increasing, x_whole):
+        """
+        Finds the next x Point of Interest on this line. I.e. the coordinate where the ray defined by the parameters
+        will be a whole x value.
+
+        e.g. If the current ray is at x=1, y=1.5 and we know that x is increasing, the next whole x will be 2, and we
+        will need to user the gradient and intercept to calculate y at this location.
+
+        If the line is vertical (i.e. x doesn't change) then there will not be another x POI.
+
+        :param float origin_x:
+        :param float ray_x:
+        :param float gradient:
+        :param float intercept:
+        :param bool x_increasing:
+        :param bool x_whole:
+        :return:
+        :rtype tuple: (float, float) or (None, None)
+        """
+
+
+        if ray_x == origin_x:  # vertical line. Y varies but not x
+            return None, None
+
+        if x_increasing:
+            if ray_x < self.current_map.map_squares_x:
+                if x_whole:
+                    next_whole_x = ray_x + 1
                 else:
-                    if x_increasing:
-                        if ray_x < game_map.map_squares_x:
-                            if ray_x_whole:
-                                next_whole_x = ray_x + 1
-                            else:
-                                next_whole_x = math.ceil(ray_x)
-                        else:
-                            next_whole_x = game_map.map_squares_x
-                    else:
-                        if ray_x > 0:
-                            if ray_x_whole:
-                                next_whole_x -= 1
-                            else:
-                                math.floor(ray_x)
-                        else:
-                            next_whole_x = 0
+                    next_whole_x = math.ceil(ray_x)
+            else:
+                next_whole_x = self.current_map.map_squares_x
+        else:
+            if ray_x > 0:
+                if x_whole:
+                    next_whole_x = ray_x - 1
+                else:
+                    next_whole_x = math.floor(ray_x)
+            else:
+                next_whole_x = 0
 
-                    # y position where we will cross a major point on the x graph (y = mx+b)
-                    y_at_next_whole_x = self.get_y_for_x(next_whole_x, gradient, intercept)
+        y_at_next_whole_x = self.get_y_for_x(next_whole_x, gradient, intercept)
 
+        return next_whole_x, y_at_next_whole_x
+
+    def get_next_y_poi(self, origin_x, origin_y, ray_y, gradient, intercept, y_increasing, y_whole):
+        """
+        Finds the next y Point of Interest on this line. I.e. the coordinate where the ray defined by the parameters
+        will be a whole y value.
+
+        Works similarly to the next_x poi, but if the line is horizontal (i.e. y doesn't change) there will be no next
+        y POI.
+
+        This requires an additional parameter to next_x_poi, because in the case that the line is vertical, there will
+        be a next y poi, but we won't have a gradient or intercept because the line is vertical, so we need the origin_x
+        to set the x value.
+
+        :param float origin_x:
+        :param float origin_y:
+        :param float ray_y:
+        :param float gradient:
+        :param float intercept:
+        :param bool y_increasing:
+        :param bool y_whole:
+        :return: coordinate
+        :rtype tuple: (float, float) or (None, None)
+        """
+
+        if ray_y == origin_y:  # horizontal line. x varies but not y
+            return None, None
+
+        if y_increasing:
+            if ray_y < self.current_map.map_squares_y:
+                if y_whole:
+                    next_whole_y = ray_y + 1
+                else:
+                    next_whole_y = math.ceil(ray_y)
+            else:
                 next_whole_y = ray_y
-                if ray_y != origin_y:
-                    if y_increasing:
-                        if ray_y < game_map.map_squares_y:
-                            if ray_y_whole:
-                                next_whole_y = ray_y + 1
-                            else:
-                                next_whole_y = math.ceil(ray_y)
-                        else:
-                            next_whole_y = ray_y
 
-                    else:
-                        if ray_y > 0:
-                            if ray_y_whole:
-                                next_whole_y = ray_y - 1
-                            else:
-                                next_whole_y = math.floor(ray_y)
-                        else:
-                            next_whole_y = 0
+        else:
+            if ray_y > 0:
+                if y_whole:
+                    next_whole_y = ray_y - 1
+                else:
+                    next_whole_y = math.floor(ray_y)
+            else:
+                next_whole_y = 0
 
-                    if gradient and intercept:
-                        x_at_next_whole_y = self.get_x_for_y(next_whole_y, gradient, intercept)
-                    else:  # vertical line
-                        x_at_next_whole_y = origin_x
+        if gradient and intercept:
+            x_at_next_whole_y = self.get_x_for_y(next_whole_y, gradient, intercept)
+        else:  # vertical line, y changes but x is the same as origin
+            x_at_next_whole_y = origin_x
 
-                poi_x = (next_whole_x, y_at_next_whole_x)
-                poi_y = (x_at_next_whole_y, next_whole_y)
-                next_poi_x, next_poi_y = self.get_closest_poi((ray_x, ray_y), poi_x, poi_y)
-
+        return x_at_next_whole_y, next_whole_y
 
     def distance_formula(self, point_1, point_2):
         """
