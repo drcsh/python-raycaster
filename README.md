@@ -24,7 +24,9 @@ ray has hit, and render it to scale depending on how far away the ray now is fro
 player.
 
 However, while this works well in C++, it's slow in Python, with each full raycast 
-of the screen averaging at about 0.56s. 
+of the screen averaging at about 0.56s. So I started refining this.
+
+## Version 2
 
 To improve the situation I decided that rather than travelling the whole length of the
 ray, we're only really interested in where the ray passes into another map square, at
@@ -35,9 +37,17 @@ knowing which direction the ray is traveling in relation to the x and y axis, we
 calculate where the ray will cross those lines. We then take the closest one as our
 ray location, and keep hopping along these 'points of interest' until we hit a wall.
 
-This is significantly more efficient, clocking in at 0.04 to 0.07s per full sweep. There
-is more to be done however, including removing unnecessary duplicate calculations (e.g.
-when we calculate our POIs, the further away POI is likely to come up repeatedly)
+This is significantly more efficient, clocking in at 0.04 to 0.07s per full sweep. 
+
+## Version 3
+I switched computer and virtualization environment (VirtualBox to Hyper-V), and started at
+average raycast times around about 0.021-0.027s for a full sweep. 
+
+Some theories on where to go from here:
+1. reduce the number of times the distance equation is called. Cache POIs and the distance
+to the next unused POI so it doesn't have to be recalculated.
+2. cache the results of the linear equations and retrieve them if available.
+
 
 # In Action
 

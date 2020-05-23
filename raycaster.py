@@ -16,6 +16,8 @@ class RayCaster:
         self.half_fov = self.fov / 2
         self.wall_textures = wall_textures
 
+        self.poi_cache = {}
+
         self.colors = [(random.randint(0, 255), random.randint(0, 255), random.randint(0, 255)) for i in range(10)]
 
     def cast(self, game_map, origin_x, origin_y, player_angle):
@@ -34,6 +36,8 @@ class RayCaster:
 
         # for every pixel in the window width
         for i in range(render_area_start_x):  # draw the visibility cone AND the "3D" view
+            self.poi_cache = {}  # reset the cache of POIs
+
             # pixel x we are going to render on this iteration
             px = render_area_start_x + i
 
@@ -136,7 +140,7 @@ class RayCaster:
                     # distortion we get the angle of the current col away from the centre line of the player's vision
                     # (angle - the player angle). cos of that angle is a proportion of the height if we were looking
                     # straight at it.
-                    ray_dist = math.sqrt(((ray_x - origin_x) ** 2) + ((ray_y - origin_y) ** 2))
+                    ray_dist = self.distance_formula((origin_x, origin_y), (ray_x, ray_y))
                     column_height = math.floor(self.win_h / (ray_dist * math.cos(angle - player_angle)))
                     column_start_y = math.floor((self.win_h/2) - (column_height / 2))
 
@@ -264,26 +268,19 @@ class RayCaster:
         :return: the closest point to the current one
         :rtype tuple(float, float):
         """
-        dist_1 = None
-        dist_2 = None
 
         # if we found two potential points of interest, which is closer to the origin?
-        if poi_1[0] and poi_1[1]:
-            # print(f"next_x_line: {next_x_line},{next_x_line_y}")
+        if poi_1[0] and poi_1[1] and poi_2[0] and poi_2[1]:
             dist_1 = self.distance_formula(current_coord, poi_1)
-
-        if poi_2[0] and poi_2[1]:
-            # print(f"next_y_line: {next_y_line_x},{next_y_line}")
             dist_2 = self.distance_formula(current_coord, poi_2)
 
-        if dist_1 and dist_2:
-            # which is closer?
             if dist_1 < dist_2:
                 return poi_1
             else:
                 return poi_2
 
-        elif dist_1:
+        # else we only have 1 point to chose from anyway...
+        elif poi_1[0] and poi_1[1]:
             return poi_1
 
         else:
