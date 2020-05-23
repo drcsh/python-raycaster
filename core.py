@@ -8,7 +8,7 @@ import pygame
 from map import Map
 from player import Player
 from raycaster import RayCaster
-from textures.texture import TextureLookupException, Texture, TextureLoader
+from textures.texturemap import TextureLookupException, TextureMap, TextureMapLoader
 
 
 def main():
@@ -36,7 +36,7 @@ def main():
     pygame.init()
     screen = pygame.display.set_mode([win_w, win_h])
 
-    wall_textures = TextureLoader.get_texture(os.path.join("textures", "walls.png"))
+    wall_textures = TextureMapLoader.load_from_file(os.path.join("textures", "walls.png"))
     game_map = Map(win_w, win_h, map)
 
     raycaster = RayCaster(win_w, win_h, fov, wall_textures)

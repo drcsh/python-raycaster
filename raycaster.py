@@ -1,5 +1,4 @@
 import math
-import numpy as np
 import random
 
 from map import Map
@@ -15,8 +14,6 @@ class RayCaster:
         self.fov = fov
         self.half_fov = self.fov / 2
         self.wall_textures = wall_textures
-
-        self.poi_cache = {}
 
         self.colors = [(random.randint(0, 255), random.randint(0, 255), random.randint(0, 255)) for i in range(10)]
 
@@ -36,7 +33,6 @@ class RayCaster:
 
         # for every pixel in the window width
         for i in range(render_area_start_x):  # draw the visibility cone AND the "3D" view
-            self.poi_cache = {}  # reset the cache of POIs
 
             # pixel x we are going to render on this iteration
             px = render_area_start_x + i
@@ -159,7 +155,7 @@ class RayCaster:
                     if hit_x_coord < 0:
                         hit_x_coord += self.wall_textures.tile_size
 
-                    tile_slice = self.wall_textures.get_tile_slice(int(map_symbol), 0, hit_x_coord, 1, column_height)
+                    tile_slice = self.wall_textures.get_tile_slice(int(map_symbol), 0, int(hit_x_coord), column_height)
 
                     game_map.surface.blit(tile_slice, (px, column_start_y))
 
@@ -220,13 +216,15 @@ class RayCaster:
                 poi_y = (x_at_next_whole_y, next_whole_y)
                 next_poi_x, next_poi_y = self.get_closest_poi((ray_x, ray_y), poi_x, poi_y)
 
+
     def distance_formula(self, point_1, point_2):
         """
         Distance between two points is defined as the square root of (x2 - x1)^2 + (y2 - y1) ^ 2
 
-        :param point_1:
-        :param point_2:
-        :return:
+        :param tuple(float, float) point_1:
+        :param tuple(float, float) point_2:
+        :return: distance
+        :rtype float:
         """
         x1 = point_1[0]
         y1 = point_1[1]
@@ -240,9 +238,9 @@ class RayCaster:
         """
         Linear equation, y = mx + c
 
-        :param x:
-        :param gradient:
-        :param y_intercept:
+        :param float x:
+        :param float gradient:
+        :param float y_intercept:
         :return:
         """
         return (x * gradient) + y_intercept
@@ -250,9 +248,9 @@ class RayCaster:
     def get_x_for_y(self, y, gradient, y_intercept):
         """
         Linear equation reorganised, x = (y - c) / m
-        :param y:
-        :param gradient:
-        :param y_intercept:
+        :param float y:
+        :param float gradient:
+        :param float y_intercept:
         :return:
         """
         return (y - y_intercept) / gradient
