@@ -89,7 +89,7 @@ class RayCaster:
 
                 poi_x = self.get_next_x_poi(origin_x, ray_x, gradient, intercept, x_increasing, ray_x_whole)
                 poi_y = self.get_next_y_poi(origin_x, origin_y, ray_y, gradient, intercept, y_increasing, ray_y_whole)
-                ray_x, ray_y = self.get_closest_poi((ray_x, ray_y), poi_x, poi_y)
+                ray_x, ray_y = math_utils.get_closest_point((ray_x, ray_y), poi_x, poi_y)
 
                 ray_x_whole = ray_x % 1 == 0
                 ray_y_whole = ray_y % 1 == 0
@@ -163,7 +163,6 @@ class RayCaster:
         :return:
         :rtype tuple: (float, float) or (None, None)
         """
-
 
         if ray_x == origin_x:  # vertical line. Y varies but not x
             return None, None
@@ -239,32 +238,3 @@ class RayCaster:
             x_at_next_whole_y = origin_x
 
         return x_at_next_whole_y, next_whole_y
-
-    def get_closest_poi(self, current_coord, poi_1, poi_2):
-        """
-        Given a current position and two other positions which we're interested in, works out which of the two is
-        closest to the current position
-
-        :param tuple(float, float) current_coord:
-        :param tuple(float, float) poi_1: Coordinate of a POI. May be partial (e.g. either value None)
-        :param tuple(float, float) poi_2: Coordinate of a POI. May be partial (e.g. either value None)
-        :return: the closest point to the current one
-        :rtype tuple(float, float):
-        """
-
-        # if we found two potential points of interest, which is closer to the origin?
-        if poi_1[0] and poi_1[1] and poi_2[0] and poi_2[1]:
-            dist_1 = math_utils.distance_formula(current_coord, poi_1)
-            dist_2 = math_utils.distance_formula(current_coord, poi_2)
-
-            if dist_1 < dist_2:
-                return poi_1
-            else:
-                return poi_2
-
-        # else we only have 1 point to chose from anyway...
-        elif poi_1[0] and poi_1[1]:
-            return poi_1
-
-        else:
-            return poi_2

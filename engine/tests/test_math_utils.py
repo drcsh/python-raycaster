@@ -44,6 +44,41 @@ class TestMathUtils(unittest.TestCase):
 
         self.assertAlmostEqual(x, 6.1)
 
+    def test_get_closest_point(self):
+        origin = (0, 0)
+        p1 = (1, 1)
+        p2 = (5, 5)
+
+        closest = math_utils.get_closest_point(origin, p1, p2)
+
+        self.assertEqual(p1, closest)
+
+    def test_get_closest_point_negatives(self):
+        origin = (0, 0)
+        p1 = (-1, -1)
+        p2 = (5, 5)
+
+        closest = math_utils.get_closest_point(origin, p1, p2)
+
+        self.assertEqual(p1, closest)
+
+    def test_get_closest_point_partial_coords(self):
+        origin = (0, 0)
+        p1 = (None, 1)
+        p2 = (5, 5)
+
+        closest = math_utils.get_closest_point(origin, p1, p2)
+
+        self.assertEqual(p2, closest)
+
+        origin = (0, 0)
+        p1 = (-1, -1)
+        p2 = (None, 5)
+
+        closest = math_utils.get_closest_point(origin, p1, p2)
+
+        self.assertEqual(p1, closest)
+
 
 if __name__ == '__main__':
     unittest.main()

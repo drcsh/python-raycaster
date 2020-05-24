@@ -40,3 +40,33 @@ def get_x_for_y(y, gradient, y_intercept):
     :return:
     """
     return (y - y_intercept) / gradient
+
+
+def get_closest_point(current_coord, poi_1, poi_2):
+    """
+    Given a current position and two other positions which we're interested in, works out which of the two is
+    closest to the current position
+
+    :param tuple(float, float) current_coord:
+    :param tuple(float, float) poi_1: Coordinate of a POI. May be partial (e.g. either value None)
+    :param tuple(float, float) poi_2: Coordinate of a POI. May be partial (e.g. either value None)
+    :return: the closest point to the current one
+    :rtype tuple(float, float):
+    """
+
+    # if we found two potential points of interest, which is closer to the origin?
+    if poi_1[0] and poi_1[1] and poi_2[0] and poi_2[1]:
+        dist_1 = distance_formula(current_coord, poi_1)
+        dist_2 = distance_formula(current_coord, poi_2)
+
+        if dist_1 < dist_2:
+            return poi_1
+        else:
+            return poi_2
+
+    # else we only have 1 point to chose from anyway...
+    elif poi_1[0] and poi_1[1]:
+        return poi_1
+
+    else:
+        return poi_2
