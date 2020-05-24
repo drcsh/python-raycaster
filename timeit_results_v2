@@ -101,12 +101,58 @@ Caster avg cast time (last 100):0.0234386188020664
 Caster avg cast time (last 86):0.02472121639537067
 
 No split screen dev mode:
-Caster avg cast time (last 100):0.022138370980239488
-Caster avg cast time (last 100):0.021258636603828797
-Caster avg cast time (last 100):0.020434550039690202
-Caster avg cast time (last 100):0.022824416019803083
-Caster avg cast time (last 100):0.021570865900964173
-Caster avg cast time (last 100):0.022082861277259228
-Caster avg cast time (last 99):0.020363538040457037
-Caster best avg cast time for 100 renders: 0.020434550039690202
-Caster worst avg cast time for 100 renders: 0.022824416019803083
+Caster avg cast time (last 100):0.019353510534664123
+Caster avg cast time (last 100):0.02061754285140262
+Caster avg cast time (last 100):0.0213766324652692
+Caster avg cast time (last 100):0.019394329098984166
+Caster avg cast time (last 100):0.020192120930617664
+Caster avg cast time (last 100):0.023480036257571536
+Caster avg cast time (last 100):0.02017154751495645
+Caster avg cast time (last 100):0.019932891524725768
+Caster avg cast time (last 100):0.02016519164353307
+Caster avg cast time (last 100):0.020083123336656055
+Caster avg cast time (last 100):0.020650015287264078
+Caster avg cast time (last 100):0.020795639049556305
+Caster avg cast time (last 64):0.020376690859450264
+Caster best avg cast time for 100 renders: 0.019353510534664123
+Caster worst avg cast time for 100 renders: 0.023480036257571536
+
+Process finished with exit code 0
+
+
+Simplified POI Calc:
+Caster avg cast time (last 100):0.020391960197860562
+Caster avg cast time (last 100):0.025884859970331194
+Caster avg cast time (last 100):0.02080872974260958
+Caster avg cast time (last 100):0.02402088865339537
+Caster avg cast time (last 100):0.023927675346574615
+Caster avg cast time (last 100):0.01958899672271319
+Caster avg cast time (last 100):0.019383799613753562
+Caster avg cast time (last 100):0.019253442277271694
+Caster avg cast time (last 100):0.019667367019774427
+Caster avg cast time (last 100):0.020813097990119985
+Caster avg cast time (last 100):0.020349552326740312
+Caster avg cast time (last 100):0.019200514821860262
+Caster avg cast time (last 100):0.01908169602974889
+Caster avg cast time (last 100):0.019318893881297688
+Caster avg cast time (last 100):0.020744119703144097
+Caster avg cast time (last 74):0.021466929837786027
+Caster best avg cast time for 100 renders: 0.01908169602974889
+Caster worst avg cast time for 100 renders: 0.025884859970331194
+
+
+# Various little tweaks and simplifications
+Caster avg cast time (last 100):0.017509725693245028
+Caster avg cast time (last 100):0.016222378524995147
+Caster avg cast time (last 100):0.016531033871318202
+Caster avg cast time (last 100):0.01676350171288901
+Caster avg cast time (last 100):0.017108809029835328
+Caster avg cast time (last 100):0.0180085948217455
+Caster avg cast time (last 100):0.017203191742557446
+Caster avg cast time (last 100):0.017247816168429103
+Caster avg cast time (last 100):0.017524777802067872
+Caster avg cast time (last 100):0.017392743317032
+Caster avg cast time (last 100):0.017468793980292007
+Caster avg cast time (last 7):0.015440212713916221
+Caster best avg cast time for 100 renders: 0.016222378524995147
+Caster worst avg cast time for 100 renders: 0.0180085948217455

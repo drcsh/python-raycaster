@@ -53,20 +53,17 @@ def get_closest_point(current_coord, poi_1, poi_2):
     :return: the closest point to the current one
     :rtype tuple(float, float):
     """
-
-    # if we found two potential points of interest, which is closer to the origin?
-    if poi_1[0] and poi_1[1] and poi_2[0] and poi_2[1]:
+    try:
         dist_1 = distance_formula(current_coord, poi_1)
+    except TypeError:
+        return poi_2
+
+    try:
         dist_2 = distance_formula(current_coord, poi_2)
-
-        if dist_1 < dist_2:
-            return poi_1
-        else:
-            return poi_2
-
-    # else we only have 1 point to chose from anyway...
-    elif poi_1[0] and poi_1[1]:
+    except TypeError:
         return poi_1
 
+    if dist_1 < dist_2:
+        return poi_1
     else:
         return poi_2

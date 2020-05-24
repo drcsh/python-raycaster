@@ -1,5 +1,4 @@
 import math
-import random
 
 from engine.map import Map
 from engine import math_utils
@@ -18,8 +17,6 @@ class RayCaster:
 
         self.current_map = None
         self.dev_mode = dev_mode
-
-        self.colors = [(random.randint(0, 255), random.randint(0, 255), random.randint(0, 255)) for i in range(10)]
 
     def cast(self, game_map, origin_x, origin_y, player_angle):
         """
@@ -40,24 +37,23 @@ class RayCaster:
             render_area_width = self.win_w
 
         # for every pixel in the window width
-        for i in range(render_area_width):  # draw the visibility cone AND the "3D" view
+        for i in range(render_area_width):
 
-            # pixel x we are going to render on this iteration
-            px = i
+            # pixel x on the screen we are going to render on this iteration, same as i except in dev mode
+            screen_px_x = i
+
+            # The angle of the ray is calculated around the center point which is where the player is facing
             angle = player_angle - self.half_fov + (self.fov * i) / self.win_w
-            if self.dev_mode:
-                px = render_area_width + i
+
+            if self.dev_mode:  # in dev mode we render the map on the left
+                screen_px_x += render_area_width
                 angle = player_angle - self.half_fov + (self.fov * i) / (self.win_w / 2)
-
-
-
-            # get the angle of this ray, calculated around the center point which is where the player is facing
 
             cos_angle = math.cos(angle)
             sin_angle = math.sin(angle)
 
-            ray_x = origin_x + 0.1 * cos_angle
-            ray_y = origin_y + 0.1 * sin_angle
+            ray_x = origin_x + 0.05 * cos_angle
+            ray_y = origin_y + 0.05 * sin_angle
 
             # what I want to do is calculate the next point(s) of interest (POI) on the graph, which are where the ray
             # would cross into another map square. To do this, I need to figure out the direction of travel of the ray,
@@ -77,35 +73,34 @@ class RayCaster:
             # are increasing relative to the player
             if ray_x != origin_x:
                 gradient = (ray_y - origin_y) / (ray_x - origin_x)
-                if ray_x > origin_x:
-                    x_increasing = True
+                x_increasing = ray_x > origin_x
 
                 # y intercept
                 intercept = origin_y - (gradient * origin_x)
 
-            if ray_y != origin_y:  # as long as it's not horizontal
-                if ray_y > origin_y:
-                    y_increasing = True
+            # check for horizontal lines
+            if ray_y != origin_y:
+                y_increasing = ray_y > origin_y
 
+            # It's very unlikely that the first points we've chosen are whole, but they might be.
             ray_x_whole = ray_x % 1 == 0
             ray_y_whole = ray_y % 1 == 0
 
             counter = 0
             while counter < self.DRAW_DISTANCE:
-                counter += 1
+                # Anything that happens in here will be called a *lot*.
 
                 poi_x = self.get_next_x_poi(origin_x, ray_x, gradient, intercept, x_increasing, ray_x_whole)
                 poi_y = self.get_next_y_poi(origin_x, origin_y, ray_y, gradient, intercept, y_increasing, ray_y_whole)
                 ray_x, ray_y = math_utils.get_closest_point((ray_x, ray_y), poi_x, poi_y)
 
-                ray_x_whole = ray_x % 1 == 0
-                ray_y_whole = ray_y % 1 == 0
-
-                # get pixel location on map
-                px_x, px_y = self.current_map.get_pixel_xy_from_map_xy(ray_x, ray_y)
+                # the ray will be one of the identified POIs, so one of the x/y values will be whole
+                ray_x_whole = ray_x == poi_x[0]
+                ray_y_whole = ray_y == poi_y[1]
 
                 # draw visibility cone on map
                 if self.dev_mode:
+                    px_x, px_y = self.current_map.get_pixel_xy_from_map_xy(ray_x, ray_y)
                     self.current_map.surface.set_at((px_x, px_y), (255, 100, 0))
 
                 # If the Ray is at a whole number on the x/y grid, and is decreasing on that axis, the next wall it hits
@@ -148,9 +143,10 @@ class RayCaster:
 
                     tile_slice = self.wall_textures.get_tile_slice(int(map_symbol), 0, int(hit_x_coord), column_height)
 
-                    self.current_map.surface.blit(tile_slice, (px, column_start_y))
+                    self.current_map.surface.blit(tile_slice, (screen_px_x, column_start_y))
 
                     break
+                counter += 1
 
     def get_next_x_poi(self, origin_x, ray_x, gradient, intercept, x_increasing, x_whole):
         """
@@ -176,21 +172,16 @@ class RayCaster:
             return None, None
 
         if x_increasing:
-            if ray_x < self.current_map.map_squares_x:
-                if x_whole:
-                    next_whole_x = ray_x + 1
-                else:
-                    next_whole_x = math.ceil(ray_x)
+            if x_whole:
+                next_whole_x = ray_x + 1
             else:
-                next_whole_x = self.current_map.map_squares_x
+                next_whole_x = math.ceil(ray_x)
+
         else:
-            if ray_x > 0:
-                if x_whole:
-                    next_whole_x = ray_x - 1
-                else:
-                    next_whole_x = math.floor(ray_x)
+            if x_whole:
+                next_whole_x = ray_x - 1
             else:
-                next_whole_x = 0
+                next_whole_x = math.floor(ray_x)
 
         y_at_next_whole_x = math_utils.get_y_for_x(next_whole_x, gradient, intercept)
 
@@ -223,24 +214,18 @@ class RayCaster:
             return None, None
 
         if y_increasing:
-            if ray_y < self.current_map.map_squares_y:
-                if y_whole:
-                    next_whole_y = ray_y + 1
-                else:
-                    next_whole_y = math.ceil(ray_y)
+            if y_whole:
+                next_whole_y = ray_y + 1
             else:
-                next_whole_y = ray_y
+                next_whole_y = math.ceil(ray_y)
 
         else:
-            if ray_y > 0:
-                if y_whole:
-                    next_whole_y = ray_y - 1
-                else:
-                    next_whole_y = math.floor(ray_y)
+            if y_whole:
+                next_whole_y = ray_y - 1
             else:
-                next_whole_y = 0
+                next_whole_y = math.floor(ray_y)
 
-        if gradient and intercept:
+        if gradient:
             x_at_next_whole_y = math_utils.get_x_for_y(next_whole_y, gradient, intercept)
         else:  # vertical line, y changes but x is the same as origin
             x_at_next_whole_y = origin_x

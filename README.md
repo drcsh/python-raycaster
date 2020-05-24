@@ -75,13 +75,18 @@ gain, getting us to raycast times of about 0.019-0.025s
 
 ## Squeezing more out of it
 I started out with some experiments, for example, the raycaster does a bit of packing coordinates in tuples and 
-retrieving them, and this is really only to give tidy method signitures. I tried unpacking the tuples, but there
+retrieving them, and this is really only to give tidy method signatures. I tried unpacking the tuples, but there
 wasn't an observable impact on rendering time, so I put them back to their original state.
 
 I disabled the visibility cone rendering as this was only for demonstration. I suspected that had an overhead for 
 setting individual pixel colours. This saved about 0.03-0.04s from each render. I switched the map + visibility cone
 rendering to an optional setting (to enable, set dev_mode=True in core.py). I'm still seeing cast times up to 0.025s
 however, and it's stubbornly not going down to less than 0.02s.
+
+Next I simplified the POI calculations by removing some sanity checks. This would theoretically mean it could generate
+POIs outside of the map area, but it should always hit a wall before calculating them anyway. I also did a pass through
+of the code removing unnecessary calculations and simplifying the logical structure, especially on the code called
+frequently. After doing this, cast times got down to <0.02s and frequently under the 0.0167s required for 60 fps. 
 
 # In Action
 
