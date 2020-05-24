@@ -32,7 +32,8 @@ ray has hit, and render it to scale depending on how far away the ray now is fro
 player.
 
 However, while this works well in C++, it's slow in Python, with each full raycast 
-of the screen averaging at about 0.56s. So I started refining this.
+of the screen averaging at about 0.56s. What we really need is rendering times at < 0.016s
+to get 60fps. The faster, the better. So I started refining the algorithm. 
 
 ## Version 2
 
@@ -40,10 +41,10 @@ To improve the situation I decided that rather than travelling the whole length 
 ray, we're only really interested in where the ray passes into another map square, at
 that's the only location we may encounter a wall (since walls are always 1x1 square).
 
-To work out these points of interest, we solve the linear equation of the ray, and
+To work out these points of interest (POIs), we solve the linear equation of the ray, and
 knowing which direction the ray is traveling in relation to the x and y axis, we can
 calculate where the ray will cross those lines. We then take the closest one as our
-ray location, and keep hopping along these points of interest (POIs) until we hit a wall.
+ray location, and keep hopping along these POIs until we hit a wall.
 
 This is significantly more efficient, clocking in at 0.04 to 0.07s per full sweep. 
 

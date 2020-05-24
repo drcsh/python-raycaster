@@ -5,10 +5,10 @@ import numpy as np
 from timeit import default_timer as timer
 import pygame
 
-from map import Map
-from player import Player
-from raycaster import RayCaster
-from textures.texturemap import TextureLookupException, TextureMap, TextureMapLoader
+from engine.map import Map
+from engine.player import Player
+from engine.raycaster import RayCaster
+from textures.texturemap import TextureMapLoader
 
 
 def main():

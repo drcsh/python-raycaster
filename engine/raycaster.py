@@ -1,7 +1,8 @@
 import math
 import random
 
-from map import Map
+from engine.map import Map
+from engine import math_utils
 
 
 class RayCaster:
@@ -118,7 +119,7 @@ class RayCaster:
                     # distortion we get the angle of the current col away from the centre line of the player's vision
                     # (angle - the player angle). cos of that angle is a proportion of the height if we were looking
                     # straight at it.
-                    ray_dist = self.distance_formula((origin_x, origin_y), (ray_x, ray_y))
+                    ray_dist = math_utils.distance_formula((origin_x, origin_y), (ray_x, ray_y))
                     column_height = math.floor(self.win_h / (ray_dist * math.cos(angle - player_angle)))
                     column_start_y = math.floor((self.win_h/2) - (column_height / 2))
 
@@ -184,7 +185,7 @@ class RayCaster:
             else:
                 next_whole_x = 0
 
-        y_at_next_whole_x = self.get_y_for_x(next_whole_x, gradient, intercept)
+        y_at_next_whole_x = math_utils.get_y_for_x(next_whole_x, gradient, intercept)
 
         return next_whole_x, y_at_next_whole_x
 
@@ -233,49 +234,11 @@ class RayCaster:
                 next_whole_y = 0
 
         if gradient and intercept:
-            x_at_next_whole_y = self.get_x_for_y(next_whole_y, gradient, intercept)
+            x_at_next_whole_y = math_utils.get_x_for_y(next_whole_y, gradient, intercept)
         else:  # vertical line, y changes but x is the same as origin
             x_at_next_whole_y = origin_x
 
         return x_at_next_whole_y, next_whole_y
-
-    def distance_formula(self, point_1, point_2):
-        """
-        Distance between two points is defined as the square root of (x2 - x1)^2 + (y2 - y1) ^ 2
-
-        :param tuple(float, float) point_1:
-        :param tuple(float, float) point_2:
-        :return: distance
-        :rtype float:
-        """
-        x1 = point_1[0]
-        y1 = point_1[1]
-
-        x2 = point_2[0]
-        y2 = point_2[1]
-
-        return math.sqrt(((x2 - x1) ** 2) + ((y2 - y1) ** 2))
-
-    def get_y_for_x(self, x, gradient, y_intercept):
-        """
-        Linear equation, y = mx + c
-
-        :param float x:
-        :param float gradient:
-        :param float y_intercept:
-        :return:
-        """
-        return (x * gradient) + y_intercept
-
-    def get_x_for_y(self, y, gradient, y_intercept):
-        """
-        Linear equation reorganised, x = (y - c) / m
-        :param float y:
-        :param float gradient:
-        :param float y_intercept:
-        :return:
-        """
-        return (y - y_intercept) / gradient
 
     def get_closest_poi(self, current_coord, poi_1, poi_2):
         """
@@ -291,8 +254,8 @@ class RayCaster:
 
         # if we found two potential points of interest, which is closer to the origin?
         if poi_1[0] and poi_1[1] and poi_2[0] and poi_2[1]:
-            dist_1 = self.distance_formula(current_coord, poi_1)
-            dist_2 = self.distance_formula(current_coord, poi_2)
+            dist_1 = math_utils.distance_formula(current_coord, poi_1)
+            dist_2 = math_utils.distance_formula(current_coord, poi_2)
 
             if dist_1 < dist_2:
                 return poi_1
