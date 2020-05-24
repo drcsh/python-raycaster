@@ -12,9 +12,13 @@ from textures.texturemap import TextureMapLoader
 
 
 def main():
-    win_w = 1024
+    dev_mode = False
+    win_w = 512
     win_h = 512
     fov = math.pi / 3  # fov is expressed as a fraction of pi, i.e. a fraction of a total 360 circular view
+
+    if dev_mode:
+        win_w = win_w * 2
 
     map = "0000222222220000" \
           "1              0" \
@@ -37,9 +41,9 @@ def main():
     screen = pygame.display.set_mode([win_w, win_h])
 
     wall_textures = TextureMapLoader.load_from_file(os.path.join("textures", "walls.png"))
-    game_map = Map(win_w, win_h, map)
+    game_map = Map(win_w, win_h, map, dev_mode=dev_mode)
 
-    raycaster = RayCaster(win_w, win_h, fov, wall_textures)
+    raycaster = RayCaster(win_w, win_h, fov, wall_textures, dev_mode=dev_mode)
 
     player_x = 3.456
     player_y = 1.345
@@ -50,6 +54,8 @@ def main():
     running = True
 
     caster_ts = []
+    caster_worst = -1
+    caster_best = 10
     while running:
         # get input
         for event in pygame.event.get():
@@ -71,7 +77,8 @@ def main():
 
         game_map.reset_surface()
 
-        game_map.draw_player(player.x, player.y)
+        if dev_mode:
+            game_map.draw_player(player.x, player.y)
 
         start = timer()
         raycaster.cast(game_map, player.x, player.y, player.angle)
@@ -83,13 +90,20 @@ def main():
         pygame.display.flip()
 
         if len(caster_ts) > 100:  # stop caster_ts becoming too long
-            print(f"Caster avg cast time (last 100):{np.average(caster_ts)}")
+            av = np.average(caster_ts)
+            print(f"Caster avg cast time (last 100):{av}")
+            if av > caster_worst:
+                caster_worst = av
+            if av < caster_best:
+                caster_best = av
             caster_ts = []
 
         # cap the framerate
         clock.tick(60)
 
     print(f"Caster avg cast time (last {len(caster_ts)}):{np.average(caster_ts)}")
+    print(f"Caster best avg cast time for 100 renders: {caster_best}")
+    print(f"Caster worst avg cast time for 100 renders: {caster_worst}")
     pygame.image.save(game_map.surface, "out.bmp")
 
     pygame.quit()

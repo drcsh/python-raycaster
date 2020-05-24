@@ -73,6 +73,16 @@ again and again for no real reason, so I modified Texture into two separate clas
 pre-sliced the textures into 1px wide strips for raycasting. This produced a minor performance 
 gain, getting us to raycast times of about 0.019-0.025s 
 
+## Squeezing more out of it
+I started out with some experiments, for example, the raycaster does a bit of packing coordinates in tuples and 
+retrieving them, and this is really only to give tidy method signitures. I tried unpacking the tuples, but there
+wasn't an observable impact on rendering time, so I put them back to their original state.
+
+I disabled the visibility cone rendering as this was only for demonstration. I suspected that had an overhead for 
+setting individual pixel colours. This saved about 0.03-0.04s from each render. I switched the map + visibility cone
+rendering to an optional setting (to enable, set dev_mode=True in core.py). I'm still seeing cast times up to 0.025s
+however, and it's stubbornly not going down to less than 0.02s.
+
 # In Action
 
 Basic version with fisheye correction: 

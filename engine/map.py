@@ -12,7 +12,13 @@ class Map:
     default_squares_x = 16
     default_squares_y = 16
 
-    def __init__(self, win_w, win_h, map_str, map_squares_x=default_squares_x, map_squares_y=default_squares_y):
+    def __init__(self,
+                 win_w,
+                 win_h,
+                 map_str,
+                 map_squares_x=default_squares_x,
+                 map_squares_y=default_squares_y,
+                 dev_mode=False):
         """
         Sets up a level Map with a grid coordinate system for locating objects easily, and an underlying pygame.Surface
         which will be used for more fine-grained tracking and for raycasting.
@@ -23,7 +29,7 @@ class Map:
         :param map_squares_x:
         :param map_squares_y:
         """
-
+        self.dev_mode = dev_mode
         assert (len(map_str) == map_squares_x * map_squares_y)
 
         self.screen_width = win_w
@@ -36,7 +42,11 @@ class Map:
         # Each char in the map_str represents a rectangular area, which will have a certain size in pixels defined by
         # the surface x & y / map x & y
         # We will use these rectangles to divide up the map for locating things
-        self.map_square_width = self.screen_width / (self.map_squares_x * 2)  # temp for split screen
+        if self.dev_mode:
+            self.map_square_width = self.screen_width / (self.map_squares_x * 2)  # temp for split screen
+        else:
+            self.map_square_width = self.screen_width / self.map_squares_x
+
         self.map_square_height = self.screen_height / self.map_squares_y
 
         self.surface = None
@@ -101,4 +111,7 @@ class Map:
         """
         background = pygame.Surface((self.screen_width, self.screen_height))
         background.fill((255, 255, 255))
-        self.surface = self.draw_map_to_surface(background)
+        if self.dev_mode:
+            self.surface = self.draw_map_to_surface(background)
+        else:
+            self.surface = background

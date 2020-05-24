@@ -79,3 +79,34 @@ Caster avg cast time (last 100):0.022021691950369744
 Caster avg cast time (last 100):0.02398638649511028
 Caster avg cast time (last 100):0.021218588534640443
 Caster avg cast time (last 100):0.02236262716839276
+
+
+Baseline at v3:
+
+Caster avg cast time (last 100):0.024656210950515834
+Caster avg cast time (last 100):0.026518098227762216
+Caster avg cast time (last 100):0.024538342742564036
+Caster avg cast time (last 100):0.025034709346523458
+Caster avg cast time (last 100):0.02506644238612785
+Caster avg cast time (last 100):0.02403058809902024
+Caster avg cast time (last 100):0.02438833279206892
+Caster avg cast time (last 31):0.0242816577741788
+
+Caster avg cast time (last 100):0.024627840801960954
+Caster avg cast time (last 100):0.023485102306913537
+Caster avg cast time (last 100):0.02408937671290266
+Caster avg cast time (last 100):0.02428174475247006
+Caster avg cast time (last 100):0.02637958071284062
+Caster avg cast time (last 100):0.0234386188020664
+Caster avg cast time (last 86):0.02472121639537067
+
+No split screen dev mode:
+Caster avg cast time (last 100):0.022138370980239488
+Caster avg cast time (last 100):0.021258636603828797
+Caster avg cast time (last 100):0.020434550039690202
+Caster avg cast time (last 100):0.022824416019803083
+Caster avg cast time (last 100):0.021570865900964173
+Caster avg cast time (last 100):0.022082861277259228
+Caster avg cast time (last 99):0.020363538040457037
+Caster best avg cast time for 100 renders: 0.020434550039690202
+Caster worst avg cast time for 100 renders: 0.022824416019803083

@@ -9,7 +9,7 @@ class RayCaster:
 
     DRAW_DISTANCE = 16
 
-    def __init__(self, win_w, win_h, fov, wall_textures):
+    def __init__(self, win_w, win_h, fov, wall_textures, dev_mode=False):
         self.win_w = win_w
         self.win_h = win_h
         self.fov = fov
@@ -17,6 +17,7 @@ class RayCaster:
         self.wall_textures = wall_textures
 
         self.current_map = None
+        self.dev_mode = dev_mode
 
         self.colors = [(random.randint(0, 255), random.randint(0, 255), random.randint(0, 255)) for i in range(10)]
 
@@ -30,27 +31,33 @@ class RayCaster:
         :return:
         """
         self.current_map = game_map
-        render_area_start_x = math.floor(self.win_w / 2)
 
-        px_x, px_y = self.current_map.get_pixel_xy_from_map_xy(origin_x, origin_y)
-        self.current_map.surface.set_at((px_x, px_y), (100, 255, 0))
+        if self.dev_mode:
+            render_area_width = math.floor(self.win_w / 2)
+            px_x, px_y = self.current_map.get_pixel_xy_from_map_xy(origin_x, origin_y)
+            self.current_map.surface.set_at((px_x, px_y), (100, 255, 0))
+        else:
+            render_area_width = self.win_w
 
         # for every pixel in the window width
-        for i in range(render_area_start_x):  # draw the visibility cone AND the "3D" view
+        for i in range(render_area_width):  # draw the visibility cone AND the "3D" view
 
             # pixel x we are going to render on this iteration
-            px = render_area_start_x + i
+            px = i
+            angle = player_angle - self.half_fov + (self.fov * i) / self.win_w
+            if self.dev_mode:
+                px = render_area_width + i
+                angle = player_angle - self.half_fov + (self.fov * i) / (self.win_w / 2)
+
+
 
             # get the angle of this ray, calculated around the center point which is where the player is facing
-            angle = player_angle - self.half_fov + (self.fov * i) / (self.win_w / 2)
+
             cos_angle = math.cos(angle)
             sin_angle = math.sin(angle)
 
             ray_x = origin_x + 0.1 * cos_angle
             ray_y = origin_y + 0.1 * sin_angle
-
-            px_x, px_y = self.current_map.get_pixel_xy_from_map_xy(ray_x, ray_y)
-            self.current_map.surface.set_at((px_x, px_y), (100, 255, 0))
 
             # what I want to do is calculate the next point(s) of interest (POI) on the graph, which are where the ray
             # would cross into another map square. To do this, I need to figure out the direction of travel of the ray,
@@ -98,7 +105,8 @@ class RayCaster:
                 px_x, px_y = self.current_map.get_pixel_xy_from_map_xy(ray_x, ray_y)
 
                 # draw visibility cone on map
-                self.current_map.surface.set_at((px_x, px_y), (255, 100, 0))
+                if self.dev_mode:
+                    self.current_map.surface.set_at((px_x, px_y), (255, 100, 0))
 
                 # If the Ray is at a whole number on the x/y grid, and is decreasing on that axis, the next wall it hits
                 # will actually be in the map square 1 over from the ray. I.e. if we're at square 2,1 and looking
