@@ -1,21 +1,18 @@
 import math
 
 
-def distance_formula(point_1, point_2):
+def distance_formula(x1, y1, x2, y2):
     """
     Distance between two points is defined as the square root of (x2 - x1)^2 + (y2 - y1) ^ 2
 
-    :param tuple(float, float) point_1:
-    :param tuple(float, float) point_2:
+    :param float x1:
+    :param float y1:
+    :param float x2:
+    :param float y2:
     :return: distance
     :rtype float:
+    :raises TypeError: Any of the values are non-numeric or None.
     """
-    x1 = point_1[0]
-    y1 = point_1[1]
-
-    x2 = point_2[0]
-    y2 = point_2[1]
-
     return math.sqrt(((x2 - x1) ** 2) + ((y2 - y1) ** 2))
 
 
@@ -42,28 +39,35 @@ def get_x_for_y(y, gradient, y_intercept):
     return (y - y_intercept) / gradient
 
 
-def get_closest_point(current_coord, poi_1, poi_2):
+def get_closest_point(current_x, current_y, p1_x, p1_y, p2_x, p2_y):
     """
     Given a current position and two other positions which we're interested in, works out which of the two is
-    closest to the current position
+    closest to the current position.
 
-    :param tuple(float, float) current_coord:
-    :param tuple(float, float) poi_1: Coordinate of a POI. May be partial (e.g. either value None)
-    :param tuple(float, float) poi_2: Coordinate of a POI. May be partial (e.g. either value None)
+    If 1 of the POIs is partial (contains a None), the other will be returned. If both are None, the second POI will
+    be returned, but this behavior should be considered undefined.
+    
+    :param float current_x:
+    :param float current_y:
+    :param float|None p1_x: x of the first POI
+    :param float|None p1_y:
+    :param float|None p2_x: x of the second POI
+    :param float|None p2_y:
     :return: the closest point to the current one
     :rtype tuple(float, float):
     """
-    try:
-        dist_1 = distance_formula(current_coord, poi_1)
-    except TypeError:
-        return poi_2
 
     try:
-        dist_2 = distance_formula(current_coord, poi_2)
+        dist_1 = distance_formula(current_x, current_y, p1_x, p1_y)
     except TypeError:
-        return poi_1
+        return p2_x, p2_y
+
+    try:
+        dist_2 = distance_formula(current_x, current_y, p2_x, p2_y)
+    except TypeError:
+        return p1_x, p1_y
 
     if dist_1 < dist_2:
-        return poi_1
+        return p1_x, p1_y
     else:
-        return poi_2
+        return p2_x, p2_y

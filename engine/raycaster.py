@@ -12,19 +12,23 @@ class RayCaster:
         self.win_w = win_w
         self.win_h = win_h
         self.fov = fov
-        self.half_fov = self.fov / 2
         self.wall_textures = wall_textures
+        self.dev_mode = dev_mode
+        
+        # we will need these values multiple times
+        self.half_fov = self.fov / 2
+        self.half_win_h = self.win_h / 2
 
         self.current_map = None
-        self.dev_mode = dev_mode
 
-    def cast(self, game_map, origin_x, origin_y, player_angle):
+
+    def cast(self, game_map, origin_x, origin_y, angle_from_x_axis):
         """
 
         :param Map game_map:
         :param float origin_x:
         :param float origin_y:
-        :param float player_angle:
+        :param float angle_from_x_axis:
         :return:
         """
         self.current_map = game_map
@@ -43,11 +47,11 @@ class RayCaster:
             screen_px_x = i
 
             # The angle of the ray is calculated around the center point which is where the player is facing
-            angle = player_angle - self.half_fov + (self.fov * i) / self.win_w
+            angle = angle_from_x_axis - self.half_fov + (self.fov * i) / self.win_w
 
             if self.dev_mode:  # in dev mode we render the map on the left
                 screen_px_x += render_area_width
-                angle = player_angle - self.half_fov + (self.fov * i) / (self.win_w / 2)
+                angle = angle_from_x_axis - self.half_fov + (self.fov * i) / (self.win_w / 2)
 
             cos_angle = math.cos(angle)
             sin_angle = math.sin(angle)
@@ -90,13 +94,13 @@ class RayCaster:
             while counter < self.DRAW_DISTANCE:
                 # Anything that happens in here will be called a *lot*.
 
-                poi_x = self.get_next_x_poi(origin_x, ray_x, gradient, intercept, x_increasing, ray_x_whole)
-                poi_y = self.get_next_y_poi(origin_x, origin_y, ray_y, gradient, intercept, y_increasing, ray_y_whole)
-                ray_x, ray_y = math_utils.get_closest_point((ray_x, ray_y), poi_x, poi_y)
+                x_poi_x, x_poi_y = self.get_next_x_poi(origin_x, ray_x, gradient, intercept, x_increasing, ray_x_whole)
+                y_poi_x, y_poi_y = self.get_next_y_poi(origin_x, origin_y, ray_y, gradient, intercept, y_increasing, ray_y_whole)
+                ray_x, ray_y = math_utils.get_closest_point(ray_x, ray_y, x_poi_x, x_poi_y, y_poi_x, y_poi_y)
 
                 # the ray will be one of the identified POIs, so one of the x/y values will be whole
-                ray_x_whole = ray_x == poi_x[0]
-                ray_y_whole = ray_y == poi_y[1]
+                ray_x_whole = ray_x == x_poi_x
+                ray_y_whole = ray_y == y_poi_y
 
                 # draw visibility cone on map
                 if self.dev_mode:
@@ -122,24 +126,24 @@ class RayCaster:
                     # distortion we get the angle of the current col away from the centre line of the player's vision
                     # (angle - the player angle). cos of that angle is a proportion of the height if we were looking
                     # straight at it.
-                    ray_dist = math_utils.distance_formula((origin_x, origin_y), (ray_x, ray_y))
-                    column_height = math.floor(self.win_h / (ray_dist * math.cos(angle - player_angle)))
-                    column_start_y = math.floor((self.win_h/2) - (column_height / 2))
+                    ray_dist = math_utils.distance_formula(origin_x, origin_y, ray_x, ray_y)
+                    column_height = math.floor(self.win_h / (ray_dist * math.cos(angle - angle_from_x_axis)))
+                    column_start_y = math.floor(self.half_win_h - (column_height / 2))
 
                     # The ray's location when it stopped will be a map square with a fraction. E.g. 3.456
                     # If we home in on the fractional part of the value, we have a fraction which expresses how far
                     # along the map square we are. Since the wall texture tiles are mapped 1:1 with map squares, we
                     # can use this fraction to figure out the horizontal slice of the texture to get.
                     # However, when rendering a 'vertical' wall (top down perspective), x will be ~0, and y will be used
-                    hit_x = ray_x - math.floor(ray_x+0.5)
-                    hit_y = ray_y - math.floor(ray_y+0.5)
+                    hit_x, _ = math.modf(ray_x)
+                    hit_y, _ = math.modf(ray_y)
                     if math.fabs(hit_y) > math.fabs(hit_x):
                         hit_x_coord = hit_y * self.wall_textures.tile_size
                     else:
                         hit_x_coord = hit_x * self.wall_textures.tile_size
 
                     if hit_x_coord < 0:
-                        hit_x_coord += self.wall_textures.tile_size
+                        hit_x_coord = math.fabs(hit_x_coord)
 
                     tile_slice = self.wall_textures.get_tile_slice(int(map_symbol), 0, int(hit_x_coord), column_height)
 

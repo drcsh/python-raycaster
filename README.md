@@ -35,6 +35,12 @@ However, while this works well in C++, it's slow in Python, with each full rayca
 of the screen averaging at about 0.56s. What we really need is rendering times at < 0.016s
 to get 60fps. The faster, the better. So I started refining the algorithm. 
 
+## Method of checking
+I set up a timeit timer either side of the call to the raycaster in the game loop, collected 100 calls to it (that's
+100 full renderings), and printed the average to the terminal.
+
+While timing I left the camera in the default position, with a wide view reaching down to the end of the map. 
+
 ## Version 2
 
 To improve the situation I decided that rather than travelling the whole length of the
@@ -87,6 +93,9 @@ Next I simplified the POI calculations by removing some sanity checks. This woul
 POIs outside of the map area, but it should always hit a wall before calculating them anyway. I also did a pass through
 of the code removing unnecessary calculations and simplifying the logical structure, especially on the code called
 frequently. After doing this, cast times got down to <0.02s and frequently under the 0.0167s required for 60 fps. 
+
+I then went back to my previous idea of removing the tuple juggling, and accepting the messy method signatures. This
+got cast times down just a hair further, 
 
 # In Action
 

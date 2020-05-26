@@ -156,3 +156,31 @@ Caster avg cast time (last 100):0.017468793980292007
 Caster avg cast time (last 7):0.015440212713916221
 Caster best avg cast time for 100 renders: 0.016222378524995147
 Caster worst avg cast time for 100 renders: 0.0180085948217455
+
+# Removing Tuple packing/unpacking
+Caster avg cast time (last 100):0.01601868500989611
+Caster avg cast time (last 100):0.015941369683157
+Caster avg cast time (last 100):0.016346403069289885
+Caster avg cast time (last 100):0.01617185964356746
+Caster avg cast time (last 100):0.01708442490096804
+Caster avg cast time (last 100):0.01601159253466381
+Caster avg cast time (last 100):0.016035652821783243
+Caster avg cast time (last 100):0.016166787801966623
+Caster avg cast time (last 100):0.01641809049503833
+Caster avg cast time (last 52):0.01675429963460409
+Caster best avg cast time for 100 renders: 0.015941369683157
+Caster worst avg cast time for 100 renders: 0.01708442490096804
+
+
+# refinements around wall hit calculations
+Caster avg cast time (last 100):0.015017003901061123
+Caster avg cast time (last 100):0.014968396742645355
+Caster avg cast time (last 100):0.015517518445566305
+Caster avg cast time (last 100):0.015423336613857468
+Caster avg cast time (last 100):0.015391584663390885
+Caster avg cast time (last 100):0.01588507937626358
+Caster avg cast time (last 100):0.015255659821855035
+Caster avg cast time (last 100):0.0162405352474896
+Caster avg cast time (last 40):0.015464320575051715
+Caster best avg cast time for 100 renders: 0.014968396742645355
+Caster worst avg cast time for 100 renders: 0.0162405352474896

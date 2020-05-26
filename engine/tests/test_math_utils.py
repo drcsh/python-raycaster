@@ -11,7 +11,7 @@ class TestMathUtils(unittest.TestCase):
         x2 = 3
         y2 = 2
 
-        dist = math_utils.distance_formula((x1, y1), (x2, y2))
+        dist = math_utils.distance_formula(x1, y1, x2, y2)
 
         self.assertAlmostEqual(dist, 7.8102, places=4)
 
@@ -21,7 +21,7 @@ class TestMathUtils(unittest.TestCase):
         x2 = 16.32
         y2 = 2.134
 
-        dist = math_utils.distance_formula((x1, y1), (x2, y2))
+        dist = math_utils.distance_formula(x1, y1, x2, y2)
 
         self.assertAlmostEqual(dist, 17.604, places=4)
 
@@ -45,39 +45,51 @@ class TestMathUtils(unittest.TestCase):
         self.assertAlmostEqual(x, 6.1)
 
     def test_get_closest_point(self):
-        origin = (0, 0)
-        p1 = (1, 1)
-        p2 = (5, 5)
+        current_x = 0
+        current_y = 1
+        x1 = 1
+        y1 = 1
+        x2 = 5
+        y2 = 5
 
-        closest = math_utils.get_closest_point(origin, p1, p2)
+        closest = math_utils.get_closest_point(current_x, current_y, x1, y1, x2, y2)
 
-        self.assertEqual(p1, closest)
+        self.assertEqual((x1, y1), closest)
 
     def test_get_closest_point_negatives(self):
-        origin = (0, 0)
-        p1 = (-1, -1)
-        p2 = (5, 5)
+        current_x = 0
+        current_y = 1
+        x1 = -1
+        y1 = -1
+        x2 = 5
+        y2 = 5
 
-        closest = math_utils.get_closest_point(origin, p1, p2)
+        closest = math_utils.get_closest_point(current_x, current_y, x1, y1, x2, y2)
 
-        self.assertEqual(p1, closest)
+        self.assertEqual((x1, y1), closest)
 
     def test_get_closest_point_partial_coords(self):
-        origin = (0, 0)
-        p1 = (None, 1)
-        p2 = (5, 5)
+        current_x = 0
+        current_y = 1
+        x1 = -1
+        y1 = None
+        x2 = 5
+        y2 = 5
 
-        closest = math_utils.get_closest_point(origin, p1, p2)
+        closest = math_utils.get_closest_point(current_x, current_y, x1, y1, x2, y2)
 
-        self.assertEqual(p2, closest)
+        self.assertEqual((x2, y2), closest)
 
-        origin = (0, 0)
-        p1 = (-1, -1)
-        p2 = (None, 5)
+        current_x = 0
+        current_y = 1
+        x1 = -1
+        y1 = -1
+        x2 = 5
+        y2 = None
 
-        closest = math_utils.get_closest_point(origin, p1, p2)
+        closest = math_utils.get_closest_point(current_x, current_y, x1, y1, x2, y2)
 
-        self.assertEqual(p1, closest)
+        self.assertEqual((x1, y1), closest)
 
 
 if __name__ == '__main__':
