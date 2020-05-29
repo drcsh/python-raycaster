@@ -5,14 +5,14 @@ import numpy as np
 from timeit import default_timer as timer
 import pygame
 
-from engine.map import Map
+from engine.levelmap import LevelMap
 from engine.player import Player
 from engine.raycaster import RayCaster
 from textures.texturemap import TextureMapLoader
 
 
 def main():
-    dev_mode = False
+    dev_mode = True
     win_w = 512
     win_h = 512
     fov = math.pi / 3  # fov is expressed as a fraction of pi, i.e. a fraction of a total 360 circular view
@@ -38,12 +38,12 @@ def main():
           "0002222222200000"
 
     pygame.init()
-    screen = pygame.display.set_mode([win_w, win_h])
+    display_surface = pygame.display.set_mode([win_w, win_h])
 
     wall_textures = TextureMapLoader.load_from_file(os.path.join("textures", "walls.png"))
-    game_map = Map(win_w, win_h, map, dev_mode=dev_mode)
+    game_map = LevelMap(map)
 
-    raycaster = RayCaster(win_w, win_h, fov, wall_textures, dev_mode=dev_mode)
+    raycaster = RayCaster(display_surface, game_map, fov, wall_textures, dev_mode=dev_mode)
 
     player_x = 3.456
     player_y = 1.345
@@ -75,19 +75,14 @@ def main():
                 player.turn_right()
                 break
 
-        game_map.reset_surface()
-
-        if dev_mode:
-            game_map.draw_player(player.x, player.y)
-
         start = timer()
-        raycaster.cast(game_map, player.x, player.y, player.angle)
+        raycaster.cast(player.x, player.y, player.angle)
         end = timer()
 
         caster_ts.append(end - start)
 
-        screen.blit(game_map.surface, (0, 0))
         pygame.display.flip()
+        display_surface.fill((0, 0, 0))
 
         if len(caster_ts) > 100:  # stop caster_ts becoming too long
             av = np.average(caster_ts)
@@ -104,7 +99,7 @@ def main():
     print(f"Caster avg cast time (last {len(caster_ts)}):{np.average(caster_ts)}")
     print(f"Caster best avg cast time for 100 renders: {caster_best}")
     print(f"Caster worst avg cast time for 100 renders: {caster_worst}")
-    pygame.image.save(game_map.surface, "out.bmp")
+    pygame.image.save(display_surface, "out.bmp")
 
     pygame.quit()
 

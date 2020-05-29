@@ -1,6 +1,8 @@
 import math
 
-from engine.map import Map
+from pygame import Rect
+
+from engine.levelmapsurface import LevelMapSurface
 from engine import math_utils
 
 
@@ -8,9 +10,11 @@ class RayCaster:
 
     DRAW_DISTANCE = 16
 
-    def __init__(self, win_w, win_h, fov, wall_textures, dev_mode=False):
-        self.win_w = win_w
-        self.win_h = win_h
+    def __init__(self, display_surface, game_map, fov, wall_textures, dev_mode=False):
+        self.display_surface = display_surface
+        self.current_map = game_map
+        self.win_w = display_surface.get_width()
+        self.win_h = display_surface.get_height()
         self.fov = fov
         self.wall_textures = wall_textures
         self.dev_mode = dev_mode
@@ -18,25 +22,30 @@ class RayCaster:
         # we will need these values multiple times
         self.half_fov = self.fov / 2
         self.half_win_h = self.win_h / 2
+        self.half_win_w = self.win_w / 2
 
-        self.current_map = None
+        self.map_surface = None
+        if dev_mode:
+            # In dev mode set up the map to appear on the left half of the screen
+            map_rect = Rect((0, 0, self.half_win_w, self.win_h))
+            map_surface_surface = self.display_surface.subsurface(map_rect)
+            self.map_surface = LevelMapSurface(self.current_map, map_surface_surface)
 
 
-    def cast(self, game_map, origin_x, origin_y, angle_from_x_axis):
+    def cast(self, origin_x, origin_y, angle_from_x_axis):
         """
 
-        :param Map game_map:
         :param float origin_x:
         :param float origin_y:
         :param float angle_from_x_axis:
         :return:
         """
-        self.current_map = game_map
 
         if self.dev_mode:
-            render_area_width = math.floor(self.win_w / 2)
-            px_x, px_y = self.current_map.get_pixel_xy_from_map_xy(origin_x, origin_y)
-            self.current_map.surface.set_at((px_x, px_y), (100, 255, 0))
+            self.map_surface.draw_map_to_surface()
+            render_area_width = math.floor(self.half_win_w)
+            px_x, px_y = self.map_surface.get_pixel_xy_from_map_xy(origin_x, origin_y)
+            self.display_surface.set_at((px_x, px_y), (100, 255, 0))
         else:
             render_area_width = self.win_w
 
@@ -104,8 +113,8 @@ class RayCaster:
 
                 # draw visibility cone on map
                 if self.dev_mode:
-                    px_x, px_y = self.current_map.get_pixel_xy_from_map_xy(ray_x, ray_y)
-                    self.current_map.surface.set_at((px_x, px_y), (255, 100, 0))
+                    px_x, px_y = self.map_surface.get_pixel_xy_from_map_xy(ray_x, ray_y)
+                    self.display_surface.set_at((px_x, px_y), (255, 100, 0))
 
                 # If the Ray is at a whole number on the x/y grid, and is decreasing on that axis, the next wall it hits
                 # will actually be in the map square 1 over from the ray. I.e. if we're at square 2,1 and looking
@@ -147,7 +156,7 @@ class RayCaster:
 
                     tile_slice = self.wall_textures.get_tile_slice(int(map_symbol), 0, int(hit_x_coord), column_height)
 
-                    self.current_map.surface.blit(tile_slice, (screen_px_x, column_start_y))
+                    self.display_surface.blit(tile_slice, (screen_px_x, column_start_y))
 
                     break
                 counter += 1
