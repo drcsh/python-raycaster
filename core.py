@@ -12,7 +12,7 @@ from textures.texturemap import TextureMapLoader
 
 
 def main():
-    dev_mode = True
+    dev_mode = False
     win_w = 512
     win_h = 512
     fov = math.pi / 3  # fov is expressed as a fraction of pi, i.e. a fraction of a total 360 circular view
@@ -39,6 +39,7 @@ def main():
 
     pygame.init()
     display_surface = pygame.display.set_mode([win_w, win_h])
+    background_surface = pygame.Surface([win_w, win_h])
 
     wall_textures = TextureMapLoader.load_from_file(os.path.join("textures", "walls.png"))
     game_map = LevelMap(map)
@@ -82,7 +83,7 @@ def main():
         caster_ts.append(end - start)
 
         pygame.display.flip()
-        display_surface.fill((0, 0, 0))
+        display_surface.blit(background_surface, (0, 0))
 
         if len(caster_ts) > 100:  # stop caster_ts becoming too long
             av = np.average(caster_ts)

@@ -31,9 +31,9 @@ class RayCaster:
             map_surface_surface = self.display_surface.subsurface(map_rect)
             self.map_surface = LevelMapSurface(self.current_map, map_surface_surface)
 
-
     def cast(self, origin_x, origin_y, angle_from_x_axis):
         """
+        Raycasts onto self.display_surface based on the location and angle given, and self.current_map
 
         :param float origin_x:
         :param float origin_y:
