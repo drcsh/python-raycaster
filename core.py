@@ -5,6 +5,7 @@ import numpy as np
 from timeit import default_timer as timer
 import pygame
 
+from engine.level import Level
 from engine.levelmap import LevelMap
 from engine.player import Player
 from engine.raycaster import RayCaster
@@ -20,31 +21,43 @@ def main():
     if dev_mode:
         win_w = win_w * 2
 
-    map = "0000222222220000" \
-          "1              0" \
-          "1      11111   0" \
-          "1     0        0" \
-          "0     0  1110000" \
-          "0     3        0" \
-          "0   10000      0" \
-          "0   0   11100  0" \
-          "0   0   0      0" \
-          "0   0   1  00000" \
-          "0       1      0" \
-          "2       1      0" \
-          "0       0      0" \
-          "0 4444440      0" \
-          "0              0" \
-          "0002222222200000"
+    map_str = "0000222222220000" \
+              "1              0" \
+              "1      11111   0" \
+              "1     0        0" \
+              "0     0  1110000" \
+              "0     3        0" \
+              "0   10000      0" \
+              "0   0   11100  0" \
+              "0   0   0      0" \
+              "0   0   1  00000" \
+              "0       1      0" \
+              "2       1      0" \
+              "0       0      0" \
+              "0 4444440      0" \
+              "0              0" \
+              "0002222222200000"
+
+    enemies = [
+        {"x": 1.834,
+         "y": 8.765,
+         },
+        {"x": 5.323,
+         "y": 5.365,
+         },
+        {"x": 4.123,
+         "y": 10.265,
+         },
+    ]
 
     pygame.init()
     display_surface = pygame.display.set_mode([win_w, win_h])
     background_surface = pygame.Surface([win_w, win_h])
 
     wall_textures = TextureMapLoader.load_from_file(os.path.join("textures", "walls.png"))
-    game_map = LevelMap(map)
+    level = Level.constructor(map_str, enemies)
 
-    raycaster = RayCaster(display_surface, game_map, fov, wall_textures, dev_mode=dev_mode)
+    raycaster = RayCaster(display_surface, level, fov, wall_textures, dev_mode=dev_mode)
 
     player_x = 3.456
     player_y = 1.345

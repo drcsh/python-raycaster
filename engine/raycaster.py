@@ -10,9 +10,9 @@ class RayCaster:
 
     DRAW_DISTANCE = 16
 
-    def __init__(self, display_surface, game_map, fov, wall_textures, dev_mode=False):
+    def __init__(self, display_surface, level, fov, wall_textures, dev_mode=False):
         self.display_surface = display_surface
-        self.current_map = game_map
+        self.current_level = level
         self.win_w = display_surface.get_width()
         self.win_h = display_surface.get_height()
         self.fov = fov
@@ -25,11 +25,14 @@ class RayCaster:
         self.half_win_w = self.win_w / 2
 
         self.map_surface = None
+        self.render_area_width = self.win_w
+
         if dev_mode:
             # In dev mode set up the map to appear on the left half of the screen
+            self.render_area_width = math.floor(self.half_win_w)
             map_rect = Rect((0, 0, self.half_win_w, self.win_h))
             map_surface_surface = self.display_surface.subsurface(map_rect)
-            self.map_surface = LevelMapSurface(self.current_map, map_surface_surface)
+            self.map_surface = LevelMapSurface(self.current_level.level_map, map_surface_surface)
 
     def cast(self, origin_x, origin_y, angle_from_x_axis):
         """
@@ -43,14 +46,12 @@ class RayCaster:
 
         if self.dev_mode:
             self.map_surface.draw_map_to_surface()
-            render_area_width = math.floor(self.half_win_w)
+            # add the player to the map
             px_x, px_y = self.map_surface.get_pixel_xy_from_map_xy(origin_x, origin_y)
             self.display_surface.set_at((px_x, px_y), (100, 255, 0))
-        else:
-            render_area_width = self.win_w
 
         # for every pixel in the window width
-        for i in range(render_area_width):
+        for i in range(self.render_area_width):
 
             # pixel x on the screen we are going to render on this iteration, same as i except in dev mode
             screen_px_x = i
@@ -59,7 +60,7 @@ class RayCaster:
             angle = angle_from_x_axis - self.half_fov + (self.fov * i) / self.win_w
 
             if self.dev_mode:  # in dev mode we render the map on the left
-                screen_px_x += render_area_width
+                screen_px_x += self.render_area_width
                 angle = angle_from_x_axis - self.half_fov + (self.fov * i) / (self.win_w / 2)
 
             cos_angle = math.cos(angle)
@@ -127,7 +128,7 @@ class RayCaster:
                 if ray_y_whole and not y_increasing:
                     plot_y = ray_y - 1
 
-                map_symbol = self.current_map.get_symbol_at_map_xy(plot_x, plot_y)
+                map_symbol = self.current_level.level_map.get_symbol_at_map_xy(plot_x, plot_y)
 
                 # hit a wall
                 if map_symbol != " ":
@@ -160,6 +161,36 @@ class RayCaster:
 
                     break
                 counter += 1
+
+    def draw_game_object(self, game_obj, origin_x, origin_y, angle_from_x_axis):
+        # absolute direction from the player to the sprite (in radians)
+        obj_dir = math.atan2(game_obj.loc_y - origin_y, game_obj.loc_x - origin_x)
+        obj_dist = math_utils.distance_formula(origin_x, origin_y, game_obj.loc_x, game_obj.loc_y)
+
+        calculated_obj_size = int(self.win_h / obj_dist)
+        obj_size_on_screen = min(self.win_h, calculated_obj_size)
+        half_obj_size = math.floor(obj_size_on_screen / 2)
+
+        # TODO: I've misread the code here while translating it. self.render_area_width needs to be the starting point
+        # of the render area, i.e. x = 0 or x = render_area_width if debug = true
+        top_left_x = (obj_dir - angle_from_x_axis) * self.render_area_width / self.fov + self.render_area_width / 2 - half_obj_size
+        top_left_y = self.half_win_h - half_obj_size
+
+        for i in range(obj_size_on_screen):
+            if top_left_x + i < 0:
+                continue
+            if top_left_x + i > self.render_area_width:
+                break
+
+            for j in range(obj_size_on_screen):
+                if top_left_y + j < 0:
+                    continue
+                if top_left_y + j > self.win_h:
+                    break
+
+                self.display_surface.set_at(self. + top_left_x+i)
+
+
 
     def get_next_x_poi(self, origin_x, ray_x, gradient, intercept, x_increasing, x_whole):
         """
