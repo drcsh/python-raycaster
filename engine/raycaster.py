@@ -26,10 +26,16 @@ class RayCaster:
 
         self.map_surface = None
         self.render_area_width = self.win_w
+        self.render_area_start = 0
 
         if dev_mode:
             # In dev mode set up the map to appear on the left half of the screen
             self.render_area_width = math.floor(self.half_win_w)
+
+            # and start raycastingon the right of the screen
+            self.render_area_start = self.render_area_width
+
+            # initialize map for rendering on the left
             map_rect = Rect((0, 0, self.half_win_w, self.win_h))
             map_surface_surface = self.display_surface.subsurface(map_rect)
             self.map_surface = LevelMapSurface(self.current_level.level_map, map_surface_surface)
@@ -60,7 +66,7 @@ class RayCaster:
             angle = angle_from_x_axis - self.half_fov + (self.fov * i) / self.win_w
 
             if self.dev_mode:  # in dev mode we render the map on the left
-                screen_px_x += self.render_area_width
+                screen_px_x += self.render_area_start
                 angle = angle_from_x_axis - self.half_fov + (self.fov * i) / (self.win_w / 2)
 
             cos_angle = math.cos(angle)
@@ -171,9 +177,10 @@ class RayCaster:
         obj_size_on_screen = min(self.win_h, calculated_obj_size)
         half_obj_size = math.floor(obj_size_on_screen / 2)
 
-        # TODO: I've misread the code here while translating it. self.render_area_width needs to be the starting point
-        # of the render area, i.e. x = 0 or x = render_area_width if debug = true
-        top_left_x = (obj_dir - angle_from_x_axis) * self.render_area_width / self.fov + self.render_area_width / 2 - half_obj_size
+
+        obj_center_as_ratio_of_fov = (obj_dir - angle_from_x_axis) / self.fov
+        screen_x_of_obj_center = obj_center_as_ratio_of_fov * self.render_area_width + self.render_area_start
+        top_left_x = screen_x_of_obj_center - half_obj_size
         top_left_y = self.half_win_h - half_obj_size
 
         for i in range(obj_size_on_screen):
@@ -188,7 +195,7 @@ class RayCaster:
                 if top_left_y + j > self.win_h:
                     break
 
-                self.display_surface.set_at(self. + top_left_x+i)
+                self.display_surface.set_at(self.render_area_start + top_left_x+i)
 
 
 
