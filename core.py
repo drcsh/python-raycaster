@@ -91,6 +91,7 @@ def main():
 
         start = timer()
         raycaster.cast(player.x, player.y, player.angle)
+        raycaster.render_game_objects(player.x, player.y, player.angle)
         end = timer()
 
         caster_ts.append(end - start)

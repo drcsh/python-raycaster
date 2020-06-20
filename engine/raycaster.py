@@ -168,6 +168,10 @@ class RayCaster:
                     break
                 counter += 1
 
+    def render_game_objects(self, origin_x, origin_y, angle_from_x_axis):
+        for enemy in self.current_level.enemies.sprites():
+            self.draw_game_object(enemy, origin_x, origin_y, angle_from_x_axis)
+
     def draw_game_object(self, game_obj, origin_x, origin_y, angle_from_x_axis):
         # absolute direction from the player to the sprite (in radians)
         obj_dir = math.atan2(game_obj.loc_y - origin_y, game_obj.loc_x - origin_x)
@@ -180,24 +184,24 @@ class RayCaster:
 
         obj_center_as_ratio_of_fov = (obj_dir - angle_from_x_axis) / self.fov
         screen_x_of_obj_center = obj_center_as_ratio_of_fov * self.render_area_width + self.render_area_start
-        top_left_x = screen_x_of_obj_center - half_obj_size
-        top_left_y = self.half_win_h - half_obj_size
+        top_left_x = math.floor(screen_x_of_obj_center - half_obj_size)
+        top_left_y = math.floor(self.half_win_h - half_obj_size)
 
         for i in range(obj_size_on_screen):
-            if top_left_x + i < 0:
+            render_x = top_left_x + i
+            if render_x < 0:
                 continue
-            if top_left_x + i > self.render_area_width:
+            if render_x > self.render_area_width:
                 break
 
             for j in range(obj_size_on_screen):
-                if top_left_y + j < 0:
+                render_y = top_left_y + j
+                if render_y < 0:
                     continue
-                if top_left_y + j > self.win_h:
+                if render_y > self.win_h:
                     break
 
-                self.display_surface.set_at(self.render_area_start + top_left_x+i)
-
-
+                self.display_surface.set_at((render_x, render_y), [255, 255, 255])
 
     def get_next_x_poi(self, origin_x, ray_x, gradient, intercept, x_increasing, x_whole):
         """

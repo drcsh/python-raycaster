@@ -1,4 +1,4 @@
-from pygame.sprite import Sprite
+import pygame
 
 from engine.enemy import Enemy
 from engine.levelmap import LevelMap
@@ -13,15 +13,15 @@ class Level:
     def constructor(map_str, enemies_list):
         level_map = LevelMap(map_str)
 
-        enemies = []
+        enemies = pygame.sprite.Group()
         for enemy_dict in enemies_list:
-
-            sprite = Sprite([0, 0, 0], 200, 200)  # TODO: File loading
-            enemy_obj = Enemy(enemy_dict.get("x"),
-                              enemy_dict.get("y"),
-                              sprite,
-                              50)  # TODO: hitpoints!
-            enemies.append(enemy_obj)
+        
+            enemy_obj = Enemy(
+                enemies,
+                enemy_dict.get("x"),
+                enemy_dict.get("y"),
+                50
+            )  # TODO: hitpoints!
 
         return Level(level_map, enemies)
 
@@ -29,3 +29,5 @@ class Level:
         self.level_map = level_map
         self.enemies = enemies
 
+    def __del__(self):
+        self.enemies.empty()
