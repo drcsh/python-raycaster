@@ -39,12 +39,15 @@ def main():
     enemies = [
         {"x": 1.834,
          "y": 8.765,
+         "tile": 0
          },
         {"x": 5.323,
          "y": 5.365,
+         "tile": 1
          },
         {"x": 4.123,
          "y": 10.265,
+         "tile": 2
          },
     ]
 
@@ -78,6 +81,9 @@ def main():
                 break
             if event.type == pygame.KEYDOWN and event.key == pygame.K_w:
                 player.move_forward()
+                break
+            if event.type == pygame.KEYDOWN and event.key == pygame.K_s:
+                player.move_backward()
                 break
             if event.type == pygame.KEYDOWN and event.key == pygame.K_a:
                 player.turn_left()

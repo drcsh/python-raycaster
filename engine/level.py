@@ -23,6 +23,7 @@ class Level:
                 enemies,
                 enemy_dict.get("x"),
                 enemy_dict.get("y"),
+                enemy_dict.get("tile"),  # Temp: Will replace with file name
                 50
             )  # TODO: hitpoints!
 
