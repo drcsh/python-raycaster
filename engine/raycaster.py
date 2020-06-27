@@ -39,6 +39,8 @@ class RayCaster:
             map_surface_surface = self.display_surface.subsurface(map_rect)
             self.map_surface = LevelMapSurface(self.current_level.level_map, map_surface_surface)
 
+        self.half_render_area_width = math.floor(self.render_area_width / 2)
+
     def cast(self, origin_x, origin_y, angle_from_x_axis):
         """
         Raycasts onto self.display_surface based on the location and angle given, and self.current_map
@@ -181,7 +183,10 @@ class RayCaster:
         half_obj_size = math.floor(obj_size_on_screen / 2)
 
         obj_center_as_ratio_of_fov = (obj_dir - angle_from_x_axis) / self.fov
-        screen_x_of_obj_center = obj_center_as_ratio_of_fov * self.render_area_width + self.render_area_start
+
+        # Note that the multiply here is a proportion of the screen, we then add half the render area width to center
+        # it around the center of the screen rather than starting at 0
+        screen_x_of_obj_center = obj_center_as_ratio_of_fov * self.render_area_width + self.half_render_area_width
         top_left_x = math.floor(screen_x_of_obj_center - half_obj_size)
         top_left_y = math.floor(self.half_win_h - half_obj_size)
 
