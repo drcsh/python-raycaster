@@ -10,13 +10,12 @@ class RayCaster:
 
     DRAW_DISTANCE = 16
 
-    def __init__(self, display_surface, level, fov, wall_textures, dev_mode=False):
+    def __init__(self, display_surface, level, fov, dev_mode=False):
         self.display_surface = display_surface
         self.current_level = level
         self.win_w = display_surface.get_width()
         self.win_h = display_surface.get_height()
         self.fov = fov
-        self.wall_textures = wall_textures
         self.dev_mode = dev_mode
         
         # we will need these values multiple times
@@ -154,14 +153,14 @@ class RayCaster:
                     hit_x, _ = math.modf(ray_x)
                     hit_y, _ = math.modf(ray_y)
                     if math.fabs(hit_y) > math.fabs(hit_x):
-                        hit_x_coord = hit_y * self.wall_textures.tile_size
+                        hit_x_coord = hit_y * self.current_level.wall_textures.tile_size
                     else:
-                        hit_x_coord = hit_x * self.wall_textures.tile_size
+                        hit_x_coord = hit_x * self.current_level.wall_textures.tile_size
 
                     if hit_x_coord < 0:
                         hit_x_coord = math.fabs(hit_x_coord)
 
-                    tile_slice = self.wall_textures.get_tile_slice(int(map_symbol), 0, int(hit_x_coord), column_height)
+                    tile_slice = self.current_level.wall_textures.get_tile_slice(int(map_symbol), 0, int(hit_x_coord), column_height)
 
                     self.display_surface.blit(tile_slice, (screen_px_x, column_start_y))
 
@@ -180,7 +179,6 @@ class RayCaster:
         calculated_obj_size = int(self.win_h / obj_dist)
         obj_size_on_screen = min(self.win_h, calculated_obj_size)
         half_obj_size = math.floor(obj_size_on_screen / 2)
-
 
         obj_center_as_ratio_of_fov = (obj_dir - angle_from_x_axis) / self.fov
         screen_x_of_obj_center = obj_center_as_ratio_of_fov * self.render_area_width + self.render_area_start

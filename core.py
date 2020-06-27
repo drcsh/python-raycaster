@@ -6,10 +6,8 @@ from timeit import default_timer as timer
 import pygame
 
 from engine.level import Level
-from engine.levelmap import LevelMap
 from engine.player import Player
 from engine.raycaster import RayCaster
-from textures.texturemap import TextureMapLoader
 
 
 def main():
@@ -54,13 +52,12 @@ def main():
     display_surface = pygame.display.set_mode([win_w, win_h])
     background_surface = pygame.Surface([win_w, win_h])
 
-    wall_textures = TextureMapLoader.load_from_file(os.path.join("textures", "walls.png"))
     level = Level.constructor(map_str, enemies)
 
-    raycaster = RayCaster(display_surface, level, fov, wall_textures, dev_mode=dev_mode)
+    raycaster = RayCaster(display_surface, level, fov, dev_mode=dev_mode)
 
     player_x = 3.456
-    player_y = 1.345
+    player_y = 2.345
     player_a = 1.523
     player = Player(player_x, player_y, player_a)
 

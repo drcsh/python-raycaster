@@ -1,7 +1,10 @@
+import os
+
 import pygame
 
 from engine.enemy import Enemy
 from engine.levelmap import LevelMap
+from textures.texturemap import TextureMap
 
 
 class Level:
@@ -28,6 +31,8 @@ class Level:
     def __init__(self, level_map, enemies):
         self.level_map = level_map
         self.enemies = enemies
+        self.wall_textures = TextureMap.load_from_file(os.path.join("textures", "walls.png"))
+        self.enemy_textures = TextureMap.load_from_file(os.path.join("textures", "enemies.png"))
 
     def __del__(self):
         self.enemies.empty()

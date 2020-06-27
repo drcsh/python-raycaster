@@ -6,16 +6,13 @@ class TextureLookupException(BaseException):
     pass
 
 
-class TextureMapLoader:
+class TextureMap:
+    DEFAULT_TEXTURE_TILE_SIZE = 64
 
     @staticmethod
     def load_from_file(filename):
         surface = pygame.image.load(filename)
         return TextureMap(surface)
-
-
-class TextureMap:
-    DEFAULT_TEXTURE_TILE_SIZE = 64
 
     def __init__(self, surface, tile_size=DEFAULT_TEXTURE_TILE_SIZE):
         """
