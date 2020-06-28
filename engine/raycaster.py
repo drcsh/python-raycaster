@@ -1,4 +1,5 @@
 import math
+import array
 
 from pygame import Rect
 
@@ -10,20 +11,16 @@ class RayCaster:
 
     DRAW_DISTANCE = 16
 
-    def __init__(self, display_surface, level, fov, wall_textures, dev_mode=False):
+    def __init__(self, display_surface, level, fov, dev_mode=False):
         self.display_surface = display_surface
         self.current_level = level
         self.win_w = display_surface.get_width()
         self.win_h = display_surface.get_height()
         self.fov = fov
-        self.wall_textures = wall_textures
         self.dev_mode = dev_mode
-        
-        # we will need these values multiple times
-        self.half_fov = self.fov / 2
-        self.half_win_h = self.win_h / 2
-        self.half_win_w = self.win_w / 2
 
+        # Outside of dev mode these values are pretty much meaningless but we init them to avoid errors and lots of
+        # if dev_mode/else operations
         self.map_surface = None
         self.render_area_width = self.win_w
         self.render_area_start = 0
@@ -39,6 +36,15 @@ class RayCaster:
             map_rect = Rect((0, 0, self.half_win_w, self.win_h))
             map_surface_surface = self.display_surface.subsurface(map_rect)
             self.map_surface = LevelMapSurface(self.current_level.level_map, map_surface_surface)
+
+        # Initialize the depth map to an int array of size of the render area width
+        self.depth_map = array.array('f', [0]*self.render_area_width)
+
+        # These are values used in calculations later on, but they are constant after init, so we calculate them now
+        self.half_render_area_width = math.floor(self.render_area_width / 2)
+        self.half_fov = self.fov / 2
+        self.half_win_h = self.win_h / 2
+        self.half_win_w = self.win_w / 2
 
     def cast(self, origin_x, origin_y, angle_from_x_axis):
         """
@@ -146,6 +152,8 @@ class RayCaster:
                     column_height = math.floor(self.win_h / (ray_dist * math.cos(angle - angle_from_x_axis)))
                     column_start_y = math.floor(self.half_win_h - (column_height / 2))
 
+                    self.depth_map[screen_px_x] = ray_dist
+
                     # The ray's location when it stopped will be a map square with a fraction. E.g. 3.456
                     # If we home in on the fractional part of the value, we have a fraction which expresses how far
                     # along the map square we are. Since the wall texture tiles are mapped 1:1 with map squares, we
@@ -154,14 +162,14 @@ class RayCaster:
                     hit_x, _ = math.modf(ray_x)
                     hit_y, _ = math.modf(ray_y)
                     if math.fabs(hit_y) > math.fabs(hit_x):
-                        hit_x_coord = hit_y * self.wall_textures.tile_size
+                        hit_x_coord = hit_y * self.current_level.wall_textures.tile_size
                     else:
-                        hit_x_coord = hit_x * self.wall_textures.tile_size
+                        hit_x_coord = hit_x * self.current_level.wall_textures.tile_size
 
                     if hit_x_coord < 0:
                         hit_x_coord = math.fabs(hit_x_coord)
 
-                    tile_slice = self.wall_textures.get_tile_slice(int(map_symbol), 0, int(hit_x_coord), column_height)
+                    tile_slice = self.current_level.wall_textures.get_tile_slice(int(map_symbol), 0, int(hit_x_coord), column_height)
 
                     self.display_surface.blit(tile_slice, (screen_px_x, column_start_y))
 
@@ -170,38 +178,48 @@ class RayCaster:
 
     def render_game_objects(self, origin_x, origin_y, angle_from_x_axis):
         for enemy in self.current_level.enemies.sprites():
-            self.draw_game_object(enemy, origin_x, origin_y, angle_from_x_axis)
+            self.draw_game_object(self.current_level.enemy_textures, enemy, origin_x, origin_y, angle_from_x_axis)
 
-    def draw_game_object(self, game_obj, origin_x, origin_y, angle_from_x_axis):
+    def draw_game_object(self, texture_map, game_obj, origin_x, origin_y, angle_from_x_axis):
         # absolute direction from the player to the sprite (in radians)
         obj_dir = math.atan2(game_obj.loc_y - origin_y, game_obj.loc_x - origin_x)
         obj_dist = math_utils.distance_formula(origin_x, origin_y, game_obj.loc_x, game_obj.loc_y)
 
         calculated_obj_size = int(self.win_h / obj_dist)
         obj_size_on_screen = min(self.win_h, calculated_obj_size)
+        obj_scale = texture_map.tile_size /obj_size_on_screen
         half_obj_size = math.floor(obj_size_on_screen / 2)
 
-
         obj_center_as_ratio_of_fov = (obj_dir - angle_from_x_axis) / self.fov
-        screen_x_of_obj_center = obj_center_as_ratio_of_fov * self.render_area_width + self.render_area_start
+
+        # Note that the multiply here is a proportion of the screen, we then add half the render area width to center
+        # it around the center of the screen rather than starting at 0
+        screen_x_of_obj_center = obj_center_as_ratio_of_fov * self.render_area_width + self.half_render_area_width
         top_left_x = math.floor(screen_x_of_obj_center - half_obj_size)
         top_left_y = math.floor(self.half_win_h - half_obj_size)
 
-        for i in range(obj_size_on_screen):
-            render_x = top_left_x + i
-            if render_x < 0:
-                continue
-            if render_x > self.render_area_width:
-                break
+        for slice_x_offset in range(obj_size_on_screen):
+            x_on_screen = slice_x_offset + top_left_x
 
-            for j in range(obj_size_on_screen):
-                render_y = top_left_y + j
-                if render_y < 0:
-                    continue
-                if render_y > self.win_h:
-                    break
+            if x_on_screen < 0:
+                continue  # not yet on screen
 
-                self.display_surface.set_at((render_x, render_y), [255, 255, 255])
+            if x_on_screen > self.render_area_width:
+                break  # off the edge of the screen
+
+            if obj_dist > self.depth_map[x_on_screen-1]:
+                continue  # object is behind a wall
+
+            tile_slice = texture_map.get_tile_slice(
+                game_obj.texturemap_tile_num,
+                0,
+                math.floor(slice_x_offset * obj_scale),
+                calculated_obj_size
+            )
+            self.display_surface.blit(
+                tile_slice,
+                (x_on_screen, top_left_y)
+            )
 
     def get_next_x_poi(self, origin_x, ray_x, gradient, intercept, x_increasing, x_whole):
         """

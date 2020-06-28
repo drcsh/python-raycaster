@@ -9,9 +9,15 @@ class Player:
         self.y = y
         self.angle = angle
 
+    def move(self, speed):
+        self.x = self.x + speed * math.cos(self.angle)
+        self.y = self.y + speed * math.sin(self.angle)
+
     def move_forward(self):
-        self.x = self.x + self.MOVESPEED * math.cos(self.angle)
-        self.y = self.y + self.MOVESPEED * math.sin(self.angle)
+        self.move(self.MOVESPEED)
+
+    def move_backward(self):
+        self.move(-self.MOVESPEED)
 
     def turn_left(self):
         self.angle -= self.TURNSPEED

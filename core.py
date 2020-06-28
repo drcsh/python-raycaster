@@ -6,10 +6,8 @@ from timeit import default_timer as timer
 import pygame
 
 from engine.level import Level
-from engine.levelmap import LevelMap
 from engine.player import Player
 from engine.raycaster import RayCaster
-from textures.texturemap import TextureMapLoader
 
 
 def main():
@@ -41,12 +39,15 @@ def main():
     enemies = [
         {"x": 1.834,
          "y": 8.765,
+         "tile": 0
          },
         {"x": 5.323,
          "y": 5.365,
+         "tile": 1
          },
         {"x": 4.123,
          "y": 10.265,
+         "tile": 2
          },
     ]
 
@@ -54,13 +55,12 @@ def main():
     display_surface = pygame.display.set_mode([win_w, win_h])
     background_surface = pygame.Surface([win_w, win_h])
 
-    wall_textures = TextureMapLoader.load_from_file(os.path.join("textures", "walls.png"))
     level = Level.constructor(map_str, enemies)
 
-    raycaster = RayCaster(display_surface, level, fov, wall_textures, dev_mode=dev_mode)
+    raycaster = RayCaster(display_surface, level, fov, dev_mode=dev_mode)
 
     player_x = 3.456
-    player_y = 1.345
+    player_y = 2.345
     player_a = 1.523
     player = Player(player_x, player_y, player_a)
 
@@ -81,6 +81,9 @@ def main():
                 break
             if event.type == pygame.KEYDOWN and event.key == pygame.K_w:
                 player.move_forward()
+                break
+            if event.type == pygame.KEYDOWN and event.key == pygame.K_s:
+                player.move_backward()
                 break
             if event.type == pygame.KEYDOWN and event.key == pygame.K_a:
                 player.turn_left()
