@@ -110,3 +110,7 @@ Now with textures!:
 Hopping along our points of interest for a faster render:
 
 ![](/screenshots/efficient_casting.gif)
+
+Now with enemies!
+
+![](/screenshots/now_with_enemies.gif)
