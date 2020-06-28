@@ -20,11 +20,11 @@ class Level:
         for enemy_dict in enemies_list:
         
             enemy_obj = Enemy(
-                enemies,
-                enemy_dict.get("x"),
-                enemy_dict.get("y"),
-                enemy_dict.get("tile"),  # Temp: Will replace with file name
-                50
+                sprite_group=enemies,
+                loc_x=enemy_dict.get("x"),
+                loc_y=enemy_dict.get("y"),
+                texturemap_tile_num=enemy_dict.get("tile"),  # Temp: Will replace with file name
+                max_hp=50
             )  # TODO: hitpoints!
 
         return Level(level_map, enemies)
