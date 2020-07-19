@@ -15,8 +15,12 @@ class RayCaster:
         self.display_surface = display_surface
         self.current_level = level
         self.win_w = display_surface.get_width()
+        self.half_win_w = self.win_w / 2
         self.win_h = display_surface.get_height()
+        self.half_win_h = self.win_h / 2
+
         self.fov = fov
+        self.half_fov = self.fov / 2
         self.dev_mode = dev_mode
 
         # Outside of dev mode these values are pretty much meaningless but we init them to avoid errors and lots of
@@ -27,7 +31,7 @@ class RayCaster:
 
         if dev_mode:
             # In dev mode set up the map to appear on the left half of the screen
-            self.render_area_width = math.floor(self.half_win_w)
+            self.render_area_width = math.floor(self.win_w / 2)
 
             # and start raycastingon the right of the screen
             self.render_area_start = self.render_area_width
@@ -37,14 +41,10 @@ class RayCaster:
             map_surface_surface = self.display_surface.subsurface(map_rect)
             self.map_surface = LevelMapSurface(self.current_level.level_map, map_surface_surface)
 
-        # Initialize the depth map to an int array of size of the render area width
-        self.depth_map = array.array('f', [0]*self.render_area_width)
-
-        # These are values used in calculations later on, but they are constant after init, so we calculate them now
         self.half_render_area_width = math.floor(self.render_area_width / 2)
-        self.half_fov = self.fov / 2
-        self.half_win_h = self.win_h / 2
-        self.half_win_w = self.win_w / 2
+
+        # Initialize the depth map to an int array of size of the render area width
+        self.depth_map = array.array('f', [999]*self.win_w)
 
     def cast(self, origin_x, origin_y, angle_from_x_axis):
         """
@@ -185,26 +185,35 @@ class RayCaster:
         obj_dir = math.atan2(game_obj.loc_y - origin_y, game_obj.loc_x - origin_x)
         obj_dist = math_utils.distance_formula(origin_x, origin_y, game_obj.loc_x, game_obj.loc_y)
 
+        if self.dev_mode:
+            # add the obj
+            px_x, px_y = self.map_surface.get_pixel_xy_from_map_xy(game_obj.loc_x, game_obj.loc_y)
+            self.display_surface.set_at((px_x, px_y), (255, 0, 0))
+
         calculated_obj_size = int(self.win_h / obj_dist)
         obj_size_on_screen = min(self.win_h, calculated_obj_size)
-        obj_scale = texture_map.tile_size /obj_size_on_screen
+        obj_scale = texture_map.tile_size / obj_size_on_screen
         half_obj_size = math.floor(obj_size_on_screen / 2)
 
         obj_center_as_ratio_of_fov = (obj_dir - angle_from_x_axis) / self.fov
 
         # Note that the multiply here is a proportion of the screen, we then add half the render area width to center
         # it around the center of the screen rather than starting at 0
-        screen_x_of_obj_center = obj_center_as_ratio_of_fov * self.render_area_width + self.half_render_area_width
+        screen_x_of_obj_center = obj_center_as_ratio_of_fov * self.render_area_width + self.half_render_area_width + self.render_area_start
+
+        #print(screen_x_of_obj_center)
+        #exit(0)
+
         top_left_x = math.floor(screen_x_of_obj_center - half_obj_size)
         top_left_y = math.floor(self.half_win_h - half_obj_size)
 
         for slice_x_offset in range(obj_size_on_screen):
             x_on_screen = slice_x_offset + top_left_x
 
-            if x_on_screen < 0:
+            if x_on_screen < self.render_area_start:
                 continue  # not yet on screen
 
-            if x_on_screen > self.render_area_width:
+            if x_on_screen > self.win_w:
                 break  # off the edge of the screen
 
             if obj_dist > self.depth_map[x_on_screen-1]:
