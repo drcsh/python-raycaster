@@ -12,6 +12,7 @@ class RayCaster:
     DRAW_DISTANCE = 16
 
     def __init__(self, display_surface, level, fov, dev_mode=False):
+        self.temp_counter = 0
         self.display_surface = display_surface
         self.current_level = level
         self.win_w = display_surface.get_width()
@@ -183,6 +184,13 @@ class RayCaster:
     def draw_game_object(self, texture_map, game_obj, origin_x, origin_y, angle_from_x_axis):
         # absolute direction from the player to the sprite (in radians)
         obj_dir = math.atan2(game_obj.loc_y - origin_y, game_obj.loc_x - origin_x)
+
+        # When the object is above the x axis (relative to the player), the arc tan goes over 2pi
+        if (obj_dir - angle_from_x_axis) > math.pi:
+            obj_dir -= math.tau
+        if(obj_dir - angle_from_x_axis) < -math.pi:
+            obj_dir += math.tau
+
         obj_dist = math_utils.distance_formula(origin_x, origin_y, game_obj.loc_x, game_obj.loc_y)
 
         if self.dev_mode:
