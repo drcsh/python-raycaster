@@ -24,6 +24,8 @@ class RayCaster:
         self.half_fov = self.fov / 2
         self.dev_mode = dev_mode
 
+        self.max_obj_size_on_screen = self.win_h * 2
+
         # Outside of dev mode these values are pretty much meaningless but we init them to avoid errors and lots of
         # if dev_mode/else operations
         self.map_surface = None
@@ -199,7 +201,7 @@ class RayCaster:
             self.display_surface.set_at((px_x, px_y), (255, 0, 0))
 
         calculated_obj_size = int(self.win_h / obj_dist)
-        obj_size_on_screen = min(self.win_h, calculated_obj_size)
+        obj_size_on_screen = min(self.max_obj_size_on_screen, calculated_obj_size)
         obj_scale = texture_map.tile_size / obj_size_on_screen
         half_obj_size = math.floor(obj_size_on_screen / 2)
 
@@ -208,9 +210,6 @@ class RayCaster:
         # Note that the multiply here is a proportion of the screen, we then add half the render area width to center
         # it around the center of the screen rather than starting at 0
         screen_x_of_obj_center = obj_center_as_ratio_of_fov * self.render_area_width + self.half_render_area_width + self.render_area_start
-
-        #print(screen_x_of_obj_center)
-        #exit(0)
 
         top_left_x = math.floor(screen_x_of_obj_center - half_obj_size)
         top_left_y = math.floor(self.half_win_h - half_obj_size)

@@ -2,6 +2,7 @@ import os
 
 import pygame
 
+from engine import math_utils
 from engine.enemy import Enemy
 from engine.levelmap import LevelMap
 from textures.texturemap import TextureMap
@@ -37,3 +38,26 @@ class Level:
 
     def __del__(self):
         self.enemies.empty()
+
+    def wall_at_location(self, x, y):
+        """
+        Return True/False for if there is a wall at a given location.
+        :param float x:
+        :param float y:
+        :return:
+        :rtype bool:
+        """
+        return self.level_map.get_symbol_at_map_xy(x, y) != ' '
+
+    def enemy_near_location(self, x, y):
+        """
+        Return True/False if there is an enemy 'near' a given location. 'near' because enemies exist at a particular
+        point in space, so we need to give a radius around them which they count as occupying.
+        :param float x:
+        :param float y:
+        :return:
+        :rtype bool:
+        """
+        for enemy in self.enemies:
+            if math_utils.distance_formula(x, y, enemy.loc_x, enemy.loc_y) < 0.5:
+                return True
