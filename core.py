@@ -5,6 +5,8 @@ import numpy as np
 from timeit import default_timer as timer
 import pygame
 
+from engine.exceptions import GameExitException
+from engine.input_handler import InputHandler
 from engine.level import Level
 from engine.player import Player
 from engine.raycaster import RayCaster
@@ -59,10 +61,16 @@ def main():
         },
     ]
 
+    # Pygame Setup
     pygame.init()
+    pygame.key.set_repeat(100, 50)
     display_surface = pygame.display.set_mode([win_w, win_h])
     background_surface = pygame.Surface([win_w, win_h])
 
+    # General Setup
+    input_handler = InputHandler()
+
+    # Game state
     level = Level.constructor(map_str, enemies)
 
     raycaster = RayCaster(display_surface, level, fov, dev_mode=dev_mode)
@@ -73,58 +81,45 @@ def main():
     player = Player(player_x, player_y, player_a)
 
     clock = pygame.time.Clock()
-    running = True
 
     caster_ts = []
     caster_worst = -1
     caster_best = 10
-    while running:
-        # get input
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                running = False
-                break
-            if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
-                running = False
-                break
-            if event.type == pygame.KEYDOWN and event.key == pygame.K_w:
-                player.move_forward()
-                break
-            if event.type == pygame.KEYDOWN and event.key == pygame.K_s:
-                player.move_backward()
-                break
-            if event.type == pygame.KEYDOWN and event.key == pygame.K_a:
-                player.turn_left()
-                break
-            if event.type == pygame.KEYDOWN and event.key == pygame.K_d:
-                player.turn_right()
-                break
+    try:
+        while True:
+            input_handler.handle(player)
 
-        start = timer()
-        raycaster.cast(player.x, player.y, player.angle)
-        raycaster.render_game_objects(player.x, player.y, player.angle)
-        end = timer()
+            start = timer()
+            raycaster.cast(player.x, player.y, player.angle)
+            raycaster.render_game_objects(player.x, player.y, player.angle)
+            end = timer()
 
-        caster_ts.append(end - start)
+            caster_ts.append(end - start)
 
-        pygame.display.flip()
-        display_surface.blit(background_surface, (0, 0))
+            pygame.display.flip()
+            display_surface.blit(background_surface, (0, 0))
 
-        if len(caster_ts) > 100:  # stop caster_ts becoming too long
-            av = np.average(caster_ts)
-            print(f"Caster avg cast time (last 100):{av}")
-            if av > caster_worst:
-                caster_worst = av
-            if av < caster_best:
-                caster_best = av
-            caster_ts = []
+            if len(caster_ts) > 100:  # stop caster_ts becoming too long
+                av = np.average(caster_ts)
+                print(f"Caster avg cast time (last 100):{av}")
+                if av > caster_worst:
+                    caster_worst = av
+                if av < caster_best:
+                    caster_best = av
+                caster_ts = []
 
-        # cap the framerate
-        clock.tick(60)
+            # cap the framerate
+            clock.tick(60)
+
+    except GameExitException as ex:
+        print(f"Exiting: {ex}")
+    except Exception as ex:
+        print(f"Unexpected Error: {ex}")
 
     print(f"Caster avg cast time (last {len(caster_ts)}):{np.average(caster_ts)}")
     print(f"Caster best avg cast time for 100 renders: {caster_best}")
     print(f"Caster worst avg cast time for 100 renders: {caster_worst}")
+    print(f"Depthmap dump: {raycaster.depth_map}")
     pygame.image.save(display_surface, "out.bmp")
 
     pygame.quit()
