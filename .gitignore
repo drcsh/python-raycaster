@@ -10,3 +10,6 @@ db.sqlite3
 
 # Pycharm
 .idea/
+
+# output screndump
+out.bmp
