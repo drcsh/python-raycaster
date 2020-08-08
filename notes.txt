@@ -1,3 +1,12 @@
+
+Todo:
+- Player attacks
+- Enemy attacks
+
+Wall collision bug:
+If you run into walls at certain angles you can see through the walls. Need to extend the "no entry" range of the wall.
+
+Enemy Rendering problem:
 There's something a bit off about where the enemies are located on the screen. Moving the gargoyle to be on the same
 x as the player, it's centre point should be right in the middle of the screen, however it's being calculated as slightly
 to the right (279.3687705734454 instead of 256~). This problem is even worse in ssloy's original code where you can see

@@ -3,6 +3,7 @@ import numpy as np
 from timeit import default_timer as timer
 import pygame
 
+from engine.gamestate import GameState
 from engine.utils.exceptions import GameExitException
 from engine.player_objects.input_handler import InputHandler
 from engine.level_objects.level import Level
@@ -77,6 +78,9 @@ def main():
     player_y = 2.345
     player_a = 1.523
     player = Player(player_x, player_y, player_a, level)
+
+    # Set up the GameState
+    gamestate = GameState(player, level)
 
     clock = pygame.time.Clock()
 
