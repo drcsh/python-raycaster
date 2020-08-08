@@ -91,6 +91,9 @@ def main():
         while True:
             input_handler.handle(player)
 
+            for enemy in level.enemies:
+                enemy.act(gamestate)
+
             start = timer()
             raycaster.cast(player.x, player.y, player.angle)
             raycaster.render_game_objects(player.x, player.y, player.angle)
