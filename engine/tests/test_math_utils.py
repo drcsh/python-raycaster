@@ -24,6 +24,14 @@ class TestMathUtils(unittest.TestCase):
 
         self.assertAlmostEqual(dist, 17.604, places=4)
 
+    def test_gradient(self):
+        x1 = 3
+        y1 = 3
+        x2 = 5
+        y2 = -1
+        
+        self.assertAlmostEqual(math_utils.gradient(x1, y1, x2, y2), -2)
+
     def test_get_y_for_x(self):
 
         m = 1.234

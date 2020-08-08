@@ -101,7 +101,7 @@ class RayCaster:
             # Work out the gradient + intercept (as long as not a vertical line) and whether the x and y values
             # are increasing relative to the player_objects
             if ray_x != origin_x:
-                gradient = (ray_y - origin_y) / (ray_x - origin_x)
+                gradient = math_utils.gradient(origin_x, origin_y, ray_x, ray_y)
                 x_increasing = ray_x > origin_x
 
                 # y intercept
@@ -119,8 +119,8 @@ class RayCaster:
             while counter < self.DRAW_DISTANCE:
                 # Anything that happens in here will be called a *lot*.
 
-                x_poi_x, x_poi_y = self.get_next_x_poi(origin_x, ray_x, gradient, intercept, x_increasing, ray_x_whole)
-                y_poi_x, y_poi_y = self.get_next_y_poi(origin_x, origin_y, ray_y, gradient, intercept, y_increasing, ray_y_whole)
+                x_poi_x, x_poi_y = math_utils.get_next_x_poi(origin_x, ray_x, gradient, intercept, x_increasing, ray_x_whole)
+                y_poi_x, y_poi_y = math_utils.get_next_y_poi(origin_x, origin_y, ray_y, gradient, intercept, y_increasing, ray_y_whole)
                 ray_x, ray_y = math_utils.get_closest_point(ray_x, ray_y, x_poi_x, x_poi_y, y_poi_x, y_poi_y)
 
                 # the ray will be one of the identified POIs, so one of the x/y values will be whole
@@ -262,87 +262,3 @@ class RayCaster:
                 tile_slice,
                 (x_on_screen, top_left_y)
             )
-
-    def get_next_x_poi(self, origin_x, ray_x, gradient, intercept, x_increasing, x_whole):
-        """
-        Finds the next x Point of Interest on this line. I.e. the coordinate where the ray defined by the parameters
-        will be a whole x value.
-
-        e.g. If the current ray is at x=1, y=1.5 and we know that x is increasing, the next whole x will be 2, and we
-        will need to user the gradient and intercept to calculate y at this location.
-
-        If the line is vertical (i.e. x doesn't change) then there will not be another x POI.
-
-        :param float origin_x:
-        :param float ray_x:
-        :param float gradient:
-        :param float intercept:
-        :param bool x_increasing:
-        :param bool x_whole:
-        :return:
-        :rtype tuple: (float, float) or (None, None)
-        """
-
-        if ray_x == origin_x:  # vertical line. Y varies but not x
-            return None, None
-
-        if x_increasing:
-            if x_whole:
-                next_whole_x = ray_x + 1
-            else:
-                next_whole_x = math.ceil(ray_x)
-
-        else:
-            if x_whole:
-                next_whole_x = ray_x - 1
-            else:
-                next_whole_x = math.floor(ray_x)
-
-        y_at_next_whole_x = math_utils.get_y_for_x(next_whole_x, gradient, intercept)
-
-        return next_whole_x, y_at_next_whole_x
-
-    def get_next_y_poi(self, origin_x, origin_y, ray_y, gradient, intercept, y_increasing, y_whole):
-        """
-        Finds the next y Point of Interest on this line. I.e. the coordinate where the ray defined by the parameters
-        will be a whole y value.
-
-        Works similarly to the next_x poi, but if the line is horizontal (i.e. y doesn't change) there will be no next
-        y POI.
-
-        This requires an additional parameter to next_x_poi, because in the case that the line is vertical, there will
-        be a next y poi, but we won't have a gradient or intercept because the line is vertical, so we need the origin_x
-        to set the x value.
-
-        :param float origin_x:
-        :param float origin_y:
-        :param float ray_y:
-        :param float gradient:
-        :param float intercept:
-        :param bool y_increasing:
-        :param bool y_whole:
-        :return: coordinate
-        :rtype tuple: (float, float) or (None, None)
-        """
-
-        if ray_y == origin_y:  # horizontal line. x varies but not y
-            return None, None
-
-        if y_increasing:
-            if y_whole:
-                next_whole_y = ray_y + 1
-            else:
-                next_whole_y = math.ceil(ray_y)
-
-        else:
-            if y_whole:
-                next_whole_y = ray_y - 1
-            else:
-                next_whole_y = math.floor(ray_y)
-
-        if gradient:
-            x_at_next_whole_y = math_utils.get_x_for_y(next_whole_y, gradient, intercept)
-        else:  # vertical line, y changes but x is the same as origin
-            x_at_next_whole_y = origin_x
-
-        return x_at_next_whole_y, next_whole_y
