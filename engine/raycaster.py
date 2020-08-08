@@ -180,12 +180,35 @@ class RayCaster:
                 counter += 1
 
     def render_game_objects(self, origin_x, origin_y, angle_from_x_axis):
-        for enemy in self.current_level.enemies.sprites():
+        """
+        Function for drawing game objects (e.g. enemies, furniture). Loops through objects and draws them on the screen
+        if visible to the player.
+
+        :param float origin_x:
+        :param float origin_y:
+        :param float angle_from_x_axis:
+        :return:
+        """
+
+        # We will need to sort the objects by distance from the player, so that we don't draw further away enemies over
+        # closer ones
+        obj_dist = lambda o: math_utils.distance_formula(origin_x, origin_y, o.x, o.y)
+
+        enemies = self.current_level.enemies.sprites()
+        for enemy in sorted(enemies, key=obj_dist, reverse=True):
             self.draw_game_object(self.current_level.enemy_textures, enemy, origin_x, origin_y, angle_from_x_axis)
 
     def draw_game_object(self, texture_map, game_obj, origin_x, origin_y, angle_from_x_axis):
+        """
+        :param TextureMap texture_map: TextureMap to pick this objects' texture from
+        :param GameObj game_obj: An object in the game world which we want to draw
+        :param float origin_x: x location of the camera (player)
+        :param float origin_y: y location of the camera (player)
+        :param float angle_from_x_axis:
+        :return:
+        """
         # absolute direction from the player to the sprite (in radians)
-        obj_dir = math.atan2(game_obj.loc_y - origin_y, game_obj.loc_x - origin_x)
+        obj_dir = math.atan2(game_obj.y - origin_y, game_obj.x - origin_x)
 
         # When the object is above the x axis (relative to the player), the arc tan goes over 2pi
         if (obj_dir - angle_from_x_axis) > math.pi:
@@ -193,11 +216,11 @@ class RayCaster:
         if(obj_dir - angle_from_x_axis) < -math.pi:
             obj_dir += math.tau
 
-        obj_dist = math_utils.distance_formula(origin_x, origin_y, game_obj.loc_x, game_obj.loc_y)
+        obj_dist = math_utils.distance_formula(origin_x, origin_y, game_obj.x, game_obj.y)
 
         if self.dev_mode:
             # add the obj
-            px_x, px_y = self.map_surface.get_pixel_xy_from_map_xy(game_obj.loc_x, game_obj.loc_y)
+            px_x, px_y = self.map_surface.get_pixel_xy_from_map_xy(game_obj.x, game_obj.y)
             self.display_surface.set_at((px_x, px_y), (255, 0, 0))
 
         calculated_obj_size = int(self.win_h / obj_dist)
@@ -213,6 +236,9 @@ class RayCaster:
 
         top_left_x = math.floor(screen_x_of_obj_center - half_obj_size)
         top_left_y = math.floor(self.half_win_h - half_obj_size)
+
+        if (top_left_x + obj_size_on_screen) < self.render_area_start:
+            return  # object is entirely to the left of the screen
 
         for slice_x_offset in range(obj_size_on_screen):
             x_on_screen = slice_x_offset + top_left_x

@@ -22,8 +22,8 @@ class Level:
         
             enemy_obj = Enemy(
                 sprite_group=enemies,
-                loc_x=enemy_dict.get("x"),
-                loc_y=enemy_dict.get("y"),
+                x=enemy_dict.get("x"),
+                y=enemy_dict.get("y"),
                 texturemap_tile_num=enemy_dict.get("tile"),  # Temp: Will replace with file name
                 max_hp=50
             )  # TODO: hitpoints!
@@ -59,5 +59,5 @@ class Level:
         :rtype bool:
         """
         for enemy in self.enemies:
-            if math_utils.distance_formula(x, y, enemy.loc_x, enemy.loc_y) < 0.5:
+            if math_utils.distance_formula(x, y, enemy.x, enemy.y) < 0.5:
                 return True
