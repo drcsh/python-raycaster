@@ -3,8 +3,8 @@ import array
 
 from pygame import Rect
 
-from engine.levelmapsurface import LevelMapSurface
-from engine import math_utils
+from engine.level_objects.levelmapsurface import LevelMapSurface
+from engine.utils import math_utils
 
 
 class RayCaster:

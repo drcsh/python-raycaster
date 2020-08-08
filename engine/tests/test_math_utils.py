@@ -1,6 +1,5 @@
 import unittest
-import math
-from engine import math_utils
+from engine.utils import math_utils
 
 
 class TestMathUtils(unittest.TestCase):

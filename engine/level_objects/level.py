@@ -2,9 +2,9 @@ import os
 
 import pygame
 
-from engine import math_utils
-from engine.enemy import Enemy
-from engine.levelmap import LevelMap
+from engine.utils import math_utils
+from engine.game_objects.enemy import Enemy
+from engine.level_objects.levelmap import LevelMap
 from textures.texturemap import TextureMap
 
 

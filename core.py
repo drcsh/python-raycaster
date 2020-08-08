@@ -1,13 +1,11 @@
-import os
-
 import math
 import numpy as np
 from timeit import default_timer as timer
 import pygame
 
-from engine.exceptions import GameExitException
-from engine.input_handler import InputHandler
-from engine.level import Level
+from engine.utils.exceptions import GameExitException
+from engine.player.input_handler import InputHandler
+from engine.level_objects.level import Level
 from engine.player import Player
 from engine.raycaster import RayCaster
 

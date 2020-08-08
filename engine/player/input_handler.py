@@ -1,9 +1,12 @@
 import pygame
 
-from engine.exceptions import GameExitException
+from engine.utils.exceptions import GameExitException
 
 
 class InputHandler:
+    """
+    Class for handling player inputs
+    """
 
     def __init__(self):
 
