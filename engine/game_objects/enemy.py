@@ -13,6 +13,7 @@ class Enemy(GameObject):
     """
 
     DEFAULT_MOVE_SPEED = 0.25
+    DEFAULT_ATTACK_RANGE = 0.5
 
     def __init__(self,
                  sprite_group,
@@ -20,11 +21,13 @@ class Enemy(GameObject):
                  y,
                  max_hp,
                  texturemap_tile_num,
-                 speed=DEFAULT_MOVE_SPEED):
+                 speed=DEFAULT_MOVE_SPEED,
+                 attack_range=DEFAULT_ATTACK_RANGE):
         self.max_hp = max_hp
         self.hp = max_hp
         self.texturemap_tile_num = texturemap_tile_num  # Temp, for animation, each enemy will need their own TextureMap
         self.speed = speed
+        self.attack_range = attack_range
 
         # This is used to throttle how many actions the enemy takes. E.g. we don't want an enemy to attack every single
         # game iteration, or it will attack as fast as the game runes.
@@ -42,9 +45,8 @@ class Enemy(GameObject):
 
         if self.has_los_to_player(gamestate):
             print("I SEE YOU!")
+            self.move(gamestate)
             self.wait_until = pygame.time.get_ticks() + 500
-        # Todo - need to do various things based on the gamestate
-        pass
 
     def has_los_to_player(self, gamestate):
         """
@@ -59,8 +61,6 @@ class Enemy(GameObject):
 
         player_x = gamestate.player.x
         player_y = gamestate.player.y
-
-        #dir_to_player = math.atan2(player_y - self.y, gamestate.player.x - self.x)
 
         # Todo: this is lifted pretty much straight from Raycaster. Possible to rationalize?
         x_increasing = False
@@ -112,12 +112,26 @@ class Enemy(GameObject):
             if map_symbol != ' ':  # Wall in between player and enemy
                 return False
 
-
         return True
 
-    def move(self):
-        # TODO: if the enemy can see the player, it will move towards them. Maybe have more advanced movement?
-        pass
+    def move(self, gamestate):
+        """
+        Moves towards the player at self.speed until within attack range.
+        
+        :param GameState gamestate:
+        :return:
+        """
+
+        if math_utils.distance_formula(self.x, self.y, gamestate.player.x, gamestate.player.y) < self.attack_range:
+            return
+
+        dir_to_player = math.atan2(gamestate.player.y - self.y, gamestate.player.x - self.x)
+
+        cos_angle = math.cos(dir_to_player)
+        sin_angle = math.sin(dir_to_player)
+
+        self.x = self.x + self.speed * cos_angle
+        self.y = self.y + self.speed * sin_angle
 
     def attack(self):
         # TODO: If the enemy can see the player and the enemy is in range, make an attack
