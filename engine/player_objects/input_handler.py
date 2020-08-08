@@ -5,7 +5,7 @@ from engine.utils.exceptions import GameExitException
 
 class InputHandler:
     """
-    Class for handling player inputs
+    Class for handling player_objects inputs
     """
 
     def __init__(self):

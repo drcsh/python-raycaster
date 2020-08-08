@@ -61,7 +61,7 @@ class RayCaster:
 
         if self.dev_mode:
             self.map_surface.draw_map_to_surface()
-            # add the player to the map
+            # add the player_objects to the map
             px_x, px_y = self.map_surface.get_pixel_xy_from_map_xy(origin_x, origin_y)
             self.display_surface.set_at((px_x, px_y), (100, 255, 0))
 
@@ -71,7 +71,7 @@ class RayCaster:
             # pixel x on the screen we are going to render on this iteration, same as i except in dev mode
             screen_px_x = i
 
-            # The angle of the ray is calculated around the center point which is where the player is facing
+            # The angle of the ray is calculated around the center point which is where the player_objects is facing
             angle = angle_from_x_axis - self.half_fov + (self.fov * i) / self.win_w
 
             if self.dev_mode:  # in dev mode we render the map on the left
@@ -99,7 +99,7 @@ class RayCaster:
             gradient = None  # gradient of this line
 
             # Work out the gradient + intercept (as long as not a vertical line) and whether the x and y values
-            # are increasing relative to the player
+            # are increasing relative to the player_objects
             if ray_x != origin_x:
                 gradient = (ray_y - origin_y) / (ray_x - origin_x)
                 x_increasing = ray_x > origin_x
@@ -148,8 +148,8 @@ class RayCaster:
                 # hit a wall
                 if map_symbol != " ":
                     # if we're looking straight at the wall, the col_h is the win_h / distance. To correct fisheye
-                    # distortion we get the angle of the current col away from the centre line of the player's vision
-                    # (angle - the player angle). cos of that angle is a proportion of the height if we were looking
+                    # distortion we get the angle of the current col away from the centre line of the player_objects's vision
+                    # (angle - the player_objects angle). cos of that angle is a proportion of the height if we were looking
                     # straight at it.
                     ray_dist = math_utils.distance_formula(origin_x, origin_y, ray_x, ray_y)
                     column_height = math.floor(self.win_h / (ray_dist * math.cos(angle - angle_from_x_axis)))
@@ -182,7 +182,7 @@ class RayCaster:
     def render_game_objects(self, origin_x, origin_y, angle_from_x_axis):
         """
         Function for drawing game objects (e.g. enemies, furniture). Loops through objects and draws them on the screen
-        if visible to the player.
+        if visible to the player_objects.
 
         :param float origin_x:
         :param float origin_y:
@@ -190,7 +190,7 @@ class RayCaster:
         :return:
         """
 
-        # We will need to sort the objects by distance from the player, so that we don't draw further away enemies over
+        # We will need to sort the objects by distance from the player_objects, so that we don't draw further away enemies over
         # closer ones
         obj_dist = lambda o: math_utils.distance_formula(origin_x, origin_y, o.x, o.y)
 
@@ -202,15 +202,15 @@ class RayCaster:
         """
         :param TextureMap texture_map: TextureMap to pick this objects' texture from
         :param GameObj game_obj: An object in the game world which we want to draw
-        :param float origin_x: x location of the camera (player)
-        :param float origin_y: y location of the camera (player)
+        :param float origin_x: x location of the camera (player_objects)
+        :param float origin_y: y location of the camera (player_objects)
         :param float angle_from_x_axis:
         :return:
         """
-        # absolute direction from the player to the sprite (in radians)
+        # absolute direction from the player_objects to the sprite (in radians)
         obj_dir = math.atan2(game_obj.y - origin_y, game_obj.x - origin_x)
 
-        # When the object is above the x axis (relative to the player), the arc tan goes over 2pi
+        # When the object is above the x axis (relative to the player_objects), the arc tan goes over 2pi
         if (obj_dir - angle_from_x_axis) > math.pi:
             obj_dir -= math.tau
         if(obj_dir - angle_from_x_axis) < -math.pi:

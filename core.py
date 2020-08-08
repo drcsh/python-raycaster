@@ -4,9 +4,9 @@ from timeit import default_timer as timer
 import pygame
 
 from engine.utils.exceptions import GameExitException
-from engine.player.input_handler import InputHandler
+from engine.player_objects.input_handler import InputHandler
 from engine.level_objects.level import Level
-from engine.player import Player
+from engine.player_objects.player import Player
 from engine.raycaster import RayCaster
 
 

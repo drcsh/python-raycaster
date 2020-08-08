@@ -7,7 +7,7 @@ class LevelMapSurface:
     """
     This is a hybrid class which relates a LevelMap to a Surface, allowing for easily drawing the map and translating
     between map coordinates and pixels on the surface. This is presently only used for debug mode, but could be
-    turned into a map for the player.
+    turned into a map for the player_objects.
     """
 
     def __init__(self, level_map, surface):

@@ -1,5 +1,6 @@
 import math
 
+
 class Player:
     TURNSPEED = 10 * math.pi / 360
     MOVESPEED = 0.2
@@ -12,9 +13,9 @@ class Player:
 
     def move(self, speed):
         """
-        Move the player at self.angle by the given speed. Positive numbers for forwards, negative for backwards.
+        Move the player_objects at self.angle by the given speed. Positive numbers for forwards, negative for backwards.
 
-        The player is prevented from moving through enemies and walls.
+        The player_objects is prevented from moving through enemies and walls.
 
         :param speed:
         :return:
@@ -47,7 +48,7 @@ class Player:
 
     def _check_angle(self):
         """
-        when we turn we're modifying the player angle by a fraction of pi. If this angle goes > 2pi or < 0 we need to
+        when we turn we're modifying the player_objects angle by a fraction of pi. If this angle goes > 2pi or < 0 we need to
         reset it to prevent other calculations getting thrown out.
         :return:
         """
