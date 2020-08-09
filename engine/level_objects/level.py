@@ -51,13 +51,13 @@ class Level:
 
     def enemy_near_location(self, x, y):
         """
-        Return True/False if there is an enemy 'near' a given location. 'near' because enemies exist at a particular
+        Return an Enemy if there is one 'near' a given location. 'near' because enemies exist at a particular
         point in space, so we need to give a radius around them which they count as occupying.
         :param float x:
         :param float y:
         :return:
-        :rtype bool:
+        :rtype Enemy|None:
         """
         for enemy in self.enemies:
             if math_utils.distance_formula(x, y, enemy.x, enemy.y) < 0.5:
-                return True
+                return enemy

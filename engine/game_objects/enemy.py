@@ -136,3 +136,15 @@ class Enemy(GameObject):
     def attack(self):
         # TODO: If the enemy can see the player and the enemy is in range, make an attack
         pass
+
+    def take_damage(self, damage):
+        """
+        Basic version, remove the given damage from the hp count. If hp reaches 0, remove from the enemy list.
+
+        TODO: Death animations etc.
+        :param int damage:
+        :return:
+        """
+        self.hp -= damage
+        if self.hp <= 0:
+            self.kill()

@@ -46,6 +46,16 @@ class Player:
         self.angle += self.TURNSPEED
         self._check_angle()
 
+    def shoot(self, gamestate):
+
+        # check weapon equipped has ammo
+
+        # trigger weapon firing animation
+
+        # create bullet object with self.angle and weapon speed
+
+        pass
+
     def _check_angle(self):
         """
         when we turn we're modifying the player_objects angle by a fraction of pi. If this angle goes > 2pi or < 0 we need to

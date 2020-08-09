@@ -1,6 +1,10 @@
 
+Immediate Todo:
+- Replace TaxtureMapTileNumber in GameObject for a full TextureMap. More objects are inheriting from it and it was always
+a placeholder, so replace that now.
+
 Todo:
-- Player attacks
+- Player attacks (WIP)
 - Enemy attacks
 
 Wall collision bug:
