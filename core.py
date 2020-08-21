@@ -15,7 +15,7 @@ def main():
     dev_mode = False
     win_w = 512
     win_h = 512
-    fov = math.pi / 3  # fov is expressed as a fraction of pi, i.e. a fraction of a total 360 circular view
+    fov = math.pi / 3  # fov is expressed as a fraction of pi, i.e. a fraction of a 180 degree view (tau being 360)
 
     if dev_mode:
         win_w = win_w * 2

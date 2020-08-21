@@ -9,7 +9,7 @@ class Bullet(GameObject):
     DEFAULT_COLOR = (0, 255, 255)
     DEFAULT_DAMAGE = 10
 
-    def __init__(self, sprite_group, x, y, angle, speed, texturemap_tile_num, size=DEFAULT_SIZE, damage=DEFAULT_DAMAGE):
+    def __init__(self, sprite_group, x, y, angle, speed, texturemap, size=DEFAULT_SIZE, damage=DEFAULT_DAMAGE):
         self.angle = angle
         self.speed = speed
         self.size = size
@@ -18,7 +18,7 @@ class Bullet(GameObject):
         self.cos_angle = math.cos(angle)
         self.sin_angle = math.sin(angle)
 
-        super(self).__init__(sprite_group, x, y, texturemap_tile_num)
+        super().__init__(sprite_group, x, y, texturemap)
 
     def move(self, gamestate):
         """

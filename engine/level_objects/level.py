@@ -24,7 +24,7 @@ class Level:
                 sprite_group=enemies,
                 x=enemy_dict.get("x"),
                 y=enemy_dict.get("y"),
-                texturemap_tile_num=enemy_dict.get("tile"),  # Temp: Will replace with file name
+                texturemap=enemy_dict.get("tile"),  # Temp: Will replace with file name
                 max_hp=50
             )  # TODO: hitpoints!
 
