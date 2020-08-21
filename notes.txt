@@ -1,7 +1,8 @@
 
 Immediate Todo:
-- Replace TaxtureMapTileNumber in GameObject for a full TextureMap. More objects are inheriting from it and it was always
-a placeholder, so replace that now.
+- Add more textures for enemies, and load them in as texturemaps in Core.
+- Finish animation system - need to keep track of current animation state and increment it.
+-- Need to distinguish between attack/move animation states on each iteration
 
 Todo:
 - Player attacks (WIP)
