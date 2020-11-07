@@ -1,12 +1,10 @@
 
-Immediate Todo:
-- Add more textures for enemies, and load them in as texturemaps in Core.
-- Finish animation system - need to keep track of current animation state and increment it.
--- Need to distinguish between attack/move animation states on each iteration
-
 Todo:
-- Player attacks (WIP)
+- Player attacks
+-- Basic version: press button and generate bullet just infront of player location, have bullet hit enemies and decrease their HP
+-- Adv version: first pass at a HUD.
 - Enemy attacks
+-- Animation is now possible. Just need to add animations and make them take HP off the player.
 
 Wall collision bug:
 If you run into walls at certain angles you can see through the walls. Need to extend the "no entry" range of the wall.
