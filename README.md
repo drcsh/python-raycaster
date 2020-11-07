@@ -114,3 +114,7 @@ Hopping along our points of interest for a faster render:
 Now with enemies!
 
 ![](/screenshots/now_with_enemies.gif)
+
+Enemies can now move and have some animations but they cannot attack. Hug simulator 2020?
+
+![](/screenshots/hug_simulator.gif)

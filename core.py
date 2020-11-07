@@ -41,22 +41,22 @@ def main():
         {
             "x": 3.456,
             "y": 3.812,
-            "tile": 2
+            "texture_filename": "gargoyle_texturemap.png"
         },
         {
             "x": 1.834,
             "y": 8.765,
-            "tile": 0
+            "texture_filename": "gargoyle_texturemap.png"
         },
         {
             "x": 5.323,
             "y": 5.365,
-            "tile": 1
+            "texture_filename": "gargoyle_texturemap.png"
         },
         {
             "x": 4.123,
             "y": 10.265,
-            "tile": 2
+            "texture_filename": "gargoyle_texturemap.png"
         },
     ]
 

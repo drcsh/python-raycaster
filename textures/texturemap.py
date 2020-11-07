@@ -101,3 +101,17 @@ class TextureTile:
 
     def get_slice_at_x(self, x):
         return self._slices[x]
+
+    def get_scaled_slice_at_x(self, x, scale_to_h):
+        """
+        Get a vertical slice of this tile at pix loc x, and scale it to a desired height.
+
+        :param int x: the pixel location on the tile to slice at.
+        :param int scale_to_h: the height to scale the slice to (will take a full vert-slice and scale to this size)
+        :return:
+        """
+        tile_slice = self.get_slice_at_x(x)
+
+        tile_slice = pygame.transform.smoothscale(tile_slice, (1, scale_to_h))
+
+        return tile_slice

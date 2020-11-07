@@ -2,14 +2,13 @@ import math
 
 import pygame
 
-from engine.game_objects.game_object import GameObject
+from .animated_object import AnimatedObject
 from engine.utils import math_utils
 
 
-class Enemy(GameObject):
+class Enemy(AnimatedObject):
     """
-    Enemy is a subclass of GameObject, in addition to the basic information tracked by GameObject, it keeps track of
-    variables needed for the enemy, such as its HP.
+    Enemy is a subclass of AnimatedObject,  keeps track of variables needed for the enemies, such as HP.
     """
 
     DEFAULT_MOVE_SPEED = 0.25
@@ -23,9 +22,19 @@ class Enemy(GameObject):
                  texturemap,
                  speed=DEFAULT_MOVE_SPEED,
                  attack_range=DEFAULT_ATTACK_RANGE):
+        """
+
+        :param SpriteMap sprite_group:
+        :param int x:
+        :param int y:
+        :param TextureMap texturemap:
+        :param int max_hp:
+        :param float speed:
+        :param float attack_range:
+        """
+
         self.max_hp = max_hp
         self.hp = max_hp
-        self.texturemap_tile_num = texturemap  # Temp, for animation, each enemy will need their own TextureMap
         self.speed = speed
         self.attack_range = attack_range
 
@@ -50,7 +59,9 @@ class Enemy(GameObject):
 
             else:
                 self.move(gamestate)
+                print(f"new pos: {self.x}, {self.y}")
 
+            self.animate()
             self.wait_until = pygame.time.get_ticks() + 500
 
     def has_los_to_player(self, gamestate):
@@ -136,6 +147,7 @@ class Enemy(GameObject):
         :param GameState gamestate:
         :return:
         """
+        self.animation_type = self.MOVE_ANIMATION
 
         dir_to_player = math.atan2(gamestate.player.y - self.y, gamestate.player.x - self.x)
 

@@ -6,20 +6,24 @@ class GameObject(Sprite):
     For keeping track of game furniture
     """
 
-    MOVE_ANIMATION = 0
-    ATTACK_ANIMATION = 1
-    DEATH_ANIMATION = 2
-
     def __init__(self, sprite_group, x, y, texturemap):
         self.x = x
         self.y = y
         self.texturemap = texturemap
-        self.animation_state = 0
-        self.animation_type = self.MOVE_ANIMATION
         super(GameObject, self).__init__(sprite_group)
 
-    @staticmethod
-    def check_location_valid(gamestate, new_x, new_y):
+    def get_display_tile(self):
+        """
+        Returns the tile from the texturemap for display.
+
+        This is here so that in RayCaster we can treat static game furniture and animated objects the same way
+        for rendering purposes.
+        :return:
+        :rtype TextureTile:
+        """
+        return self.texturemap.get_tile_at(0, 0)
+
+    def check_location_valid(self, gamestate, new_x, new_y):
         """
         Helper method for all (moving) game objects to determine if their new location is valid.
         :param GameState gamestate:
@@ -32,7 +36,7 @@ class GameObject(Sprite):
         if gamestate.level.wall_at_location(new_x, new_y):
             return False
 
-        if gamestate.level.enemy_near_location(new_x, new_y):
+        if gamestate.level.enemy_near_location(new_x, new_y, exclude_enemy=self):
             return False
 
         return True
