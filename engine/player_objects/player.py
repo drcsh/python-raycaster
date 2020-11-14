@@ -55,7 +55,7 @@ class Player:
         # TODO: check weapon equipped has ammo
         # TODO: trigger weapon firing animation
         # TODO: Get bullet characteristics for weapon
-        b_speed = 0.4
+        b_speed = 0.2
         b_texturemap = TextureMap.load_common('simple_bullet.png')
         b_damage = 25
 

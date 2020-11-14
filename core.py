@@ -94,6 +94,9 @@ def main():
             for enemy in level.enemies:
                 enemy.act(gamestate)
 
+            for bullet in level.bullets:
+                bullet.move(gamestate)
+
             start = timer()
             raycaster.cast(player.x, player.y, player.angle)
             raycaster.render_game_objects(player.x, player.y, player.angle)

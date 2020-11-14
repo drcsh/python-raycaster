@@ -198,6 +198,10 @@ class RayCaster:
         for enemy in sorted(enemies, key=obj_dist, reverse=True):
             self.draw_game_object(enemy, origin_x, origin_y, angle_from_x_axis)
 
+        bullets = self.current_level.bullets.sprites()
+        for bullet in sorted(bullets, key=obj_dist, reverse=True):
+            self.draw_game_object(bullet, origin_x, origin_y, angle_from_x_axis)
+
     def draw_game_object(self, game_obj, origin_x, origin_y, angle_from_x_axis):
         """
         :param GameObject game_obj: An object in the game world which we want to draw
