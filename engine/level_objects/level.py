@@ -17,9 +17,12 @@ class Level:
     def constructor(map_str, enemies_list):
         level_map = LevelMap(map_str)
 
+        # Initialize Groups which will keep track of our sprites
         enemies = pygame.sprite.Group()
+        bullets = pygame.sprite.Group()
+
         for enemy_dict in enemies_list:
-            enemy_texturemap = TextureMap.load_from_file(os.path.join("textures", enemy_dict['texture_filename']))
+            enemy_texturemap = TextureMap.load_enemy(enemy_dict['texture_filename'])
 
             # Note that we don't need to do anything with the enemy object, it gets stored by the spirte_group
             enemy_obj = Enemy(
@@ -30,13 +33,13 @@ class Level:
                 max_hp=50
             )  # TODO: hitpoints!
 
-        return Level(level_map, enemies)
+        return Level(level_map, enemies, bullets)
 
-    def __init__(self, level_map, enemies):
+    def __init__(self, level_map, enemies, bullets):
         self.level_map = level_map
         self.enemies = enemies
-        self.wall_textures = TextureMap.load_from_file(os.path.join("textures", "walls.png"))
-        #self.enemy_textures = TextureMap.load_from_file(os.path.join("textures", "enemies.png"))
+        self.bullets = bullets
+        self.wall_textures = TextureMap.load_from_file("walls.png")
 
     def __del__(self):
         self.enemies.empty()

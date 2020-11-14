@@ -1,0 +1,2 @@
+class TextureLookupException(BaseException):
+    pass

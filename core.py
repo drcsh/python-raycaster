@@ -41,22 +41,22 @@ def main():
         {
             "x": 3.456,
             "y": 3.812,
-            "texture_filename": "gargoyle_texturemap.png"
+            "texture_filename": "gargoyle.png"
         },
         {
             "x": 1.834,
             "y": 8.765,
-            "texture_filename": "gargoyle_texturemap.png"
+            "texture_filename": "gargoyle.png"
         },
         {
             "x": 5.323,
             "y": 5.365,
-            "texture_filename": "gargoyle_texturemap.png"
+            "texture_filename": "gargoyle.png"
         },
         {
             "x": 4.123,
             "y": 10.265,
-            "texture_filename": "gargoyle_texturemap.png"
+            "texture_filename": "gargoyle.png"
         },
     ]
 
@@ -89,7 +89,7 @@ def main():
     caster_best = 10
     try:
         while True:
-            input_handler.handle(player)
+            input_handler.handle(gamestate)
 
             for enemy in level.enemies:
                 enemy.act(gamestate)
