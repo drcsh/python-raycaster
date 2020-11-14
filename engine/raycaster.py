@@ -196,12 +196,15 @@ class RayCaster:
 
         enemies = self.current_level.enemies.sprites()
         for enemy in sorted(enemies, key=obj_dist, reverse=True):
-            self.draw_game_object(self.current_level.enemy_textures, enemy, origin_x, origin_y, angle_from_x_axis)
+            self.draw_game_object(enemy, origin_x, origin_y, angle_from_x_axis)
 
-    def draw_game_object(self, texture_map, game_obj, origin_x, origin_y, angle_from_x_axis):
+        bullets = self.current_level.bullets.sprites()
+        for bullet in sorted(bullets, key=obj_dist, reverse=True):
+            self.draw_game_object(bullet, origin_x, origin_y, angle_from_x_axis)
+
+    def draw_game_object(self, game_obj, origin_x, origin_y, angle_from_x_axis):
         """
-        :param TextureMap texture_map: TextureMap to pick this objects' texture from
-        :param GameObj game_obj: An object in the game world which we want to draw
+        :param GameObject game_obj: An object in the game world which we want to draw
         :param float origin_x: x location of the camera (player_objects)
         :param float origin_y: y location of the camera (player_objects)
         :param float angle_from_x_axis:
@@ -225,7 +228,7 @@ class RayCaster:
 
         calculated_obj_size = int(self.win_h / obj_dist)
         obj_size_on_screen = min(self.max_obj_size_on_screen, calculated_obj_size)
-        obj_scale = texture_map.tile_size / obj_size_on_screen
+        obj_scale = game_obj.texturemap.tile_size / obj_size_on_screen
         half_obj_size = math.floor(obj_size_on_screen / 2)
 
         obj_center_as_ratio_of_fov = (obj_dir - angle_from_x_axis) / self.fov
@@ -240,6 +243,9 @@ class RayCaster:
         if (top_left_x + obj_size_on_screen) < self.render_area_start:
             return  # object is entirely to the left of the screen
 
+        # Fetch the tile object to draw:
+        display_tile = game_obj.get_display_tile()
+
         for slice_x_offset in range(obj_size_on_screen):
             x_on_screen = slice_x_offset + top_left_x
 
@@ -252,12 +258,12 @@ class RayCaster:
             if obj_dist > self.depth_map[x_on_screen-1]:
                 continue  # object is behind a wall
 
-            tile_slice = texture_map.get_tile_slice(
-                game_obj.texturemap_tile_num,
-                0,
-                math.floor(slice_x_offset * obj_scale),
-                calculated_obj_size
-            )
+            tile_slice_x = math.floor(slice_x_offset * obj_scale)
+
+            # Fetch the vertical slice of the active texture tile. The active tile will change each animation frame
+            # for animated objects, and will stay static for static objects.
+            tile_slice = display_tile.get_scaled_slice_at_x(tile_slice_x, calculated_obj_size)
+
             self.display_surface.blit(
                 tile_slice,
                 (x_on_screen, top_left_y)

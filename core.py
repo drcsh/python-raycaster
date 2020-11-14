@@ -15,7 +15,7 @@ def main():
     dev_mode = False
     win_w = 512
     win_h = 512
-    fov = math.pi / 3  # fov is expressed as a fraction of pi, i.e. a fraction of a total 360 circular view
+    fov = math.pi / 3  # fov is expressed as a fraction of pi, i.e. a fraction of a 180 degree view (tau being 360)
 
     if dev_mode:
         win_w = win_w * 2
@@ -41,22 +41,22 @@ def main():
         {
             "x": 3.456,
             "y": 3.812,
-            "tile": 2
+            "texture_filename": "gargoyle.png"
         },
         {
             "x": 1.834,
             "y": 8.765,
-            "tile": 0
+            "texture_filename": "gargoyle.png"
         },
         {
             "x": 5.323,
             "y": 5.365,
-            "tile": 1
+            "texture_filename": "gargoyle.png"
         },
         {
             "x": 4.123,
             "y": 10.265,
-            "tile": 2
+            "texture_filename": "gargoyle.png"
         },
     ]
 
@@ -89,10 +89,13 @@ def main():
     caster_best = 10
     try:
         while True:
-            input_handler.handle(player)
+            input_handler.handle(gamestate)
 
             for enemy in level.enemies:
                 enemy.act(gamestate)
+
+            for bullet in level.bullets:
+                bullet.move(gamestate)
 
             start = timer()
             raycaster.cast(player.x, player.y, player.angle)

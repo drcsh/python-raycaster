@@ -1,12 +1,20 @@
 
 Todo:
 - Player attacks
+-- Basic version: press button and generate bullet just infront of player location, have bullet hit enemies and decrease their HP
+-- Adv version: first pass at a HUD.
 - Enemy attacks
+-- Animation is now possible. Just need to add animations and make them take HP off the player.
+- Map square which ends the level and moves the player to the next one
+- Main menu
+- Saving the game (serialise/unserialise GameState).
 
-Wall collision bug:
+Bugs:
+
+* Wall collision bug:
 If you run into walls at certain angles you can see through the walls. Need to extend the "no entry" range of the wall.
 
-Enemy Rendering problem:
+* Enemy Rendering problem:
 There's something a bit off about where the enemies are located on the screen. Moving the gargoyle to be on the same
 x as the player, it's centre point should be right in the middle of the screen, however it's being calculated as slightly
 to the right (279.3687705734454 instead of 256~). This problem is even worse in ssloy's original code where you can see

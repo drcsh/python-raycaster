@@ -1,5 +1,8 @@
 import math
 
+from engine.game_objects.bullet import Bullet
+from textures.texturemap import TextureMap
+
 
 class Player:
     TURNSPEED = 10 * math.pi / 360
@@ -45,6 +48,31 @@ class Player:
     def turn_right(self):
         self.angle += self.TURNSPEED
         self._check_angle()
+
+    def shoot(self, gamestate):
+
+        # TODO: Get equipped weapon
+        # TODO: check weapon equipped has ammo
+        # TODO: trigger weapon firing animation
+        # TODO: Get bullet characteristics for weapon
+        b_speed = 0.2
+        b_texturemap = TextureMap.load_common('simple_bullet.png')
+        b_damage = 25
+
+        # create bullet object with self.angle and weapon speed
+        bullet = Bullet(
+            sprite_group=gamestate.level.bullets,
+            x=self.x,
+            y=self.y,
+            angle=self.angle,
+            speed=b_speed,
+            texturemap=b_texturemap,
+            damage=b_damage
+        )
+
+        # trigger bullet move immediately to get it infront of the player and check for impact
+        bullet.move(gamestate)
+        print("BANG!")
 
     def _check_angle(self):
         """

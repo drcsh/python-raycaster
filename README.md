@@ -1,10 +1,13 @@
 # python-raycaster
 
-I've always wanted to build one of these, so I decided to try building one based on 
-tinyraycaster (https://github.com/ssloy/tinyraycaster). However, I'm not well versed 
-in C++, and didn't want to distract myself learning the language instead of the 
+A simple 2.5D raycasting shooter built with python and pygame. 
+
+The basic premise is based on ssloy's tinyraycaster (https://github.com/ssloy/tinyraycaster). 
+
+It's built in Python because:
+1. I'm not well versed in C++, and didn't want to distract myself learning the language instead of the 
 internals of a raycaster, so I decided to convert ssloy's code to Python as I went. 
-My commits will (initially at least) follow ssloy's.  
+2. I am interested in extracting as much performance from Python as possible.
 
 For performance and ease of image processing, I decided to use pygame. 
 
@@ -15,6 +18,13 @@ Python 3, pip, and the packages in requirements.txt
 # Running
 With a virtualenv set up with requirements installed, simply
 `python3 core.py`
+
+# Features
+
+Currently starting the game puts you straight into the only level. Enemies walk towards you and
+try to hug you. They cannot harm you, but you can shoot them (spacebar). After 2 hits, they disappear.
+
+![](/screenshots/shooting.gif)
 
 # Raycasting Calculation
 
@@ -30,6 +40,9 @@ We then do this in a loop, basically travelling down the ray at 0.05 map tiles p
 iteration until we hit a wall. We then work out where on the texture of that wall the
 ray has hit, and render it to scale depending on how far away the ray now is from the
 player.
+
+You can see this in action here:
+![](/screenshots/textures_loading.gif)
 
 However, while this works well in C++, it's slow in Python, with each full raycast 
 of the screen averaging at about 0.56s. What we really need is rendering times at < 0.016s
@@ -53,6 +66,10 @@ calculate where the ray will cross those lines. We then take the closest one as 
 ray location, and keep hopping along these POIs until we hit a wall.
 
 This is significantly more efficient, clocking in at 0.04 to 0.07s per full sweep. 
+
+Hopping along our points of interest for a faster render:
+
+![](/screenshots/efficient_casting.gif)
 
 ## Version 3
 I switched computer and virtualization environment (VirtualBox to Hyper-V), and started at
@@ -97,20 +114,4 @@ frequently. After doing this, cast times got down to <0.02s and frequently under
 I then went back to my previous idea of removing the tuple juggling, and accepting the messy method signatures. This
 got cast times down just a hair further, 
 
-# In Action
 
-Basic version with fisheye correction: 
-
-![](/screenshots/basic_version.gif)
-
-Now with textures!:
-
-![](/screenshots/textures_loading.gif)
-
-Hopping along our points of interest for a faster render:
-
-![](/screenshots/efficient_casting.gif)
-
-Now with enemies!
-
-![](/screenshots/now_with_enemies.gif)
