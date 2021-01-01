@@ -1,5 +1,6 @@
 from .game_object import GameObject
 
+
 class AnimatedObject(GameObject):
     """
     Subclass of GameObject specifically for objects which have animations (e.g. enemies)
@@ -20,7 +21,7 @@ class AnimatedObject(GameObject):
 
         # animation state is basically which horizontal texture tile to display
         self.animation_state = 0
-        self.animation_state_max = texturemap.total_hrz_tiles
+        self.animation_state_max = texturemap.total_hrz_tiles - 1  # -1 due to 0 index.
 
         # animation type is which row of tiles from the texturemap to use
         self.animation_type = self.MOVE_ANIMATION  # default animation state is moving
@@ -41,13 +42,26 @@ class AnimatedObject(GameObject):
     def reset_animation_state(self):
         self.animation_state = 0
 
+    def set_animation_type(self, animation_type):
+        """
+        Because we want to reset to the resting animation tile between animation states, we need to keep track of the
+        previous animation type, and reset to tile 0 when the animation type changes.
+
+        :param int animation_type:
+        :return:
+        """  
+        self.previous_animation_type = self.animation_type
+        self.animation_type = animation_type
+
     def animate(self):
         """
         Updates the animation state to the next one in the sequence (rolling back to the start if appropriate).
         :return:
         """
-        if self.animation_state >= self.animation_state_max or self.animation_type != self.previous_animation_type:
+        if self.animation_type != self.previous_animation_type:
             self.animation_state = 0
+        elif self.animation_state >= self.animation_state_max:
+            self.animation_state = 1
         else:
             self.animation_state += 1
-
+        print(self.animation_state)

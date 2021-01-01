@@ -147,7 +147,7 @@ class Enemy(AnimatedObject):
         :param GameState gamestate:
         :return:
         """
-        self.animation_type = self.MOVE_ANIMATION
+        self.set_animation_type(self.MOVE_ANIMATION)
 
         dir_to_player = math.atan2(gamestate.player.y - self.y, gamestate.player.x - self.x)
 

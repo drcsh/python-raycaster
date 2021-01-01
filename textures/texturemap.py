@@ -62,12 +62,14 @@ class TextureMap:
         :rtype TextureTile:
         :raises TextureLookupException: if the tile coord is invalid.
         """
-        if x < 0 or x > self.total_hrz_tiles:
+
+        # LBYL here because the IndexError will be misleading - this is a 2d array packed into a 1d one remember!
+        if x < 0 or x >= self.total_hrz_tiles:
             raise TextureLookupException(f"X coord '{x}' out of range")
-        if y < 0 or y > self.total_vrt_tiles:
+        if y < 0 or y >= self.total_vrt_tiles:
             raise TextureLookupException(f"Y coord '{y}' out of range")
 
-        return self._tiles[x+y*self.total_vrt_tiles]
+        return self._tiles[x + y * self.total_vrt_tiles]
 
     def get_tile_slice(self, tile_x, tile_y, tile_slice_at_x, scale_to_h):
         """
