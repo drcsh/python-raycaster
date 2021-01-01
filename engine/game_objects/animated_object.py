@@ -64,4 +64,3 @@ class AnimatedObject(GameObject):
             self.animation_state = 1
         else:
             self.animation_state += 1
-        print(self.animation_state)
