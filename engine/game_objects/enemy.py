@@ -13,6 +13,7 @@ class Enemy(AnimatedObject):
 
     DEFAULT_MOVE_SPEED = 0.25
     DEFAULT_ATTACK_RANGE = 0.5
+    DEFAULT_ATTACK_DAMAGE = 20
 
     def __init__(self,
                  sprite_group,
@@ -21,7 +22,8 @@ class Enemy(AnimatedObject):
                  max_hp,
                  texturemap,
                  speed=DEFAULT_MOVE_SPEED,
-                 attack_range=DEFAULT_ATTACK_RANGE):
+                 attack_range=DEFAULT_ATTACK_RANGE,
+                 attack_damage=DEFAULT_ATTACK_DAMAGE):
         """
 
         :param SpriteMap sprite_group:
@@ -31,12 +33,14 @@ class Enemy(AnimatedObject):
         :param int max_hp:
         :param float speed:
         :param float attack_range:
+        @param int attack_damage:
         """
 
         self.max_hp = max_hp
         self.hp = max_hp
         self.speed = speed
         self.attack_range = attack_range
+        self.attack_damage = attack_damage
 
         # This is used to throttle how many actions the enemy takes. E.g. we don't want an enemy to attack every single
         # game iteration, or it will attack as fast as the game runes.
@@ -53,13 +57,12 @@ class Enemy(AnimatedObject):
             return
 
         if self.has_los_to_player(gamestate):
-            print("I SEE YOU!")
+
             if self.can_attack(gamestate):
-                self.attack()
+                self.attack(gamestate)
 
             else:
                 self.move(gamestate)
-                print(f"new pos: {self.x}, {self.y}")
 
             self.animate()
             self.wait_until = pygame.time.get_ticks() + 500
@@ -132,7 +135,7 @@ class Enemy(AnimatedObject):
         """
         Determines if the enemy is close enough to the player to attack
 
-        :param gamestate:
+        :param GameState gamestate:
         :return:
         """
         if math_utils.distance_formula(self.x, self.y, gamestate.player.x, gamestate.player.y) < self.attack_range:
@@ -161,9 +164,20 @@ class Enemy(AnimatedObject):
             self.x = new_x
             self.y = new_y
 
-    def attack(self):
-        # TODO: If the enemy can see the player and the enemy is in range, make an attack
-        pass
+    def attack(self, gamestate):
+        """
+        Perform attack animation and do damage to the player.
+
+        :param GameState gamestate:
+        :return:
+        """
+        self.set_animation_type(self.ATTACK_ANIMATION)
+
+        # Don't deal the damage until the final frame of the attack animation
+        if self.animation_state == self.animation_state_max:
+            gamestate.player.take_damage(self.attack_damage)
+
+
 
     def take_damage(self, damage):
         """

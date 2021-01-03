@@ -1,18 +1,21 @@
 import math
 
 from engine.game_objects.bullet import Bullet
+from engine.utils.exceptions import PlayerDeadException
 from textures.texturemap import TextureMap
 
 
 class Player:
     TURNSPEED = 10 * math.pi / 360
     MOVESPEED = 0.2
+    MAX_HP = 100
 
     def __init__(self, x, y, angle, level):
         self.x = x
         self.y = y
         self.angle = angle
         self.level = level
+        self.hp = self.MAX_HP
 
     def move(self, speed):
         """
@@ -73,6 +76,18 @@ class Player:
         # trigger bullet move immediately to get it infront of the player and check for impact
         bullet.move(gamestate)
         print("BANG!")
+
+    def take_damage(self, damage):
+        """
+        Apply damage to the player. Raises PlayerDeadException if the damage takes the player at or below 0 HP.
+        :param int damage:
+        :raises PlayerDeadException:
+        :return:
+        """
+        self.hp -= damage
+
+        if self.hp <= 0:
+            raise PlayerDeadException("Player HP Reached 0")
 
     def _check_angle(self):
         """

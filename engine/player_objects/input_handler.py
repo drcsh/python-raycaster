@@ -8,7 +8,9 @@ class InputHandler:
     Class for handling player_objects inputs
     """
 
-    def __init__(self):
+    def __init__(self, gui_manager):
+
+        self.gui_manager = gui_manager
 
         # TODO: load these from a settings file
         self.QUIT_K = pygame.K_ESCAPE
@@ -28,11 +30,18 @@ class InputHandler:
 
             if event.type == pygame.KEYDOWN and event.key == self.SHOOT_K:
                 gamestate.player.shoot(gamestate)
+                continue
             if event.type == pygame.KEYDOWN and event.key == self.FORWARD_K:
                 gamestate.player.move_forward()
+                continue
             if event.type == pygame.KEYDOWN and event.key == self.BACK_K:
                 gamestate.player.move_backward()
+                continue
             if event.type == pygame.KEYDOWN and event.key == self.LEFT_K:
                 gamestate.player.turn_left()
+                continue
             if event.type == pygame.KEYDOWN and event.key == self.RIGHT_K:
                 gamestate.player.turn_right()
+                continue
+
+            self.gui_manager.process_events(event)

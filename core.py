@@ -2,9 +2,11 @@ import math
 import numpy as np
 from timeit import default_timer as timer
 import pygame
+import pygame_gui
 
 from engine.gamestate import GameState
-from engine.utils.exceptions import GameExitException
+from engine.gui.hud.hud import HUD
+from engine.utils.exceptions import GameExitException, PlayerDeadException
 from engine.player_objects.input_handler import InputHandler
 from engine.level_objects.level import Level
 from engine.player_objects.player import Player
@@ -67,7 +69,11 @@ def main():
     background_surface = pygame.Surface([win_w, win_h])
 
     # General Setup
-    input_handler = InputHandler()
+    gui_manager = pygame_gui.UIManager((win_w, win_h))
+    input_handler = InputHandler(gui_manager)
+
+    # HUD - Todo: this should only be loaded when in a level
+    hud = HUD(gui_manager)
 
     # Game state
     level = Level.constructor(map_str, enemies)
@@ -83,6 +89,7 @@ def main():
     gamestate = GameState(player, level)
 
     clock = pygame.time.Clock()
+    time_delta = 0
 
     caster_ts = []
     caster_worst = -1
@@ -97,6 +104,7 @@ def main():
             for bullet in level.bullets:
                 bullet.move(gamestate)
 
+            # Render the scene
             start = timer()
             raycaster.cast(player.x, player.y, player.angle)
             raycaster.render_game_objects(player.x, player.y, player.angle)
@@ -104,8 +112,14 @@ def main():
 
             caster_ts.append(end - start)
 
+            # Update the UI
+            hud.update(gamestate)
+            gui_manager.update(time_delta)
+
             pygame.display.flip()
             display_surface.blit(background_surface, (0, 0))
+
+            gui_manager.draw_ui(display_surface)
 
             if len(caster_ts) > 100:  # stop caster_ts becoming too long
                 av = np.average(caster_ts)
@@ -117,8 +131,11 @@ def main():
                 caster_ts = []
 
             # cap the framerate
-            clock.tick(60)
+            time_delta = clock.tick(60)/1000.0
 
+    except PlayerDeadException as ex:
+        # Todo: Move this inside the main loop and load up a Game Over screen.
+        print(f"Player Died! {ex}")
     except GameExitException as ex:
         print(f"Exiting: {ex}")
     except Exception as ex:

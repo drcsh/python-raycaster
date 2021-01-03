@@ -1,8 +1,8 @@
 
 Todo:
-- HUD
-- Enemy attacks
--- Animation is now possible. Just need to add animations and make them take HP off the player.
+- Better HUD
+- Enemy Attack Animations
+- Weapon cooldowns!
 - Weapons on screen
 - Map square which ends the level and moves the player to the next one
 - Main menu
