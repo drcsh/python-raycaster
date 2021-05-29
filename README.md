@@ -22,7 +22,8 @@ With a virtualenv set up with requirements installed, simply
 # Features
 
 Currently starting the game puts you straight into the only level. Enemies walk towards you and
-try to hug you. They cannot harm you, but you can shoot them (spacebar). After 2 hits, they disappear.
+try to attack you. TYou can shoot them (spacebar). After 2 hits, they disappear. If they get close, they will attack
+and try to kill you.
 
 ![](/screenshots/shooting.gif)
 
