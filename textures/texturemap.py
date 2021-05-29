@@ -44,8 +44,8 @@ class TextureMap:
 
         self.surface = surface
         self.tile_size = tile_size
-        self.total_hrz_tiles = math.floor(self.surface.get_width() / tile_size)
-        self.total_vrt_tiles = math.floor(self.surface.get_height() / tile_size)
+        self.horizontal_tiles_total = math.floor(self.surface.get_width() / tile_size)
+        self.vertical_tiles_total = math.floor(self.surface.get_height() / tile_size)
 
         # Make any overlay on the texture transparent
         overlay_color = pygame.Color(self.OVERLAY_COLOR)
@@ -54,8 +54,8 @@ class TextureMap:
 
         # This will be a 2d array packed into a 1d one
         self._tiles = []
-        for vert in range(self.total_vrt_tiles):
-            for hrz in range(self.total_hrz_tiles):
+        for vert in range(self.vertical_tiles_total):
+            for hrz in range(self.horizontal_tiles_total):
                 tile_rect = pygame.Rect(hrz * self.tile_size, vert * self.tile_size, self.tile_size, self.tile_size)
                 subsurface = self.surface.subsurface(tile_rect)
                 tile = TextureTile(subsurface)
@@ -73,12 +73,12 @@ class TextureMap:
         """
 
         # LBYL here because the IndexError will be misleading - this is a 2d array packed into a 1d one remember!
-        if x < 0 or x >= self.total_hrz_tiles:
+        if x < 0 or x >= self.horizontal_tiles_total:
             raise TextureLookupException(f"X coord '{x}' out of range")
-        if y < 0 or y >= self.total_vrt_tiles:
+        if y < 0 or y >= self.vertical_tiles_total:
             raise TextureLookupException(f"Y coord '{y}' out of range")
 
-        return self._tiles[x + y * self.total_hrz_tiles]
+        return self._tiles[x + y * self.horizontal_tiles_total]
 
     def get_tile_slice(self, tile_x, tile_y, tile_slice_at_x, scale_to_h):
         """

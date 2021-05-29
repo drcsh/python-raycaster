@@ -21,7 +21,7 @@ class AnimatedObject(GameObject):
 
         # animation state is basically which horizontal texture tile to display
         self.animation_state = 0
-        self.animation_state_max = texturemap.total_hrz_tiles - 1  # -1 due to 0 index.
+        self.animation_state_max = texturemap.horizontal_tiles_total - 1  # -1 due to 0 index.
 
         # animation type is which row of tiles from the texturemap to use
         self.animation_type = self.MOVE_ANIMATION  # default animation state is moving
