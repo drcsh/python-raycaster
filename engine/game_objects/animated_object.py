@@ -59,8 +59,8 @@ class AnimatedObject(GameObject):
         :return:
         """
         if self.animation_type != self.previous_animation_type:
-            self.animation_state = 0
+            self.reset_animation_state()
         elif self.animation_state >= self.animation_state_max:
-            self.animation_state = 1
+            self.reset_animation_state()
         else:
             self.animation_state += 1
