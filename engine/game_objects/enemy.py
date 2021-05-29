@@ -12,7 +12,7 @@ class Enemy(AnimatedObject):
     """
 
     DEFAULT_MOVE_SPEED = 0.25
-    DEFAULT_ATTACK_RANGE = 0.5
+    DEFAULT_ATTACK_RANGE = 1
     DEFAULT_ATTACK_DAMAGE = 20
 
     def __init__(self,
