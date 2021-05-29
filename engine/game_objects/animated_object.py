@@ -13,13 +13,9 @@ class AnimatedObject(GameObject):
     ATTACK_ANIMATION = 1
     DEATH_ANIMATION = 2
 
-    def __init__(self, sprite_group: pygame.sprite.Group, x: int, y: int, texturemap: TextureMap):
+    def __init__(self, sprite_group: pygame.sprite.Group, x: float, y: float, texturemap: TextureMap):
         """
         This is just a wrapper for the parent class' init. The params here are passed straight through.
-        :param SpriteGroup sprite_group:
-        :param int x:
-        :param int y:
-        :param TextureMap texturemap:
         """
 
         # animation state is basically which horizontal texture tile to display
