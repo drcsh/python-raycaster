@@ -1,10 +1,12 @@
 
 Todo:
 - Better HUD
-- Enemy Attack Animations
+- Enemy Death animations
+- speed up enemy animations?
 - Weapon cooldowns!
 - Weapons on screen
 - Map square which ends the level and moves the player to the next one
+- File format for levels + loading from file
 - Main menu
 - Saving the game (serialise/unserialise GameState).
 
