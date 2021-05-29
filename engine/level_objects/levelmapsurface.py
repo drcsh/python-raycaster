@@ -2,6 +2,8 @@ import math
 
 import pygame
 
+from engine.level_objects.levelmap import LevelMap
+
 
 class LevelMapSurface:
     """
@@ -10,7 +12,7 @@ class LevelMapSurface:
     turned into a map for the player_objects.
     """
 
-    def __init__(self, level_map, surface):
+    def __init__(self, level_map: LevelMap, surface: pygame.Surface):
         """
         :param LevelMap level_map:
         :param Surface surface: Surface to draw the map onto
@@ -21,7 +23,7 @@ class LevelMapSurface:
         self.map_square_px_width = self.surface.get_width() / self.level_map.map_squares_x
         self.map_square_px_height = self.surface.get_height() / self.level_map.map_squares_y
 
-    def get_pixel_xy_from_map_xy(self, map_x, map_y):
+    def get_pixel_xy_from_map_xy(self, map_x: float, map_y: float):
         """
         Translates a map coordinate to a pixel.
 

@@ -1,3 +1,4 @@
+# To prevent circular imports, this file should import as little as possible.
 
 
 class GameState:

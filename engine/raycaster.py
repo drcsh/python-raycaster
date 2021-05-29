@@ -1,8 +1,11 @@
 import math
 import array
 
+import pygame
 from pygame import Rect
 
+from engine.game_objects.game_object import GameObject
+from engine.level_objects.level import Level
 from engine.level_objects.levelmapsurface import LevelMapSurface
 from engine.utils import math_utils
 
@@ -11,7 +14,7 @@ class RayCaster:
 
     DRAW_DISTANCE = 16
 
-    def __init__(self, display_surface, level, fov, dev_mode=False):
+    def __init__(self, display_surface: pygame.Surface, level: Level, fov: float, dev_mode: bool = False):
         self.temp_counter = 0
         self.display_surface = display_surface
         self.current_level = level
@@ -49,14 +52,9 @@ class RayCaster:
         # Initialize the depth map to an int array of size of the render area width
         self.depth_map = array.array('f', [999]*self.win_w)
 
-    def cast(self, origin_x, origin_y, angle_from_x_axis):
+    def cast(self, origin_x: float, origin_y: float, angle_from_x_axis:float):
         """
         Raycasts onto self.display_surface based on the location and angle given, and self.current_map
-
-        :param float origin_x:
-        :param float origin_y:
-        :param float angle_from_x_axis:
-        :return:
         """
 
         if self.dev_mode:
@@ -179,15 +177,10 @@ class RayCaster:
                     break
                 counter += 1
 
-    def render_game_objects(self, origin_x, origin_y, angle_from_x_axis):
+    def render_game_objects(self, origin_x: float, origin_y: float, angle_from_x_axis: float):
         """
         Function for drawing game objects (e.g. enemies, furniture). Loops through objects and draws them on the screen
         if visible to the player_objects.
-
-        :param float origin_x:
-        :param float origin_y:
-        :param float angle_from_x_axis:
-        :return:
         """
 
         # We will need to sort the objects by distance from the player_objects, so that we don't draw further away enemies over
@@ -202,13 +195,12 @@ class RayCaster:
         for bullet in sorted(bullets, key=obj_dist, reverse=True):
             self.draw_game_object(bullet, origin_x, origin_y, angle_from_x_axis)
 
-    def draw_game_object(self, game_obj, origin_x, origin_y, angle_from_x_axis):
+    def draw_game_object(self, game_obj: GameObject, origin_x: float, origin_y: float, angle_from_x_axis: float):
         """
-        :param GameObject game_obj: An object in the game world which we want to draw
-        :param float origin_x: x location of the camera (player_objects)
-        :param float origin_y: y location of the camera (player_objects)
-        :param float angle_from_x_axis:
-        :return:
+        :param game_obj: An object in the game world which we want to draw
+        :param origin_x: x location of the camera (player_objects)
+        :param origin_y: y location of the camera (player_objects)
+        :param angle_from_x_axis:
         """
         # absolute direction from the player_objects to the sprite (in radians)
         obj_dir = math.atan2(game_obj.y - origin_y, game_obj.x - origin_x)

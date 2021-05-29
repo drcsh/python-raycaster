@@ -1,3 +1,6 @@
+import pygame
+
+from textures.texturemap import TextureMap
 from .game_object import GameObject
 
 
@@ -10,7 +13,7 @@ class AnimatedObject(GameObject):
     ATTACK_ANIMATION = 1
     DEATH_ANIMATION = 2
 
-    def __init__(self, sprite_group, x, y, texturemap):
+    def __init__(self, sprite_group: pygame.sprite.Group, x: int, y: int, texturemap: TextureMap):
         """
         This is just a wrapper for the parent class' init. The params here are passed straight through.
         :param SpriteGroup sprite_group:
@@ -42,7 +45,7 @@ class AnimatedObject(GameObject):
     def reset_animation_state(self):
         self.animation_state = 0
 
-    def set_animation_type(self, animation_type):
+    def set_animation_type(self, animation_type: int):
         """
         Because we want to reset to the resting animation tile between animation states, we need to keep track of the
         previous animation type, and reset to tile 0 when the animation type changes.

@@ -1,6 +1,8 @@
 import math
 
 from engine.game_objects.bullet import Bullet
+from engine.gamestate import GameState
+from engine.level_objects.level import Level
 from engine.utils.exceptions import PlayerDeadException
 from textures.texturemap import TextureMap
 
@@ -10,14 +12,14 @@ class Player:
     MOVESPEED = 0.2
     MAX_HP = 100
 
-    def __init__(self, x, y, angle, level):
+    def __init__(self, x: float, y: float, angle: float, level: Level):
         self.x = x
         self.y = y
         self.angle = angle
         self.level = level
         self.hp = self.MAX_HP
 
-    def move(self, speed):
+    def move(self, speed: float):
         """
         Move the player_objects at self.angle by the given speed. Positive numbers for forwards, negative for backwards.
 
@@ -52,7 +54,7 @@ class Player:
         self.angle += self.TURNSPEED
         self._check_angle()
 
-    def shoot(self, gamestate):
+    def shoot(self, gamestate: GameState):
 
         # TODO: Get equipped weapon
         # TODO: check weapon equipped has ammo
@@ -77,7 +79,7 @@ class Player:
         bullet.move(gamestate)
         print("BANG!")
 
-    def take_damage(self, damage):
+    def take_damage(self, damage: int):
         """
         Apply damage to the player. Raises PlayerDeadException if the damage takes the player at or below 0 HP.
         :param int damage:
@@ -93,7 +95,6 @@ class Player:
         """
         when we turn we're modifying the player_objects angle by a fraction of pi. If this angle goes > 2pi or < 0 we need to
         reset it to prevent other calculations getting thrown out.
-        :return:
         """
         if self.angle > math.tau:
             self.angle -= math.tau

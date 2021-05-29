@@ -2,8 +2,10 @@ import math
 
 import pygame
 
+from textures.texturemap import TextureMap
 from .animated_object import AnimatedObject
 from engine.utils import math_utils
+from ..gamestate import GameState
 
 
 class Enemy(AnimatedObject):
@@ -16,24 +18,23 @@ class Enemy(AnimatedObject):
     DEFAULT_ATTACK_DAMAGE = 20
 
     def __init__(self,
-                 sprite_group,
-                 x,
-                 y,
-                 max_hp,
-                 texturemap,
-                 speed=DEFAULT_MOVE_SPEED,
-                 attack_range=DEFAULT_ATTACK_RANGE,
-                 attack_damage=DEFAULT_ATTACK_DAMAGE):
+                 sprite_group: pygame.sprite.Group,
+                 x: float,
+                 y: float,
+                 max_hp: int,
+                 texturemap: TextureMap,
+                 speed: int = DEFAULT_MOVE_SPEED,
+                 attack_range: float = DEFAULT_ATTACK_RANGE,
+                 attack_damage: int = DEFAULT_ATTACK_DAMAGE):
         """
-
-        :param SpriteMap sprite_group:
-        :param int x:
-        :param int y:
-        :param TextureMap texturemap:
-        :param int max_hp:
-        :param float speed:
-        :param float attack_range:
-        @param int attack_damage:
+        :param sprite_group: Which spritegroup this will belong to
+        :param x: X coord on the Map where this enemy appears.
+        :param y: Y coord on the Map where this enemy appears.
+        :param texturemap:
+        :param max_hp:
+        :param speed:
+        :param attack_range:
+        :param attack_damage:
         """
 
         self.max_hp = max_hp
@@ -48,7 +49,7 @@ class Enemy(AnimatedObject):
 
         super().__init__(sprite_group, x, y, texturemap)
 
-    def act(self, gamestate):
+    def act(self, gamestate: GameState):
         """
         This function defines the behavior of the enemy, it should be called once per game iteration.
         :return:
@@ -67,7 +68,7 @@ class Enemy(AnimatedObject):
             self.animate()
             self.wait_until = pygame.time.get_ticks() + 500
 
-    def has_los_to_player(self, gamestate):
+    def has_los_to_player(self, gamestate: GameState):
         """
         This function determines if the enemy can see the player from where it is (i.e. if there is an uninterrupted
         line from the player to the enemy).
@@ -131,24 +132,18 @@ class Enemy(AnimatedObject):
 
         return True
 
-    def can_attack(self, gamestate):
+    def can_attack(self, gamestate: GameState):
         """
         Determines if the enemy is close enough to the player to attack
-
-        :param GameState gamestate:
-        :return:
         """
         if math_utils.distance_formula(self.x, self.y, gamestate.player.x, gamestate.player.y) < self.attack_range:
             return True
 
         return False
 
-    def move(self, gamestate):
+    def move(self, gamestate: GameState):
         """
         Moves towards the player at self.speed until within attack range.
-        
-        :param GameState gamestate:
-        :return:
         """
         self.set_animation_type(self.MOVE_ANIMATION)
 
@@ -164,12 +159,9 @@ class Enemy(AnimatedObject):
             self.x = new_x
             self.y = new_y
 
-    def attack(self, gamestate):
+    def attack(self, gamestate: GameState):
         """
         Perform attack animation and do damage to the player.
-
-        :param GameState gamestate:
-        :return:
         """
         self.set_animation_type(self.ATTACK_ANIMATION)
 
@@ -179,13 +171,11 @@ class Enemy(AnimatedObject):
 
 
 
-    def take_damage(self, damage):
+    def take_damage(self, damage: int):
         """
         Basic version, remove the given damage from the hp count. If hp reaches 0, remove from the enemy list.
 
         TODO: Death animations etc.
-        :param int damage:
-        :return:
         """
         self.hp -= damage
         if self.hp <= 0:

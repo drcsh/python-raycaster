@@ -1,7 +1,9 @@
 import os
+from typing import List, Optional
 
 import pygame
 
+from engine.game_objects.game_object import GameObject
 from engine.utils import math_utils
 from engine.game_objects.enemy import Enemy
 from engine.level_objects.levelmap import LevelMap
@@ -14,7 +16,7 @@ class Level:
     """
 
     @staticmethod
-    def constructor(map_str, enemies_list):
+    def constructor(map_str: str, enemies_list: List[dict]):
         level_map = LevelMap(map_str)
 
         # Initialize Groups which will keep track of our sprites
@@ -35,7 +37,7 @@ class Level:
 
         return Level(level_map, enemies, bullets)
 
-    def __init__(self, level_map, enemies, bullets):
+    def __init__(self, level_map: LevelMap, enemies: pygame.sprite.Group, bullets: pygame.sprite.Group):
         self.level_map = level_map
         self.enemies = enemies
         self.bullets = bullets
@@ -44,17 +46,13 @@ class Level:
     def __del__(self):
         self.enemies.empty()
 
-    def wall_at_location(self, x, y):
+    def wall_at_location(self, x: float, y: float) -> bool:
         """
         Return True/False for if there is a wall at a given location.
-        :param float x:
-        :param float y:
-        :return:
-        :rtype bool:
         """
         return self.level_map.get_symbol_at_map_xy(x, y) != ' '
 
-    def enemy_near_location(self, x, y, exclude_enemy=None):
+    def enemy_near_location(self, x: float, y: float, exclude_enemy: Optional[GameObject] = None) -> Optional[Enemy]:
         """
         Return an Enemy if there is one 'near' a given location. 'near' because enemies exist at a particular
         point in space, so we need to give a radius around them which they count as occupying.
@@ -64,11 +62,7 @@ class Level:
 
         :Todo: consider a refactor here. The exclude feels like a code smell.
 
-        :param float x:
-        :param float y:
-        :param GameObj|None exclude_enemy: Exclude a specific enemy from the check
-        :return:
-        :rtype Enemy|None:
+        exclude_enemy: Exclude a specific enemy from the check
         """
         for enemy in self.enemies:
             if enemy == exclude_enemy:

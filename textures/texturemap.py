@@ -1,5 +1,6 @@
 import math
 import os
+from typing import Union
 
 import pygame
 
@@ -15,26 +16,24 @@ class TextureMap:
     OVERLAY_COLOR = (178, 0, 255)
 
     @staticmethod
-    def load_enemy(name):
+    def load_enemy(name: str):
         path = os.path.join('enemies', name)
         return TextureMap.load_from_file(path)
 
     @staticmethod
-    def load_common(name):
+    def load_common(name: str):
         path = os.path.join('common', name)
         return TextureMap.load_from_file(path)
 
     @staticmethod
-    def load_from_file(filename):
+    def load_from_file(filename: str):
         surface = pygame.image.load(os.path.join('textures', 'resources', filename))
         return TextureMap(surface)
 
-    def __init__(self, surface, tile_size=DEFAULT_TEXTURE_TILE_SIZE):
+    def __init__(self, surface: pygame.Surface, tile_size: int = DEFAULT_TEXTURE_TILE_SIZE):
         """
         Given a surface and a (optional) tilesize, splits up the surface into subsurfaces (tiles) of w/h tile_size.
 
-        :param pygame.Surface surface:
-        :param int tile_size:
         :raises IOError: can't divide surface by tile size to get a round number of tiles.
         """
 
@@ -61,14 +60,10 @@ class TextureMap:
                 tile = TextureTile(subsurface)
                 self._tiles.append(tile)
 
-    def get_tile_at(self, x, y):
+    def get_tile_at(self, x: int, y: int) -> TextureTile:
         """
         Get the TextureTile at the given x/y coordinate.
 
-        :param int x:
-        :param int y:
-        :return:
-        :rtype TextureTile:
         :raises TextureLookupException: if the tile coord is invalid.
         """
 
@@ -80,16 +75,16 @@ class TextureMap:
 
         return self._tiles[x + y * self.horizontal_tiles_total]
 
-    def get_tile_slice(self, tile_x, tile_y, tile_slice_at_x, scale_to_h):
+    def get_tile_slice(self, tile_x: int, tile_y: int, tile_slice_at_x: int, scale_to_h: int) -> Union[
+        pygame.Surface, pygame.SurfaceType]:
         """
         Fetches the texture tile at location tile_x/tile_y and creates a 1px wide slice of it at the given x value
         within that tile.
 
-        :param int tile_x: The tile x loc on the texture
-        :param int tile_y: The tile y loc on the texture
-        :param int tile_slice_at_x: the pixel location on the tile to slice at.
-        :param int scale_to_h: the height to scale the slice to (will take a full vert-slice and scale to this size)
-        :return:
+        :param tile_x: The tile x loc on the texture
+        :param tile_y: The tile y loc on the texture
+        :param tile_slice_at_x: the pixel location on the tile to slice at.
+        :param scale_to_h: the height to scale the slice to (will take a full vert-slice and scale to this size)
         """
         # fetch the tile
         tile = self.get_tile_at(tile_x, tile_y)

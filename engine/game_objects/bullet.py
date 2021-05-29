@@ -1,6 +1,10 @@
 import math
 
+import pygame
+
 from engine.game_objects.game_object import GameObject
+from engine.gamestate import GameState
+from textures.texturemap import TextureMap
 
 
 class Bullet(GameObject):
@@ -9,7 +13,16 @@ class Bullet(GameObject):
     DEFAULT_COLOR = (0, 255, 255)
     DEFAULT_DAMAGE = 10
 
-    def __init__(self, sprite_group, x, y, angle, speed, texturemap, size=DEFAULT_SIZE, damage=DEFAULT_DAMAGE):
+    def __init__(self,
+                 sprite_group: pygame.sprite.Group,
+                 x: float,
+                 y: float,
+                 angle: float,
+                 speed: float,
+                 texturemap: TextureMap,
+                 size: int = DEFAULT_SIZE,
+                 damage: int = DEFAULT_DAMAGE
+                 ):
         self.angle = angle
         self.speed = speed
         self.size = size
@@ -20,7 +33,7 @@ class Bullet(GameObject):
 
         super().__init__(sprite_group, x, y, texturemap)
 
-    def move(self, gamestate):
+    def move(self, gamestate: GameState):
         """
 
         :param GameState gamestate:

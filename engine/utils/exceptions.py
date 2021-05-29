@@ -5,6 +5,7 @@ class GameExitException(BaseException):
     """
     pass
 
+
 class PlayerDeadException(BaseException):
     """
     Thrown when the player dies.

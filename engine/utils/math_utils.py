@@ -1,74 +1,53 @@
 import math
+from typing import Union, Tuple
 
 
-def distance_formula(x1, y1, x2, y2):
+def distance_formula(x1: float, y1: float, x2: float, y2: float) -> float:
     """
     Distance between two points is defined as the square root of (x2 - x1)^2 + (y2 - y1) ^ 2
 
-    :param float x1:
-    :param float y1:
-    :param float x2:
-    :param float y2:
-    :return: distance
-    :rtype float:
     :raises TypeError: Any of the values are non-numeric or None.
     """
     return math.sqrt(((x2 - x1) ** 2) + ((y2 - y1) ** 2))
 
 
-def gradient(x1, y1, x2, y2):
+def gradient(x1: float, y1: float, x2: float, y2: float) -> float:
     """
     Find the gradient of a line between two coordinates
-
-    :param float x1:
-    :param float y1:
-    :param float x2:
-    :param float y2:
-    :return: gradient (m)
-    :rtype float:
     """
     return (y2 - y1) / (x2 - x1)
 
 
-def get_y_for_x(x, gradient, y_intercept):
+def get_y_for_x(x: float, gradient: float, y_intercept: float) -> float:
     """
     Linear equation, y = mx + c
-
-    :param float x:
-    :param float gradient:
-    :param float y_intercept:
-    :return:
     """
     return (x * gradient) + y_intercept
 
 
-def get_x_for_y(y, gradient, y_intercept):
+def get_x_for_y(y: float, gradient: float, y_intercept: float):
     """
     Linear equation reorganised, x = (y - c) / m
-    :param float y:
-    :param float gradient:
-    :param float y_intercept:
-    :return:
     """
     return (y - y_intercept) / gradient
 
 
-def get_closest_point(current_x, current_y, p1_x, p1_y, p2_x, p2_y):
+def get_closest_point(
+        current_x: float,
+        current_y: float,
+        p1_x: Union[float, None],
+        p1_y: Union[float, None],
+        p2_x: Union[float, None],
+        p2_y: Union[float, None]
+) -> Tuple[float, float]:
     """
     Given a current position and two other positions which we're interested in, works out which of the two is
     closest to the current position.
 
     If 1 of the POIs is partial (contains a None), the other will be returned. If both are None, the second POI will
     be returned, but this behavior should be considered undefined.
-    
-    :param float current_x:
-    :param float current_y:
-    :param float|None p1_x: x of the first POI
-    :param float|None p1_y:
-    :param float|None p2_x: x of the second POI
-    :param float|None p2_y:
+
     :return: the closest point to the current one
-    :rtype tuple(float, float):
     """
 
     try:
@@ -87,7 +66,14 @@ def get_closest_point(current_x, current_y, p1_x, p1_y, p2_x, p2_y):
         return p2_x, p2_y
 
 
-def get_next_x_poi(origin_x, ray_x, gradient, intercept, x_increasing, x_whole):
+def get_next_x_poi(
+        origin_x: float,
+        ray_x: float,
+        gradient: float,
+        intercept: float,
+        x_increasing: bool,
+        x_whole: bool
+) -> Tuple[Union[float, None], Union[float, None]]:
     """
     Finds the next x Point of Interest on this line. I.e. the coordinate where the ray defined by the parameters
     will be a whole x value.
@@ -96,15 +82,6 @@ def get_next_x_poi(origin_x, ray_x, gradient, intercept, x_increasing, x_whole):
     will need to user the gradient and intercept to calculate y at this location.
 
     If the line is vertical (i.e. x doesn't change) then there will not be another x POI.
-
-    :param float origin_x:
-    :param float ray_x:
-    :param float gradient:
-    :param float intercept:
-    :param bool x_increasing:
-    :param bool x_whole:
-    :return:
-    :rtype tuple: (float, float) or (None, None)
     """
 
     if ray_x == origin_x:  # vertical line. Y varies but not x
@@ -127,7 +104,15 @@ def get_next_x_poi(origin_x, ray_x, gradient, intercept, x_increasing, x_whole):
     return next_whole_x, y_at_next_whole_x
 
 
-def get_next_y_poi(origin_x, origin_y, ray_y, gradient, intercept, y_increasing, y_whole):
+def get_next_y_poi(
+        origin_x: float,
+        origin_y: float,
+        ray_y: float,
+        gradient: float,
+        intercept: float,
+        y_increasing: bool,
+        y_whole: bool
+) -> Tuple[Union[float, None], Union[float, None]]:
     """
     Finds the next y Point of Interest on this line. I.e. the coordinate where the ray defined by the parameters
     will be a whole y value.
@@ -139,15 +124,7 @@ def get_next_y_poi(origin_x, origin_y, ray_y, gradient, intercept, y_increasing,
     be a next y poi, but we won't have a gradient or intercept because the line is vertical, so we need the origin_x
     to set the x value.
 
-    :param float origin_x:
-    :param float origin_y:
-    :param float ray_y:
-    :param float gradient:
-    :param float intercept:
-    :param bool y_increasing:
-    :param bool y_whole:
     :return: coordinate
-    :rtype tuple: (float, float) or (None, None)
     """
 
     if ray_y == origin_y:  # horizontal line. x varies but not y
