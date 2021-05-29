@@ -78,7 +78,7 @@ class TextureMap:
         if y < 0 or y >= self.total_vrt_tiles:
             raise TextureLookupException(f"Y coord '{y}' out of range")
 
-        return self._tiles[x + y * self.total_vrt_tiles]
+        return self._tiles[x + y * self.total_hrz_tiles]
 
     def get_tile_slice(self, tile_x, tile_y, tile_slice_at_x, scale_to_h):
         """
