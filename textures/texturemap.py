@@ -3,12 +3,16 @@ import os
 
 import pygame
 
-from textures.exceptions import TextureLookupException
-from textures.texturetile import TextureTile
+from .exceptions import TextureLookupException
+from .texturetile import TextureTile
+from . import texture_utils
 
 
 class TextureMap:
     DEFAULT_TEXTURE_TILE_SIZE = 64
+    # This colour can be used in textures for meta information, like tile boundaries it will be made
+    # transparent before rendering
+    OVERLAY_COLOR = (178, 0, 255)
 
     @staticmethod
     def load_enemy(name):
@@ -42,6 +46,11 @@ class TextureMap:
         self.tile_size = tile_size
         self.total_hrz_tiles = math.floor(self.surface.get_width() / tile_size)
         self.total_vrt_tiles = math.floor(self.surface.get_height() / tile_size)
+
+        # Make any overlay on the texture transparent
+        overlay_color = pygame.Color(self.OVERLAY_COLOR)
+        replacement = pygame.Color(0, 0, 0, 0)
+        texture_utils.replace_colour_on_surface(self.surface, overlay_color, replacement)
 
         # This will be a 2d array packed into a 1d one
         self._tiles = []
