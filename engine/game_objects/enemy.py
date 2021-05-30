@@ -49,6 +49,10 @@ class Enemy(AnimatedObject):
 
         super().__init__(sprite_group, x, y, texturemap)
 
+    @property
+    def dead(self) -> bool:
+        return self.hp <= 0
+
     def act(self, gamestate: GameState):
         """
         This function defines the behavior of the enemy, it should be called once per game iteration.
@@ -59,14 +63,15 @@ class Enemy(AnimatedObject):
 
         if self.has_los_to_player(gamestate):
 
-            if self.can_attack(gamestate):
+            if self.dead:
+                self.die()
+            elif self.can_attack(gamestate):
                 self.attack(gamestate)
-
             else:
                 self.move(gamestate)
 
             self.animate()
-            self.wait_until = pygame.time.get_ticks() + 500
+            self.wait_until = pygame.time.get_ticks() + self.ANIMATION_WAIT_TICKS
 
     def has_los_to_player(self, gamestate: GameState):
         """
@@ -169,14 +174,18 @@ class Enemy(AnimatedObject):
         if self.animation_state == self.animation_state_max:
             gamestate.player.take_damage(self.attack_damage)
 
+    def die(self):
+        """
+        Perform the death animation and then remove the sprite.
+        """
+        self.set_animation_type(self.DEATH_ANIMATION)
 
+        if self.animation_state == self.animation_state_max:
+            self.kill()
 
     def take_damage(self, damage: int):
         """
-        Basic version, remove the given damage from the hp count. If hp reaches 0, remove from the enemy list.
-
-        TODO: Death animations etc.
+        Reduce current HP by the damage taken until dead.
         """
-        self.hp -= damage
-        if self.hp <= 0:
-            self.kill()
+        if not self.dead:
+            self.hp -= damage
