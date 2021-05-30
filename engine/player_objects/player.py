@@ -1,10 +1,8 @@
 import math
+from typing import Tuple
 
-from engine.game_objects.bullet import Bullet
-from engine.gamestate import GameState
-from engine.level_objects.level import Level
+from engine.utils import math_utils
 from engine.utils.exceptions import PlayerDeadException
-from textures.texturemap import TextureMap
 
 
 class Player:
@@ -12,31 +10,33 @@ class Player:
     MOVESPEED = 0.2
     MAX_HP = 100
 
-    def __init__(self, x: float, y: float, angle: float, level: Level):
+    def __init__(self, x: float, y: float, angle: float):
         self.x = x
         self.y = y
         self.angle = angle
-        self.level = level
         self.hp = self.MAX_HP
 
-    def move(self, speed: float):
+
+    def get_next_move_location(self, speed: float) -> Tuple[float, float]:
         """
-        Move the player_objects at self.angle by the given speed. Positive numbers for forwards, negative for backwards.
-
-        The player_objects is prevented from moving through enemies and walls.
-
-        :param speed:
-        :return:
+        Figure out where the player will be next - i.e. they have just given us
+        an input, we need to figure out where this will land them to check if it's
+        valid
         """
         new_x = self.x + speed * math.cos(self.angle)
         new_y = self.y + speed * math.sin(self.angle)
+        return new_x, new_y
 
-        if self.level.wall_at_location(new_x, new_y):
-            return
+    def get_next_forward_position(self):
+        return self.get_next_move_location(self.MOVESPEED)
 
-        if self.level.enemy_near_location(new_x, new_y):
-            return
+    def get_next_backward_position(self):
+        return self.get_next_move_location(-self.MOVESPEED)
 
+    def move(self, new_x: float, new_y: float):
+        """
+        Moves the player to a new position
+        """
         self.x = new_x
         self.y = new_y
 
@@ -54,31 +54,6 @@ class Player:
         self.angle += self.TURNSPEED
         self._check_angle()
 
-    def shoot(self, gamestate: GameState):
-
-        # TODO: Get equipped weapon
-        # TODO: check weapon equipped has ammo
-        # TODO: trigger weapon firing animation
-        # TODO: Get bullet characteristics for weapon
-        b_speed = 0.2
-        b_texturemap = TextureMap.load_common('simple_bullet.png')
-        b_damage = 25
-
-        # create bullet object with self.angle and weapon speed
-        bullet = Bullet(
-            sprite_group=gamestate.level.bullets,
-            x=self.x,
-            y=self.y,
-            angle=self.angle,
-            speed=b_speed,
-            texturemap=b_texturemap,
-            damage=b_damage
-        )
-
-        # trigger bullet move immediately to get it infront of the player and check for impact
-        bullet.move(gamestate)
-        print("BANG!")
-
     def take_damage(self, damage: int):
         """
         Apply damage to the player. Raises PlayerDeadException if the damage takes the player at or below 0 HP.
@@ -90,6 +65,9 @@ class Player:
 
         if self.hp <= 0:
             raise PlayerDeadException("Player HP Reached 0")
+
+    def coords_in_hitbox(self, x, y):
+        return math_utils.distance_formula(x, y, self.x, self.y) < 0.5
 
     def _check_angle(self):
         """

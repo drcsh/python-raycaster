@@ -1,4 +1,3 @@
-import os
 from typing import List, Optional
 
 import pygame
@@ -69,3 +68,72 @@ class Level:
                 continue
             if math_utils.distance_formula(x, y, enemy.x, enemy.y) < 0.5:
                 return enemy
+
+    def location_is_valid(self, x: float, y: float, exclude_enemy: Optional[GameObject] = None) -> bool:
+        """
+        Helper method for all (moving) game objects to determine if their new location is valid.
+
+        :return: True if there's nothing blocking this location, False otherwise
+        """
+        if self.wall_at_location(x, y):
+            return False
+
+        if self.enemy_near_location(x, y, exclude_enemy=exclude_enemy):
+            return False
+
+        return True
+    
+    def line_of_sight_between_coords(self, x1: float, y1: float, x2: float, y2: float) -> bool:
+        """
+        Works out if there is line of sight (LOS) between two points. E.g. if an enemy can see the player
+        :return: 
+        """
+        # Todo: this is lifted pretty much straight from Raycaster. Possible to rationalize?
+        x_increasing = False
+        y_increasing = False
+
+        intercept = None  # y intercept, if this line is not vertical
+        gradient = None  # gradient of this line
+
+        # As long as this isn't a vertical line...
+        if x1 != x2:
+            gradient = math_utils.gradient(x1, y1, x2, y2)
+
+            x_increasing = x2 > x1
+
+            intercept = y1 - (gradient * x1)
+
+        # as long as this isn't a hotizontal line...
+        if y1 != y2:
+            y_increasing = y2 > y1
+
+        ray_x = x1
+        ray_y = y1
+
+        ray_x_whole = ray_x % 1 == 0
+        ray_y_whole = ray_y % 1 == 0
+
+        while math_utils.distance_formula(ray_x, ray_y, x2, y2) > 1:
+
+            x_poi_x, x_poi_y = math_utils.get_next_x_poi(x2, ray_x, gradient, intercept, x_increasing, ray_x_whole)
+            y_poi_x, y_poi_y = math_utils.get_next_y_poi(x2, y2, ray_y, gradient, intercept, y_increasing, ray_y_whole)
+            ray_x, ray_y = math_utils.get_closest_point(ray_x, ray_y, x_poi_x, x_poi_y, y_poi_x, y_poi_y)
+
+            # the ray will be one of the identified POIs, so one of the x/y values will be whole
+            ray_x_whole = ray_x == x_poi_x
+            ray_y_whole = ray_y == y_poi_y
+
+            plot_x = ray_x
+            plot_y = ray_y
+            if ray_x_whole and not x_increasing:
+                plot_x = ray_x - 1
+
+            if ray_y_whole and not y_increasing:
+                plot_y = ray_y - 1
+
+            map_symbol = self.level_map.get_symbol_at_map_xy(plot_x, plot_y)
+
+            if map_symbol != ' ':  # Wall in between player and enemy
+                return False
+
+        return True

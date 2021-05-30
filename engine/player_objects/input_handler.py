@@ -31,19 +31,19 @@ class InputHandler:
                 raise GameExitException("Player pressed Quit key")
 
             if event.type == pygame.KEYDOWN and event.key == self.SHOOT_K:
-                gamestate.player.shoot(gamestate)
+                gamestate.player_attack()
                 continue
             if event.type == pygame.KEYDOWN and event.key == self.FORWARD_K:
-                gamestate.player.move_forward()
+                gamestate.player_moves_forward()
                 continue
             if event.type == pygame.KEYDOWN and event.key == self.BACK_K:
-                gamestate.player.move_backward()
+                gamestate.player_moves_backwards()
                 continue
             if event.type == pygame.KEYDOWN and event.key == self.LEFT_K:
-                gamestate.player.turn_left()
+                gamestate.player_turns_left()
                 continue
             if event.type == pygame.KEYDOWN and event.key == self.RIGHT_K:
-                gamestate.player.turn_right()
+                gamestate.player_turns_right()
                 continue
 
             self.gui_manager.process_events(event)

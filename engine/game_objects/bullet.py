@@ -1,9 +1,9 @@
 import math
+from typing import Tuple
 
 import pygame
 
 from engine.game_objects.game_object import GameObject
-from engine.gamestate import GameState
 from textures.texturemap import TextureMap
 
 
@@ -33,24 +33,19 @@ class Bullet(GameObject):
 
         super().__init__(sprite_group, x, y, texturemap)
 
-    def move(self, gamestate: GameState):
+    def get_next_move_location(self) -> Tuple[float, float]:
         """
-
-        :param GameState gamestate:
-        :return:
+        Work out the next location the bullet will inhabit
         """
         new_x = self.x + self.speed * math.cos(self.angle)
         new_y = self.y + self.speed * math.sin(self.angle)
 
-        if gamestate.level.wall_at_location(new_x, new_y):
-            self.kill()
-            return
+        return new_x, new_y
 
-        enemy = gamestate.level.enemy_near_location(new_x, new_y)
-        if enemy:
-            enemy.take_damage(self.damage)
-            self.kill()
-            return
-
+    def move(self, new_x: float, new_y: float):
+        """
+        Update bullet location.
+        Todo: Bullet animations!
+        """
         self.x = new_x
         self.y = new_y

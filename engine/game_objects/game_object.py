@@ -1,6 +1,5 @@
 import pygame
 
-from engine.gamestate import GameState
 from textures.texturemap import TextureMap
 from textures.texturetile import TextureTile
 
@@ -34,17 +33,3 @@ class GameObject(pygame.sprite.Sprite):
         for rendering purposes.
         """
         return self.texturemap.get_tile_at(0, 0)
-
-    def check_location_valid(self, gamestate: GameState, new_x: float, new_y: float) -> bool:
-        """
-        Helper method for all (moving) game objects to determine if their new location is valid.
-
-        :return: True if there's nothing blocking this location, False otherwise
-        """
-        if gamestate.level.wall_at_location(new_x, new_y):
-            return False
-
-        if gamestate.level.enemy_near_location(new_x, new_y, exclude_enemy=self):
-            return False
-
-        return True
