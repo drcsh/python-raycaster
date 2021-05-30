@@ -5,6 +5,8 @@ Todo:
 - speed up enemy animations?
 - Weapon cooldowns!
 - Weapons on screen
+- Refactor GameState: circular dependency between it and various game objects is a mess.
+  Perhaps invert the pattern so the gamestate has functionality, the gameobjects are data classes.
 - Map square which ends the level and moves the player to the next one
 - File format for levels + loading from file
 - Main menu
