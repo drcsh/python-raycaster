@@ -22,10 +22,10 @@ With a virtualenv set up with requirements installed, simply
 # Features
 
 Currently starting the game puts you straight into the only level. Enemies walk towards you and
-try to attack you. TYou can shoot them (spacebar). After 2 hits, they disappear. If they get close, they will attack
+try to attack you. You can shoot them (spacebar). After 2 hits, they die. If they get close, they will attack
 and try to kill you.
 
-![](/screenshots/shooting.gif)
+![](/screenshots/may_2021.gif)
 
 # Raycasting Calculation
 
