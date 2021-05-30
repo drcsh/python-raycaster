@@ -12,6 +12,7 @@ class AnimatedObject(GameObject):
     MOVE_ANIMATION = 0
     ATTACK_ANIMATION = 1
     DEATH_ANIMATION = 2
+    ANIMATION_WAIT_TICKS = 500
 
     def __init__(self, sprite_group: pygame.sprite.Group, x: float, y: float, texturemap: TextureMap):
         """
@@ -24,9 +25,6 @@ class AnimatedObject(GameObject):
 
         # animation type is which row of tiles from the texturemap to use
         self.animation_type = self.MOVE_ANIMATION  # default animation state is moving
-
-        # When we change animation type, we will want to reset to the first tile, rather than continuing
-        self.previous_animation_type = 0
 
         super(AnimatedObject, self).__init__(sprite_group, x, y, texturemap)
 
@@ -41,25 +39,20 @@ class AnimatedObject(GameObject):
     def reset_animation_state(self):
         self.animation_state = 0
 
-    def set_animation_type(self, animation_type: int):
+    def set_animation_type(self, new_animation_type: int):
         """
-        Because we want to reset to the resting animation tile between animation states, we need to keep track of the
-        previous animation type, and reset to tile 0 when the animation type changes.
-
-        :param int animation_type:
-        :return:
-        """  
-        self.previous_animation_type = self.animation_type
-        self.animation_type = animation_type
+        Updates the animation type and resets the animation state on animation type change.
+        """
+        if new_animation_type != self.animation_type:
+            self.reset_animation_state()
+            self.animation_type = new_animation_type
 
     def animate(self):
         """
         Updates the animation state to the next one in the sequence (rolling back to the start if appropriate).
         :return:
         """
-        if self.animation_type != self.previous_animation_type:
-            self.reset_animation_state()
-        elif self.animation_state >= self.animation_state_max:
+        if self.animation_state >= self.animation_state_max:
             self.reset_animation_state()
         else:
             self.animation_state += 1
