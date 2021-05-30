@@ -12,7 +12,7 @@ class AnimatedObject(GameObject):
     MOVE_ANIMATION = 0
     ATTACK_ANIMATION = 1
     DEATH_ANIMATION = 2
-    ANIMATION_WAIT_TICKS = 500
+    ANIMATION_WAIT_TICKS = 300
 
     def __init__(self, sprite_group: pygame.sprite.Group, x: float, y: float, texturemap: TextureMap):
         """

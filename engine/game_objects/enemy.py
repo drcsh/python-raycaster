@@ -16,6 +16,7 @@ class Enemy(AnimatedObject):
     DEFAULT_MOVE_SPEED = 0.25
     DEFAULT_ATTACK_RANGE = 1
     DEFAULT_ATTACK_DAMAGE = 20
+    DAMAGE_DEALT_ON_STATE = 3
 
     def __init__(self,
                  sprite_group: pygame.sprite.Group,
@@ -171,7 +172,7 @@ class Enemy(AnimatedObject):
         self.set_animation_type(self.ATTACK_ANIMATION)
 
         # Don't deal the damage until the final frame of the attack animation
-        if self.animation_state == self.animation_state_max:
+        if self.animation_state == self.DAMAGE_DEALT_ON_STATE:
             gamestate.player.take_damage(self.attack_damage)
 
     def die(self):
