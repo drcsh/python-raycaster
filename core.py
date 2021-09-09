@@ -70,10 +70,6 @@ def main():
 
     # General Setup
     gui_manager = pygame_gui.UIManager((win_w, win_h))
-    input_handler = InputHandler(gui_manager)
-
-    # HUD - Todo: this should only be loaded when in a level
-    hud = HUD(gui_manager)
 
     # Game state
     level = Level.constructor(map_str, enemies)
@@ -87,6 +83,10 @@ def main():
 
     # Set up the GameState
     gamestate = GameState(player, level)
+    input_handler = InputHandler(gamestate, gui_manager)
+
+    # HUD - Todo: this should only be loaded when in a level
+    hud = HUD(gamestate, gui_manager)
 
     clock = pygame.time.Clock()
     time_delta = 0
@@ -96,7 +96,7 @@ def main():
     caster_best = 10
     try:
         while True:
-            input_handler.handle(gamestate)
+            input_handler.handle()
 
             gamestate.update()
 
@@ -109,7 +109,7 @@ def main():
             caster_ts.append(end - start)
 
             # Update the UI
-            hud.update(gamestate)
+            hud.update()
             gui_manager.update(time_delta)
 
             pygame.display.flip()
