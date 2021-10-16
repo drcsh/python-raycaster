@@ -152,7 +152,7 @@ def get_next_y_poi(
 
 def get_new_coordinates(curr_x: float, curr_y: float, angle: float, speed: float):
     """
-    Works out the next x, y coordinate given the current coordinate, an angle (from the x axis) and the speed
+    Works out the next x, y coordinate given the current coordinate, an angle (from the x axis in radians) and the speed
     (i.e distance of travel).
 
     :param curr_x:

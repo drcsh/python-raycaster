@@ -78,7 +78,7 @@ def main():
 
     player_x = 3.456
     player_y = 2.345
-    player_a = 1.523
+    player_a = 1.523  # radians
     player = Player(player_x, player_y, player_a)
 
     # Set up the GameState
