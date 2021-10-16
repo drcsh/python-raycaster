@@ -4,6 +4,7 @@ from typing import Tuple
 import pygame
 
 from engine.game_objects.game_object import GameObject
+from engine.utils import math_utils
 from textures.texturemap import TextureMap
 
 
@@ -35,12 +36,11 @@ class Bullet(GameObject):
 
     def get_next_move_location(self) -> Tuple[float, float]:
         """
-        Work out the next location the bullet will inhabit
+        This method is just a wrapper for the math_utils function at the
+        moment, but is preserved so it can be overwritten for interesting
+        movement behaviours, e.g. homing missiles.
         """
-        new_x = self.x + self.speed * math.cos(self.angle)
-        new_y = self.y + self.speed * math.sin(self.angle)
-
-        return new_x, new_y
+        return math_utils.get_new_coordinates(self.x, self.y, self.angle, self.speed)
 
     def move(self, new_x: float, new_y: float):
         """
