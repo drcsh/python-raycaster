@@ -150,7 +150,7 @@ def get_next_y_poi(
     return x_at_next_whole_y, next_whole_y
 
 
-def get_new_coordinates(curr_x: float, curr_y: float, angle: float, speed: float):
+def get_new_coordinates(curr_x: float, curr_y: float, angle: float, speed: float) -> Tuple[float, float]:
     """
     Works out the next x, y coordinate given the current coordinate, an angle (from the x axis in radians) and the speed
     (i.e distance of travel).
