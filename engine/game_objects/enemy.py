@@ -70,14 +70,9 @@ class Enemy(AnimatedObject):
         movement can happen
         :return:
         """
-        dir_to_player = math.atan2(player.y - self.y, player.x - self.x)
+        angle_to_player = math.atan2(player.y - self.y, player.x - self.x)
 
-        cos_angle = math.cos(dir_to_player)
-        sin_angle = math.sin(dir_to_player)
-
-        new_x = self.x + self.speed * cos_angle
-        new_y = self.y + self.speed * sin_angle
-        return new_x, new_y
+        return math_utils.get_new_coordinates(self.x, self.y, angle_to_player, self.speed)
 
     def move(self, new_x: float, new_y: float):
         """

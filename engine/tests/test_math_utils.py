@@ -98,6 +98,89 @@ class TestMathUtils(unittest.TestCase):
 
         self.assertEqual((x1, y1), closest)
 
+    def test_get_new_coordinates(self):
+        """
+        Test that in a basic case we get the correct next coordinates. If this fails, the
+        formula is very wrong.
+        :return:
+        """
+
+        current_x = 0
+        current_y = 0
+
+        angle = 0.785398  # 45 degrees
+
+        speed = 5
+
+        expected_x = 3.535
+        expected_y = 3.535
+        res_x, res_y = math_utils.get_new_coordinates(current_x, current_y, angle, speed)
+
+        self.assertAlmostEqual(expected_x, res_x, places=2)
+        self.assertAlmostEqual(expected_y, res_y, places=2)
+
+    def test_get_new_coordinates_along_x_axis(self):
+        """
+        In this case the angle is 0, so the next coordinate shouldn't vary on the y
+        axis.
+        """
+
+        current_x = 0
+        current_y = 0
+
+        angle = 0.0
+
+        speed = 5
+
+        expected_x = 5
+        expected_y = 0
+
+        res_x, res_y = math_utils.get_new_coordinates(current_x, current_y, angle, speed)
+
+        self.assertAlmostEqual(expected_x, res_x, places=2)
+        self.assertAlmostEqual(expected_y, res_y, places=2)
+
+    def test_get_new_coordinates_along_y_axis(self):
+        """
+        In this case the angle is equal to 90 degrees, so the next coordinates should
+        vary only on the y axis.
+        """
+
+        current_x = 0
+        current_y = 0
+
+        angle = 1.5708
+
+        speed = 5
+
+        expected_x = 0
+        expected_y = 5
+
+        res_x, res_y = math_utils.get_new_coordinates(current_x, current_y, angle, speed)
+
+        self.assertAlmostEqual(expected_x, res_x, places=2)
+        self.assertAlmostEqual(expected_y, res_y, places=2)
+
+    def test_get_new_coordinates_negative_speed(self):
+        """
+        Get new coordinates should also work on negative speeds (i.e. moving backwards)
+        :return:
+        """
+
+        current_x = 0
+        current_y = 0
+
+        angle = 0.785398  # 45 degrees
+
+        speed = -5
+
+        expected_x = -3.535
+        expected_y = -3.535
+        res_x, res_y = math_utils.get_new_coordinates(current_x, current_y, angle, speed)
+
+        self.assertAlmostEqual(expected_x, res_x, places=2)
+        self.assertAlmostEqual(expected_y, res_y, places=2)
+
 
 if __name__ == '__main__':
     unittest.main()

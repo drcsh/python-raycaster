@@ -1,15 +1,21 @@
 from engine.behaviours.bullet_behaviour import BulletBehaviour
 from engine.behaviours.enemy_behaviour import EnemyBehaviour
-from engine.game_objects.bullet import Bullet
 from engine.level_objects.level import Level
 from engine.player_objects.player import Player
-from textures.texturemap import TextureMap
 
 
 class GameState:
     """
-    This is the top level object which tracks everything within the game world
-    and handles coordination between them.
+    GameState tracks the current level and all GameObjects in the level, as well
+    as the player. GameState provides some easy methods for triggering behaviours
+    of GameObjects tracked on it, but otherwise has no behaviour of its own.
+
+    To higher level entities (for handling inputs and rendering), GameState keeps track of
+    what's going on and provides utility functions to effect the whole level, e.g. calling the
+    Behaviours upon all enemies in the level.
+
+    Lower level entities (e.g. enemies) shouldn't really reach 'up' into the GameState, they should be acted upon from
+    'above'.
 
     Todo: provide save and load functionality!
     """
@@ -19,64 +25,21 @@ class GameState:
         self.player = player
         self.level = level
 
-    def update(self):
-
-        self.update_enemies()
-        self.update_bullets()
-
-    def update_enemies(self):
-
-        for enemy in self.level.enemies:
-            EnemyBehaviour.act(enemy, self.level, self.player)
-
-    def update_bullets(self):
-
-        for bullet in self.level.bullets:
-            BulletBehaviour.act(bullet, self.level, self.player)
-
-    def player_attack(self):
+    def trigger_all_behaviours(self):
         """
-        This action has to go here rather than on the player object, because it creates bullet
-        objects which need to be kept track of by the gamestate.
+        Utility method which causes all behaviours to be run against all objects in the level which have behaviours.
         :return:
         """
 
-        # TODO: Get equipped weapon
-        # TODO: check weapon equipped has ammo
-        # TODO: trigger weapon firing animation
-        # TODO: Get bullet characteristics for weapon
-        b_speed = 0.2
-        b_texturemap = TextureMap.load_common('simple_bullet.png')
-        b_damage = 25
+        self.trigger_enemy_behaviour()
+        self.trigger_bullet_behaviour()
 
-        # create bullet object with self.angle and weapon speed
-        bullet = Bullet(
-            sprite_group=self.level.bullets,
-            x=self.player.x,
-            y=self.player.y,
-            angle=self.player.angle,
-            speed=b_speed,
-            texturemap=b_texturemap,
-            damage=b_damage
-        )
+    def trigger_enemy_behaviour(self):
+        for enemy in self.level.enemies:
+            EnemyBehaviour.act(enemy, self.level, self.player)
 
-        # trigger bullet move immediately to get it infront of the player and check for impact
-        BulletBehaviour.act(bullet, self.level, self.player)
+    def trigger_bullet_behaviour(self):
+        for bullet in self.level.bullets:
+            BulletBehaviour.act(bullet, self.level, self.player)
 
-    def player_moves_forward(self):
-        new_x, new_y = self.player.get_next_forward_position()
 
-        if self.level.location_is_valid(new_x, new_y):
-            self.player.move(new_x, new_y)
-
-    def player_moves_backwards(self):
-        new_x, new_y = self.player.get_next_backward_position()
-
-        if self.level.location_is_valid(new_x, new_y):
-            self.player.move(new_x, new_y)
-
-    def player_turns_left(self):
-        self.player.turn_left()
-
-    def player_turns_right(self):
-        self.player.turn_right()
