@@ -1,8 +1,11 @@
 
 Todo:
+- Weapons:
+    - Weapon behaviour depending on equipped weapon
+    - Weapon CD
+    - Weapon Texture
+    - Bullet spawned based on weapon
 - Better HUD
-- Weapon cooldowns!
-- Weapons on screen
 - File format for levels + loading from file
 - Map square which ends the level and moves the player to the next one
 - Main menu
