@@ -4,6 +4,7 @@ import pygame_gui
 from engine.behaviours.bullet_behaviour import BulletBehaviour
 from engine.game_objects.bullet import Bullet
 from engine.gamestate import GameState
+from engine.utils import math_utils
 from engine.utils.exceptions import GameExitException
 from textures.texturemap import TextureMap
 
@@ -70,11 +71,12 @@ class InputHandler:
         b_damage = 25
 
         # create bullet object with self.angle and weapon speed
+        # Note: Bullet is added to the sprite group so doesn't need explicitly added to the GameState
         bullet = Bullet(
-            sprite_group=self.level.bullets,
-            x=self.player.x,
-            y=self.player.y,
-            angle=self.player.angle,
+            sprite_group=self.gamestate.level.bullets,
+            x=self.gamestate.player.x,
+            y=self.gamestate.player.y,
+            angle=self.gamestate.player.angle,
             speed=b_speed,
             texturemap=b_texturemap,
             damage=b_damage
@@ -84,13 +86,31 @@ class InputHandler:
         BulletBehaviour.act(bullet, self.gamestate.level, self.gamestate.player)
 
     def player_moves_forward(self):
-        new_x, new_y = self.gamestate.player.get_next_forward_position()
-
-        if self.gamestate.level.location_is_valid(new_x, new_y):
-            self.gamestate.player.move(new_x, new_y)
+        self._player_moves(self.gamestate.player.MOVESPEED)
 
     def player_moves_backwards(self):
-        new_x, new_y = self.gamestate.player.get_next_backward_position()
+        self._player_moves(-self.gamestate.player.MOVESPEED)
+
+    def _player_moves(self, speed: float):
+        """
+        Given the player speed, works out their new location and if that location
+        is valid, updates the player object
+        :param float speed:
+        :return:
+        """
+
+        new_x, new_y = math_utils.get_new_coordinates(
+            self.gamestate.player.x,
+            self.gamestate.player.y,
+            self.gamestate.player.angle,
+            speed
+        )
 
         if self.gamestate.level.location_is_valid(new_x, new_y):
             self.gamestate.player.move(new_x, new_y)
+
+    def player_turns_left(self):
+        self.gamestate.player.turn_left()
+
+    def player_turns_right(self):
+        self.gamestate.player.turn_right()

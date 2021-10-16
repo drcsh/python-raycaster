@@ -1,6 +1,5 @@
 
 Todo:
-- Finish gamestate refactor. I think the player action functions should go to input handler.
 - Better HUD
 - Weapon cooldowns!
 - Weapons on screen

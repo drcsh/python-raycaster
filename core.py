@@ -98,7 +98,7 @@ def main():
         while True:
             input_handler.handle()
 
-            gamestate.update()
+            gamestate.trigger_all_behaviours()
 
             # Render the scene
             start = timer()

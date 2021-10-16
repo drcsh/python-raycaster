@@ -6,8 +6,16 @@ from engine.player_objects.player import Player
 
 class GameState:
     """
-    This is the top level object which tracks everything within the game world
-    and handles coordination between them.
+    GameState tracks the current level and all GameObjects in the level, as well
+    as the player. GameState provides some easy methods for triggering behaviours
+    of GameObjects tracked on it, but otherwise has no behaviour of its own.
+
+    To higher level entities (for handling inputs and rendering), GameState keeps track of
+    what's going on and provides utility functions to effect the whole level, e.g. calling the
+    Behaviours upon all enemies in the level.
+
+    Lower level entities (e.g. enemies) shouldn't really reach 'up' into the GameState, they should be acted upon from
+    'above'.
 
     Todo: provide save and load functionality!
     """
@@ -17,18 +25,20 @@ class GameState:
         self.player = player
         self.level = level
 
-    def update(self):
+    def trigger_all_behaviours(self):
+        """
+        Utility method which causes all behaviours to be run against all objects in the level which have behaviours.
+        :return:
+        """
 
-        self.update_enemies()
-        self.update_bullets()
+        self.trigger_enemy_behaviour()
+        self.trigger_bullet_behaviour()
 
-    def update_enemies(self):
-
+    def trigger_enemy_behaviour(self):
         for enemy in self.level.enemies:
             EnemyBehaviour.act(enemy, self.level, self.player)
 
-    def update_bullets(self):
-
+    def trigger_bullet_behaviour(self):
         for bullet in self.level.bullets:
             BulletBehaviour.act(bullet, self.level, self.player)
 
