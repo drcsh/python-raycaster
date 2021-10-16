@@ -148,3 +148,19 @@ def get_next_y_poi(
         x_at_next_whole_y = origin_x
 
     return x_at_next_whole_y, next_whole_y
+
+
+def get_new_coordinates(curr_x: float, curr_y: float, angle: float, speed: float):
+    """
+    Works out the next x, y coordinate given the current coordinate, an angle (from the x axis) and the speed
+    (i.e distance of travel).
+
+    :param curr_x:
+    :param curr_y:
+    :param angle:
+    :param speed:
+    :return: coordinate
+    """
+    new_x = curr_x + speed * math.cos(angle)
+    new_y = curr_y + speed * math.sin(angle)
+    return new_x, new_y
