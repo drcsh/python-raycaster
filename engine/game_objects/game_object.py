@@ -13,16 +13,16 @@ class GameObject(pygame.sprite.Sprite):
     Parent for AnimatedObject which covers enemies etc.
     """
 
-    def __init__(self, sprite_group: pygame.sprite.Group, x: float, y: float, texturemap: TextureMap):
+    def __init__(self, sprite_group: pygame.sprite.Group, x: float, y: float, texture_map: TextureMap):
         """
         :param sprite_group: SpriteGroup for keeping track of this object
         :param x: X Coord on the map
         :param y: Y Coord on the map
-        :param texturemap: TextureMap to render.
+        :param texture_map: TextureMap to render.
         """
         self.x = x
         self.y = y
-        self.texturemap = texturemap
+        self.texturemap = texture_map
         super(GameObject, self).__init__(sprite_group)
 
     def get_display_tile(self) -> TextureTile:
