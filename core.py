@@ -6,6 +6,8 @@ import pygame_gui
 
 from engine.gamestate import GameState
 from engine.gui.hud.hud import HUD
+from engine.player_objects.weapons import weapon_utils
+from engine.player_objects.weapons.player_weapon import PlayerWeapon
 from engine.utils.exceptions import GameExitException, PlayerDeadException
 from engine.player_objects.input_handler import InputHandler
 from engine.level_objects.level import Level
@@ -79,7 +81,9 @@ def main():
     player_x = 3.456
     player_y = 2.345
     player_a = 1.523  # radians
-    player = Player(player_x, player_y, player_a)
+    player_weapons = weapon_utils.load()
+
+    player = Player(player_x, player_y, player_a, player_weapons)
 
     # Set up the GameState
     gamestate = GameState(player, level)

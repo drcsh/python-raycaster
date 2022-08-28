@@ -66,9 +66,8 @@ class InputHandler:
         # TODO: check weapon equipped has ammo
         # TODO: trigger weapon firing animation
         # TODO: Get bullet characteristics for weapon
-        b_speed = 0.2
-        b_texturemap = TextureMap.load_common('simple_bullet.png')
-        b_damage = 25
+        weapon = self.gamestate.player.get_equipped_weapon()
+
 
         # create bullet object with self.angle and weapon speed
         # Note: Bullet is added to the sprite group so doesn't need explicitly added to the GameState
@@ -77,9 +76,9 @@ class InputHandler:
             x=self.gamestate.player.x,
             y=self.gamestate.player.y,
             angle=self.gamestate.player.angle,
-            speed=b_speed,
-            texturemap=b_texturemap,
-            damage=b_damage
+            speed=weapon.bullet_stats.speed,
+            texture_map=weapon.bullet_stats.texture_map,
+            damage=weapon.bullet_stats.damage
         )
 
         # trigger bullet move immediately to get it infront of the player and check for impact

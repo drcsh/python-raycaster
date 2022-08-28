@@ -1,5 +1,5 @@
 import math
-from typing import List
+from typing import List, Dict
 
 from engine.player_objects.weapons.player_weapon import PlayerWeapon
 from engine.utils import math_utils
@@ -11,12 +11,13 @@ class Player:
     MOVESPEED = 0.2
     MAX_HP = 100
 
-    def __init__(self, x: float, y: float, angle: float, weapons: List[PlayerWeapon, None]):
+    def __init__(self, x: float, y: float, angle: float, weapons: Dict):
         self.x = x
         self.y = y
         self.angle = angle
         self.hp = self.MAX_HP
         self.weapons = weapons
+        self._weapon_equipped = list(self.weapons.keys())[0]
 
     def move(self, new_x: float, new_y: float):
         """
@@ -32,6 +33,14 @@ class Player:
     def turn_right(self):
         self.angle += self.TURNSPEED
         self._check_angle()
+
+    def get_equipped_weapon(self) -> PlayerWeapon:
+        try:
+            return self.weapons[self._weapon_equipped]
+        except KeyError:
+            self._weapon_equipped = list(self.weapons.keys())[0]
+            return self.weapons[self._weapon_equipped]
+
 
     def take_damage(self, damage: int):
         """

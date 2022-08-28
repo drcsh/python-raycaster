@@ -1,20 +1,14 @@
-from typing import Callable
+from engine.player_objects.weapons.bullet_stats import BulletStats
 from textures.texturemap import TextureMap
 
-
+# TODO: convert to dataclass or put methods for animation and shooting here?
 class PlayerWeapon:
 
-    def __init__(self, ammo: int, cooldown: int, texture: TextureMap, bullet_class: Callable):
-        """
-        Data class for tracking player weapon
-        :param ammo:
-        :param cooldown:
-        :param texture:
-        :param bullet_class:
-        """
+    def __init__(self, display_name: str, ammo: int, cooldown: int, texture_map: TextureMap, bullet_stats: BulletStats):
+        self.display_name = display_name
         self.ammo = ammo
         self.cooldown = cooldown
-        self.texture = texture
-        self.bullet_class = bullet_class
+        self.texture_map = texture_map
+        self.bullet_stats = bullet_stats
 
         self.cooldown_until = 0
