@@ -62,12 +62,13 @@ class InputHandler:
         :return:
         """
 
-        # TODO: Get equipped weapon
-        # TODO: check weapon equipped has ammo
-        # TODO: trigger weapon firing animation
-        # TODO: Get bullet characteristics for weapon
         weapon = self.gamestate.player.get_equipped_weapon()
 
+        if weapon.ammo <= 0:
+            # TODO: CLICK! noise
+            return
+
+        # TODO: trigger weapon firing animation
 
         # create bullet object with self.angle and weapon speed
         # Note: Bullet is added to the sprite group so doesn't need explicitly added to the GameState
