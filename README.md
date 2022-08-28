@@ -13,7 +13,7 @@ For performance and ease of image processing, I decided to use pygame.
 
 # Requirements
 
-Python 3, pip, and the packages in requirements.txt
+Python 3.10.x, pip, and the packages in requirements.txt
 
 # Running
 With a virtualenv set up with requirements installed, simply

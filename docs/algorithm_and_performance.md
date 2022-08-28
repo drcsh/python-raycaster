@@ -91,11 +91,16 @@ got cast times down just a hair further,
 ## Upgrading Python
 This was originally written in python 3.8.6, but since then there's been an enormous push for performance gains. At the 
 end of August 2022 I upgraded the underlying python. To see what kind of difference this made, I loaded up the first 
-level, killed the 3 enemies and then let 1000 frames pass.
+level, killed the 3 enemies and then let 1000 frames pass. 
+
+Unfortunately I couldn't do a direct comparison because my development VM was far too out of date, and I gaveup fighting 
+it to run python 3.10, so I built a new VM with 3.10.4
 
 ### Python 3.8.6 performance:
+This is on an Ubuntu 18.04 VM, 4 vCPUs, scaling RAM:
 
-```Caster avg cast time (last 100):0.012186899346551679
+```
+Caster avg cast time (last 100):0.012186899346551679
 Caster avg cast time (last 100):0.012226203039580748
 Caster avg cast time (last 100):0.01220878431683676
 Caster avg cast time (last 100):0.01223495774259994
@@ -106,6 +111,28 @@ Caster avg cast time (last 100):0.012204350356425114
 Caster avg cast time (last 100):0.012206252980201435
 Caster avg cast time (last 100):0.012170625851503795
 ```
+
+### Python 3.10.4 performance:
+Ubuntu 20.04 VM, 8 vCPUs, scaling RAM:
+
+```
+Caster avg cast time (last 100):0.013962690435646167
+Caster avg cast time (last 100):0.013925901039596787
+Caster avg cast time (last 100):0.013963795792082831
+Caster avg cast time (last 100):0.013984481871271909
+Caster avg cast time (last 100):0.013467749811898912
+Caster avg cast time (last 100):0.013591474198018759
+Caster avg cast time (last 100):0.01354902638614602
+Caster avg cast time (last 100):0.013405830415829786
+Caster avg cast time (last 100):0.013506505584160496
+Caster avg cast time (last 100):0.013405714940601304
+```
+
+The slightly _worse_ performance is surprising, and I found it to be consistent after restarting. Both VMs 
+were running on the same host, so perhaps some OS bloat between Ubuntu 18.04 and 20.04, or bloat somewhere in the 
+dependencies (all of which had to be updated) could be to blame. It could also be that python 3.10 is optimised 
+differently so some of my existing optimisations are now hampering rather than helping.
+
 
 
 
