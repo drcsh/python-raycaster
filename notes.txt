@@ -1,12 +1,19 @@
 
 Todo:
+- Weapons:
+    - Weapon CD
+    - Weapon Texture
+    - Weapon animation
+    - Multiple weapons
+    - weapon switching
+    - Loading weapons from a file
+- pickups: ammo and health
 - Better HUD
-- Weapon cooldowns!
-- Weapons on screen
-- File format for levels + loading from file
 - Map square which ends the level and moves the player to the next one
+- File format for levels + loading from file
 - Main menu
 - Saving the game (serialise/unserialise GameState).
+- Audio
 
 Bugs:
 

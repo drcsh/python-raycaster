@@ -24,7 +24,7 @@ class Enemy(AnimatedObject):
                  x: float,
                  y: float,
                  max_hp: int,
-                 texturemap: TextureMap,
+                 texture_map: TextureMap,
                  speed: int = DEFAULT_MOVE_SPEED,
                  attack_range: float = DEFAULT_ATTACK_RANGE,
                  attack_damage: int = DEFAULT_ATTACK_DAMAGE):
@@ -32,7 +32,7 @@ class Enemy(AnimatedObject):
         :param sprite_group: Which spritegroup this will belong to
         :param x: X coord on the Map where this enemy appears.
         :param y: Y coord on the Map where this enemy appears.
-        :param texturemap:
+        :param texture_map:
         :param max_hp:
         :param speed:
         :param attack_range:
@@ -49,7 +49,7 @@ class Enemy(AnimatedObject):
         # game iteration, or it will attack as fast as the game runes.
         self.wait_until = 0
 
-        super().__init__(sprite_group, x, y, texturemap)
+        super().__init__(sprite_group, x, y, texture_map)
 
     @property
     def dead(self) -> bool:

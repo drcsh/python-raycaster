@@ -30,7 +30,7 @@ class Level:
                 sprite_group=enemies,
                 x=enemy_dict["x"],
                 y=enemy_dict["y"],
-                texturemap=enemy_texturemap,  # Temp: Will replace with file name
+                texture_map=enemy_texturemap,  # Temp: Will replace with file name
                 max_hp=50
             )  # TODO: hitpoints!
 
