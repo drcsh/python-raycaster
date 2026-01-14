@@ -1,0 +1,17 @@
+{
+  "campaign_id": "default_campaign",
+  "name": "Escape from Hell",
+  "description": "Fight your way through the demon-infested prison",
+  "author": "Developer",
+  "difficulty": "medium",
+  "levels_directory": "levels",
+  "levels": [
+    {
+      "level_file": "level_01.json",
+      "optional_overrides": {}
+    }
+  ],
+  "settings": {
+    "starting_health": 100
+  }
+}

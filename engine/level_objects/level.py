@@ -1,4 +1,5 @@
 from typing import List, Optional
+import time
 
 import pygame
 
@@ -41,6 +42,10 @@ class Level:
         self.enemies = enemies
         self.bullets = bullets
         self.wall_textures = TextureMap.load_from_file("walls.png")
+
+        # Track level completion stats
+        self._initial_enemy_count = len(enemies)
+        self._level_start_time = time.time()
 
     def __del__(self):
         self.enemies.empty()
@@ -137,3 +142,29 @@ class Level:
                 return False
 
         return True
+
+    def is_complete(self) -> bool:
+        """
+        Check if level is complete (all enemies defeated)
+
+        Returns:
+            bool: True if all enemies are defeated, False otherwise
+        """
+        return len(self.enemies) == 0
+
+    def get_completion_stats(self) -> dict:
+        """
+        Return statistics about level completion
+
+        Returns:
+            dict: Level completion statistics including enemies defeated and time elapsed
+        """
+        time_elapsed = time.time() - self._level_start_time
+        enemies_remaining = len(self.enemies)
+        enemies_defeated = self._initial_enemy_count - enemies_remaining
+
+        return {
+            "enemies_defeated": enemies_defeated,
+            "total_enemies": self._initial_enemy_count,
+            "time_elapsed": time_elapsed
+        }

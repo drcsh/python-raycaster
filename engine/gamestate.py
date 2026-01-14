@@ -2,6 +2,7 @@ from engine.behaviours.bullet_behaviour import BulletBehaviour
 from engine.behaviours.enemy_behaviour import EnemyBehaviour
 from engine.level_objects.level import Level
 from engine.player_objects.player import Player
+from engine.utils.exceptions import LevelCompleteException
 
 
 class GameState:
@@ -33,6 +34,10 @@ class GameState:
 
         self.trigger_enemy_behaviour()
         self.trigger_bullet_behaviour()
+
+        # Check if level is complete after processing behaviours
+        if self.level.is_complete():
+            raise LevelCompleteException("All enemies defeated")
 
     def trigger_enemy_behaviour(self):
         for enemy in self.level.enemies:

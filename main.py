@@ -1,7 +1,7 @@
-from core import bootstrap
+from core import launch_game
 
 def main():
-    bootstrap()
+    launch_game()
 
 
 if __name__ == "__main__":

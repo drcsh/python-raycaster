@@ -1,0 +1,36 @@
+{
+  "level_id": "level_01",
+  "name": "The Prison",
+  "map": {
+    "width": 16,
+    "height": 16,
+    "data": "00002222222200001              01      11111   01     0        00     0  11100000     3        00   10000      00   0   11100  00   0   0      00   0   1  000000       1      02       1      00       0      00 4444440      00              00002222222200000"
+  },
+  "player_spawn": {
+    "x": 3.456,
+    "y": 2.345,
+    "angle": 1.523
+  },
+  "enemies": [
+    {
+      "x": 3.456,
+      "y": 3.812,
+      "texture_filename": "gargoyle.png"
+    },
+    {
+      "x": 1.834,
+      "y": 8.765,
+      "texture_filename": "gargoyle.png"
+    },
+    {
+      "x": 5.323,
+      "y": 5.365,
+      "texture_filename": "gargoyle.png"
+    },
+    {
+      "x": 4.123,
+      "y": 10.265,
+      "texture_filename": "gargoyle.png"
+    }
+  ]
+}
