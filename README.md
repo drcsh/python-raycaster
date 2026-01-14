@@ -1,15 +1,15 @@
 # python-raycaster
 
-A simple 2.5D raycasting shooter built with python and pygame. 
+A simple 2.5D raycasting shooter built with python and pygame-ce.
 
-The basic premise is based on [ssloy's tinyraycaster](https://github.com/ssloy/tinyraycaster). 
+The basic premise is based on [ssloy's tinyraycaster](https://github.com/ssloy/tinyraycaster).
 
 It's built in Python because:
-1. I'm not well versed in C++, and didn't want to distract myself learning the language instead of the 
-internals of a raycaster, so I decided to convert ssloy's code to Python as I went. 
+1. I'm not well versed in C++, and didn't want to distract myself learning the language instead of the
+internals of a raycaster, so I decided to convert ssloy's code to Python as I went.
 2. I am interested in extracting as much performance from Python as possible.
 
-For performance and ease of image processing, I decided to use pygame. 
+For performance and ease of image processing, I decided to use pygame-ce (pygame Community Edition), the actively maintained fork of pygame. 
 
 # Requirements
 

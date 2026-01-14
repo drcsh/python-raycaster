@@ -13,3 +13,8 @@ db.sqlite3
 
 # output screndump
 out.bmp
+
+
+#VS Code
+.vscode/
+python-raycaster.code-workspace

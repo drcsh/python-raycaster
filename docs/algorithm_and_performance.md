@@ -128,10 +128,46 @@ Caster avg cast time (last 100):0.013506505584160496
 Caster avg cast time (last 100):0.013405714940601304
 ```
 
-The slightly _worse_ performance is surprising, and I found it to be consistent after restarting. Both VMs 
-were running on the same host, so perhaps some OS bloat between Ubuntu 18.04 and 20.04, or bloat somewhere in the 
-dependencies (all of which had to be updated) could be to blame. It could also be that python 3.10 is optimised 
+The slightly _worse_ performance is surprising, and I found it to be consistent after restarting. Both VMs
+were running on the same host, so perhaps some OS bloat between Ubuntu 18.04 and 20.04, or bloat somewhere in the
+dependencies (all of which had to be updated) could be to blame. It could also be that python 3.10 is optimised
 differently so some of my existing optimisations are now hampering rather than helping.
+
+## Upgrading to pygame-ce (January 2026)
+
+In January 2026, the project was upgraded from pygame 2.1.2 to pygame-ce 2.5.6 (pygame Community Edition). The original pygame library is no longer actively maintained, and pygame-ce is the community-supported fork that provides continued bug fixes, performance improvements, and modern Python support.
+
+### Why pygame-ce?
+- pygame development has stalled since 2021
+- pygame-ce maintains full backward compatibility with pygame's stable APIs
+- Active development and maintenance
+- Better support for modern Python versions (3.12+)
+- Performance improvements and bug fixes
+
+### Migration Results
+The migration was seamless with **zero code changes required**. All pygame APIs used in this project (display, surfaces, sprites, events, timing, pixel operations) are fully compatible with pygame-ce.
+
+### Performance with pygame-ce 2.5.6
+Testing on Python 3.12.3 with pygame-ce 2.5.6 (SDL 2.32.10):
+
+```
+Caster avg cast time (last 100):0.009756298385915522
+Caster avg cast time (last 100):0.010495248485222864
+Caster avg cast time (last 100):0.012526020198330828
+Caster best avg cast time for 100 renders: 0.009756298385915522
+Caster worst avg cast time for 100 renders: 0.012526020198330828
+```
+
+**Performance improved significantly** compared to previous versions:
+- Best average: ~0.00976s per frame (previously ~0.012s)
+- Worst average: ~0.01253s per frame (previously ~0.014s)
+- All measurements well under the 0.0167s target for 60fps
+- ~20-25% performance improvement over Python 3.10.4 with pygame 2.1.2
+
+The performance gains are likely due to:
+1. Python 3.12's performance improvements
+2. pygame-ce optimizations
+3. Updated SDL2 library (2.32.10)
 
 
 
