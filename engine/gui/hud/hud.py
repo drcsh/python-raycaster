@@ -1,7 +1,7 @@
 import pygame_gui
 
 from .player_hp_panel import PlayerHPPanel
-from ...levelmanager import LevelManager
+from ...level_manager import LevelManager
 
 
 class HUD:

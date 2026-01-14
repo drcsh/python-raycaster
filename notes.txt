@@ -1,12 +1,13 @@
 
 Todo:
+- Refactor file structure. I think textures and campaigns should go into an /assets folder. campaign and campaign_loader need a better place to live too. As does levelmanager.
 - Better HUD
 - Weapon cooldowns!
 - Weapons on screen
 - File format for levels + loading from file
 - Map square which ends the level and moves the player to the next one
 - Main menu
-- Saving the game (serialise/unserialise LevelState).
+- Saving the game (serialise/unserialise LevelManager).
 
 Bugs:
 

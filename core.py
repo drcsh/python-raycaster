@@ -6,7 +6,7 @@ import pygame_gui
 
 from engine.campaign_loader import CampaignLoader
 from engine.level_objects.map_loader import MapLoader
-from engine.levelstate import LevelManager
+from engine.level_manager import LevelManager
 from engine.gui.hud.hud import HUD
 from engine.gui.screens.victory_screen import VictoryScreen
 from engine.utils.exceptions import GameExitException, PlayerDeadException, LevelCompleteException
@@ -226,7 +226,7 @@ def launch_game():
     display_surface, background_surface, gui_manager, win_w, win_h, fov, dev_mode = bootstrap()
 
     # Run campaign
-    campaign_path = "maps/campaigns/default_campaign/campaign.json"
+    campaign_path = "assets/campaigns/default_campaign/campaign.json"
     run_campaign(campaign_path, display_surface, background_surface,
                  gui_manager, fov, dev_mode)
 
