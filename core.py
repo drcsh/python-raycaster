@@ -6,7 +6,7 @@ import pygame_gui
 
 from engine.campaign_loader import CampaignLoader
 from engine.level_objects.map_loader import MapLoader
-from engine.gamestate import GameState
+from engine.levelstate import LevelManager
 from engine.gui.hud.hud import HUD
 from engine.gui.screens.victory_screen import VictoryScreen
 from engine.utils.exceptions import GameExitException, PlayerDeadException, LevelCompleteException
@@ -58,7 +58,7 @@ def load_level(level_data: dict, player_health: int, fov: float,
         dev_mode: Whether developer mode is enabled
 
     Returns:
-        tuple: (level, player, gamestate, raycaster, hud)
+        tuple: (level, player, level_state, raycaster, hud)
     """
     # Create level using MapLoader
     level = MapLoader.create_level_from_data(level_data)
@@ -70,10 +70,10 @@ def load_level(level_data: dict, player_health: int, fov: float,
 
     # Create game objects
     raycaster = RayCaster(display_surface, level, fov, dev_mode=dev_mode)
-    gamestate = GameState(player, level)
-    hud = HUD(gamestate, gui_manager)
+    level_state = LevelManager(player, level)
+    hud = HUD(level_state, gui_manager)
 
-    return level, player, gamestate, raycaster, hud
+    return level, player, level_state, raycaster, hud
 
 
 def show_campaign_complete_screen(gui_manager: pygame_gui.UIManager,
@@ -136,11 +136,11 @@ def run_campaign(campaign_path: str, display_surface: pygame.Surface,
     while not campaign.is_complete():
         # Load current level
         level_data = campaign.get_current_level_data()
-        level, player, gamestate, raycaster, hud = load_level(
+        level, player, level_state, raycaster, hud = load_level(
             level_data, player_health, fov, display_surface, gui_manager, dev_mode
         )
 
-        input_handler = InputHandler(gamestate, gui_manager)
+        input_handler = InputHandler(level_state, gui_manager)
 
         # Reset performance tracking for this level
         level_caster_ts = []
@@ -150,7 +150,7 @@ def run_campaign(campaign_path: str, display_surface: pygame.Surface,
         try:
             while True:
                 input_handler.handle()
-                gamestate.trigger_all_behaviours()
+                level_state.trigger_all_behaviours()
 
                 # Render the scene
                 start = timer()

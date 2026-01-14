@@ -6,7 +6,7 @@ Todo:
 - File format for levels + loading from file
 - Map square which ends the level and moves the player to the next one
 - Main menu
-- Saving the game (serialise/unserialise GameState).
+- Saving the game (serialise/unserialise LevelState).
 
 Bugs:
 

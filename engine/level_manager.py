@@ -5,17 +5,18 @@ from engine.player_objects.player import Player
 from engine.utils.exceptions import LevelCompleteException
 
 
-class GameState:
+class LevelManager:
     """
-    GameState tracks the current level and all GameObjects in the level, as well
-    as the player. GameState provides some easy methods for triggering behaviours
-    of GameObjects tracked on it, but otherwise has no behaviour of its own.
+    LevelManager stiches together the Player and Level objects to provide a higher level
+    interface for managing the state of the game level. It proves an easy interface for triggering the behaviour of
+    all game objects currently in the level. It's intended as the main point of contact between the game engine and the
+    lower level game objects, and to prevent lower level game objects from needing to know about each other.
 
-    To higher level entities (for handling inputs and rendering), GameState keeps track of
+    To higher level entities (for handling inputs and rendering), LevelManager keeps track of
     what's going on and provides utility functions to effect the whole level, e.g. calling the
     Behaviours upon all enemies in the level.
 
-    Lower level entities (e.g. enemies) shouldn't really reach 'up' into the GameState, they should be acted upon from
+    Lower level entities (e.g. enemies) shouldn't really reach 'up' into the LevelManager, they should be acted upon from
     'above'.
 
     Todo: provide save and load functionality!

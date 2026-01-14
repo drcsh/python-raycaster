@@ -3,7 +3,7 @@ import pygame_gui
 
 from engine.behaviours.bullet_behaviour import BulletBehaviour
 from engine.game_objects.bullet import Bullet
-from engine.gamestate import GameState
+from engine.levelmanager import LevelManager
 from engine.utils import math_utils
 from engine.utils.exceptions import GameExitException
 from textures.texturemap import TextureMap
@@ -14,9 +14,9 @@ class InputHandler:
     Class for handling player_objects inputs
     """
 
-    def __init__(self, gamestate: GameState, gui_manager: pygame_gui.UIManager):
+    def __init__(self, level_state: LevelManager, gui_manager: pygame_gui.UIManager):
 
-        self.gamestate = gamestate
+        self.level_state = level_state
         self.gui_manager = gui_manager
 
         # TODO: load these from a settings file
@@ -47,10 +47,10 @@ class InputHandler:
                 self.player_moves_backwards()
                 continue
             if event.type == pygame.KEYDOWN and event.key == self.LEFT_K:
-                self.gamestate.player.turn_left()
+                self.level_state.player.turn_left()
                 continue
             if event.type == pygame.KEYDOWN and event.key == self.RIGHT_K:
-                self.gamestate.player.turn_right()
+                self.level_state.player.turn_right()
                 continue
 
             self.gui_manager.process_events(event)
@@ -58,7 +58,7 @@ class InputHandler:
     def player_attack(self):
         """
         This action has to go here rather than on the player object, because it creates bullet
-        objects which need to be kept track of by the gamestate.
+        objects which need to be kept track of by the level_state.
         :return:
         """
 
@@ -71,25 +71,25 @@ class InputHandler:
         b_damage = 25
 
         # create bullet object with self.angle and weapon speed
-        # Note: Bullet is added to the sprite group so doesn't need explicitly added to the GameState
+        # Note: Bullet is added to the sprite group so doesn't need explicitly added to the LevelManager
         bullet = Bullet(
-            sprite_group=self.gamestate.level.bullets,
-            x=self.gamestate.player.x,
-            y=self.gamestate.player.y,
-            angle=self.gamestate.player.angle,
+            sprite_group=self.level_state.level.bullets,
+            x=self.level_state.player.x,
+            y=self.level_state.player.y,
+            angle=self.level_state.player.angle,
             speed=b_speed,
             texturemap=b_texturemap,
             damage=b_damage
         )
 
         # trigger bullet move immediately to get it infront of the player and check for impact
-        BulletBehaviour.act(bullet, self.gamestate.level, self.gamestate.player)
+        BulletBehaviour.act(bullet, self.level_state.level, self.level_state.player)
 
     def player_moves_forward(self):
-        self._player_moves(self.gamestate.player.MOVESPEED)
+        self._player_moves(self.level_state.player.MOVESPEED)
 
     def player_moves_backwards(self):
-        self._player_moves(-self.gamestate.player.MOVESPEED)
+        self._player_moves(-self.level_state.player.MOVESPEED)
 
     def _player_moves(self, speed: float):
         """
@@ -100,17 +100,17 @@ class InputHandler:
         """
 
         new_x, new_y = math_utils.get_new_coordinates(
-            self.gamestate.player.x,
-            self.gamestate.player.y,
-            self.gamestate.player.angle,
+            self.level_state.player.x,
+            self.level_state.player.y,
+            self.level_state.player.angle,
             speed
         )
 
-        if self.gamestate.level.location_is_valid(new_x, new_y):
-            self.gamestate.player.move(new_x, new_y)
+        if self.level_state.level.location_is_valid(new_x, new_y):
+            self.level_state.player.move(new_x, new_y)
 
     def player_turns_left(self):
-        self.gamestate.player.turn_left()
+        self.level_state.player.turn_left()
 
     def player_turns_right(self):
-        self.gamestate.player.turn_right()
+        self.level_state.player.turn_right()
