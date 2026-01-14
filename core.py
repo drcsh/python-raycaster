@@ -13,10 +13,10 @@ from engine.player_objects.player import Player
 from engine.raycaster import RayCaster
 
 
-def main():
+def bootstrap():
     dev_mode = False
-    win_w = 512
-    win_h = 512
+    win_w = 1024
+    win_h = 628
     fov = math.pi / 3  # fov is expressed as a fraction of pi, i.e. a fraction of a 180 degree view (tau being 360)
 
     if dev_mode:
@@ -145,6 +145,3 @@ def main():
 
     pygame.quit()
 
-
-if __name__ == "__main__":
-    main()
