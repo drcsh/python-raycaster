@@ -136,7 +136,7 @@ class MapLoader:
         enemies_data = level_data.get('enemies', [])
         for enemy_dict in enemies_data:
             # Load enemy texture
-            enemy_texturemap = SurfaceMap.load_enemy(enemy_dict['texture_filename'])
+            enemy_surface_map = SurfaceMap.load_enemy(enemy_dict['texture_filename'])
 
             # Get enemy parameters with defaults
             max_hp = enemy_dict.get('max_hp', 50)
@@ -149,7 +149,7 @@ class MapLoader:
                 sprite_group=enemies,
                 x=enemy_dict['x'],
                 y=enemy_dict['y'],
-                texturemap=enemy_texturemap,
+                surface_map=enemy_surface_map,
                 max_hp=max_hp,
                 speed=speed,
                 attack_range=attack_range,

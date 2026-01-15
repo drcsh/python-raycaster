@@ -220,7 +220,7 @@ class RayCaster:
 
         calculated_obj_size = int(self.win_h / obj_dist)
         obj_size_on_screen = min(self.max_obj_size_on_screen, calculated_obj_size)
-        obj_scale = game_obj.texturemap.tile_size / obj_size_on_screen
+        obj_scale = game_obj.surface_map.tile_size / obj_size_on_screen
         half_obj_size = math.floor(obj_size_on_screen / 2)
 
         obj_center_as_ratio_of_fov = (obj_dir - angle_from_x_axis) / self.fov

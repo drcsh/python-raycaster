@@ -78,7 +78,7 @@ class InputHandler:
             y=self.level_state.player.y,
             angle=self.level_state.player.angle,
             speed=b_speed,
-            texturemap=b_texturemap,
+            surface_map=b_texturemap,
             damage=b_damage
         )
 

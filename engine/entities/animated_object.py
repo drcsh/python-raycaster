@@ -34,7 +34,7 @@ class AnimatedObject(GameObject):
         :return:
         :rtype TextureTile:
         """
-        return self.texturemap.get_tile_at(self.animation_state, self.animation_type)
+        return self.surface_map.get_tile_at(self.animation_state, self.animation_type)
 
     def reset_animation_state(self):
         self.animation_state = 0

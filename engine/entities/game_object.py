@@ -13,7 +13,7 @@ class GameObject(pygame.sprite.Sprite):
     Parent for AnimatedObject which covers enemies etc.
     """
 
-    def __init__(self, sprite_group: pygame.sprite.Group, x: float, y: float, texturemap: SurfaceMap):
+    def __init__(self, sprite_group: pygame.sprite.Group, x: float, y: float, surface_map: SurfaceMap):
         """
         :param sprite_group: SpriteGroup for keeping track of this object
         :param x: X Coord on the map
@@ -22,7 +22,7 @@ class GameObject(pygame.sprite.Sprite):
         """
         self.x = x
         self.y = y
-        self.texturemap = texturemap
+        self.surface_map = surface_map
         super(GameObject, self).__init__(sprite_group)
 
     def get_display_tile(self) -> SurfaceTile:
@@ -32,4 +32,4 @@ class GameObject(pygame.sprite.Sprite):
         This is here so that in RayCaster we can treat static game furniture and animated objects the same way
         for rendering purposes.
         """
-        return self.texturemap.get_tile_at(0, 0)
+        return self.surface_map.get_tile_at(0, 0)

@@ -24,7 +24,7 @@ class Enemy(AnimatedObject):
                  x: float,
                  y: float,
                  max_hp: int,
-                 texturemap: SurfaceMap,
+                 surface_map: SurfaceMap,
                  speed: int = DEFAULT_MOVE_SPEED,
                  attack_range: float = DEFAULT_ATTACK_RANGE,
                  attack_damage: int = DEFAULT_ATTACK_DAMAGE):
@@ -49,7 +49,7 @@ class Enemy(AnimatedObject):
         # game iteration, or it will attack as fast as the game runes.
         self.wait_until = 0
 
-        super().__init__(sprite_group, x, y, texturemap)
+        super().__init__(sprite_group, x, y, surface_map)
 
     @property
     def dead(self) -> bool:

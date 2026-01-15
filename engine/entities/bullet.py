@@ -20,7 +20,7 @@ class Bullet(GameObject):
                  y: float,
                  angle: float,
                  speed: float,
-                 texturemap: SurfaceMap,
+                 surface_map: SurfaceMap,
                  size: int = DEFAULT_SIZE,
                  damage: int = DEFAULT_DAMAGE
                  ):
@@ -32,7 +32,7 @@ class Bullet(GameObject):
         self.cos_angle = math.cos(angle)
         self.sin_angle = math.sin(angle)
 
-        super().__init__(sprite_group, x, y, texturemap)
+        super().__init__(sprite_group, x, y, surface_map)
 
     def get_next_move_location(self) -> Tuple[float, float]:
         """
