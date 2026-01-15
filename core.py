@@ -5,7 +5,7 @@ import pygame
 import pygame_gui
 
 from engine.asset_loaders.campaign_loader import CampaignLoader
-from engine.asset_loaders.map_loader import MapLoader
+from engine.asset_loaders.level_loader import LevelLoader
 from engine.level_manager import LevelManager
 from engine.gui.hud.hud import HUD
 from engine.gui.screens.victory_screen import VictoryScreen
@@ -61,7 +61,7 @@ def load_level(level_data: dict, player_health: int, fov: float,
         tuple: (level, player, level_state, raycaster, hud)
     """
     # Create level using MapLoader
-    level = MapLoader.create_level_from_data(level_data)
+    level = LevelLoader.create_level_from_data(level_data)
 
     # Create player at spawn position
     spawn = level_data['player_spawn']

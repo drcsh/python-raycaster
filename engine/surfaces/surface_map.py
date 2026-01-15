@@ -1,5 +1,4 @@
 import math
-import os
 from typing import Union
 
 import pygame
@@ -11,7 +10,7 @@ from . import surface_utils
 
 class SurfaceMap:
     """
-    SurfaceMap is a wrapper around Pygame surfaces, it represents a collection of tiles (SurfaceTile) packed into a single surface. 
+    SurfaceMap is a wrapper around Pygame surfaces, it represents a collection of tiles (SurfaceTile) packed into a single surface.
 
     These tiles are used for rendering textures onto walls, objects, enemies, bullets, etc. and looked up by their x/y coordinates within the texture map.
     """
@@ -19,21 +18,6 @@ class SurfaceMap:
     # This colour can be used in textures for meta information, like tile boundaries it will be made
     # transparent before rendering
     OVERLAY_COLOR = (178, 0, 255)
-
-    @staticmethod
-    def load_enemy(name: str):
-        path = os.path.join('enemies', name)
-        return SurfaceMap.load_from_file(path)
-
-    @staticmethod
-    def load_common(name: str):
-        path = os.path.join('common', name)
-        return SurfaceMap.load_from_file(path)
-
-    @staticmethod
-    def load_from_file(filename: str):
-        surface = pygame.image.load(os.path.join('assets', 'textures', filename))
-        return SurfaceMap(surface)
 
     def __init__(self, surface: pygame.Surface, tile_size: int = DEFAULT_TEXTURE_TILE_SIZE):
         """

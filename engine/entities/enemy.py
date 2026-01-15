@@ -32,7 +32,7 @@ class Enemy(AnimatedObject):
         :param sprite_group: Which spritegroup this will belong to
         :param x: X coord on the Map where this enemy appears.
         :param y: Y coord on the Map where this enemy appears.
-        :param texturemap:
+        :param surface_map: SurfaceMap for this enemy's textures.
         :param max_hp:
         :param speed:
         :param attack_range:

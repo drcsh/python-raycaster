@@ -14,19 +14,19 @@ class AnimatedObject(GameObject):
     DEATH_ANIMATION = 2
     ANIMATION_WAIT_TICKS = 300
 
-    def __init__(self, sprite_group: pygame.sprite.Group, x: float, y: float, texturemap: SurfaceMap):
+    def __init__(self, sprite_group: pygame.sprite.Group, x: float, y: float, surface_map: SurfaceMap):
         """
         This is just a wrapper for the parent class' init. The params here are passed straight through.
         """
 
         # animation state is basically which horizontal texture tile to display
         self.animation_state = 0
-        self.animation_state_max = texturemap.horizontal_tiles_total - 1  # -1 due to 0 index.
+        self.animation_state_max = surface_map.horizontal_tiles_total - 1  # -1 due to 0 index.
 
-        # animation type is which row of tiles from the texturemap to use
+        # animation type is which row of tiles from the SurfaceMap to use
         self.animation_type = self.MOVE_ANIMATION  # default animation state is moving
 
-        super(AnimatedObject, self).__init__(sprite_group, x, y, texturemap)
+        super(AnimatedObject, self).__init__(sprite_group, x, y, surface_map)
 
     def get_display_tile(self):
         """

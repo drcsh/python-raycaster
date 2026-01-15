@@ -7,10 +7,10 @@ import pygame
 from engine.level_objects.level import Level
 from engine.level_objects.levelmap import LevelMap
 from engine.entities.enemy import Enemy
-from engine.surfaces.surface_map import SurfaceMap
+from engine.asset_loaders.surface_map_loader import SurfaceMapLoader
 
 
-class MapLoader:
+class LevelLoader:
     """Static utility class for loading levels from JSON files"""
 
     @staticmethod
@@ -43,7 +43,7 @@ class MapLoader:
             )
 
         # Validate the loaded data
-        MapLoader.validate_level_data(level_data)
+        LevelLoader.validate_level_data(level_data)
 
         return level_data
 
@@ -136,7 +136,7 @@ class MapLoader:
         enemies_data = level_data.get('enemies', [])
         for enemy_dict in enemies_data:
             # Load enemy texture
-            enemy_surface_map = SurfaceMap.load_enemy(enemy_dict['texture_filename'])
+            enemy_surface_map = SurfaceMapLoader.load_enemy(enemy_dict['texture_filename'])
 
             # Get enemy parameters with defaults
             max_hp = enemy_dict.get('max_hp', 50)

@@ -1,6 +1,6 @@
 import os
 from typing import List, Dict
-from engine.asset_loaders.map_loader import MapLoader
+from engine.asset_loaders.level_loader import LevelLoader
 
 
 class Campaign:
@@ -64,7 +64,7 @@ class Campaign:
         level_path = self.get_current_level_path()
 
         # Load and return level data
-        return MapLoader.load_level(level_path)
+        return LevelLoader.load_level(level_path)
 
     def get_current_level_path(self) -> str:
         """

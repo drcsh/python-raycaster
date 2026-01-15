@@ -6,7 +6,7 @@ from engine.entities.bullet import Bullet
 from engine.level_manager import LevelManager
 from engine.utils import math_utils
 from engine.utils.exceptions import GameExitException
-from engine.surfaces.surface_map import SurfaceMap
+from engine.asset_loaders.surface_map_loader import SurfaceMapLoader
 
 
 class InputHandler:
@@ -67,7 +67,7 @@ class InputHandler:
         # TODO: trigger weapon firing animation
         # TODO: Get bullet characteristics for weapon
         b_speed = 0.2
-        b_texturemap = SurfaceMap.load_common('simple_bullet.png')
+        b_surface_map = SurfaceMapLoader.load_common('simple_bullet.png')
         b_damage = 25
 
         # create bullet object with self.angle and weapon speed
@@ -78,7 +78,7 @@ class InputHandler:
             y=self.level_state.player.y,
             angle=self.level_state.player.angle,
             speed=b_speed,
-            surface_map=b_texturemap,
+            surface_map=b_surface_map,
             damage=b_damage
         )
 
