@@ -1,6 +1,6 @@
 import os
 from typing import List, Dict
-from engine.level_objects.map_loader import MapLoader
+from engine.asset_loaders.map_loader import MapLoader
 
 
 class Campaign:

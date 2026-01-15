@@ -4,8 +4,8 @@ from timeit import default_timer as timer
 import pygame
 import pygame_gui
 
-from engine.campaign_loader import CampaignLoader
-from engine.level_objects.map_loader import MapLoader
+from engine.asset_loaders.campaign_loader import CampaignLoader
+from engine.asset_loaders.map_loader import MapLoader
 from engine.level_manager import LevelManager
 from engine.gui.hud.hud import HUD
 from engine.gui.screens.victory_screen import VictoryScreen
