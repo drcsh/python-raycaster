@@ -27,7 +27,7 @@ class TextureMap:
 
     @staticmethod
     def load_from_file(filename: str):
-        surface = pygame.image.load(os.path.join('textures', 'resources', filename))
+        surface = pygame.image.load(os.path.join('assets', 'textures', filename))
         return TextureMap(surface)
 
     def __init__(self, surface: pygame.Surface, tile_size: int = DEFAULT_TEXTURE_TILE_SIZE):
