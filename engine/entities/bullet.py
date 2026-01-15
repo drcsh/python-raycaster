@@ -5,7 +5,7 @@ import pygame
 
 from engine.entities.game_object import GameObject
 from engine.utils import math_utils
-from textures.texturemap import TextureMap
+from engine.textures.texturemap import TextureMap
 
 
 class Bullet(GameObject):

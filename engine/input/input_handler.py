@@ -6,7 +6,7 @@ from engine.entities.bullet import Bullet
 from engine.level_manager import LevelManager
 from engine.utils import math_utils
 from engine.utils.exceptions import GameExitException
-from textures.texturemap import TextureMap
+from engine.textures.texturemap import TextureMap
 
 
 class InputHandler:

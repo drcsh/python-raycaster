@@ -1,6 +1,6 @@
 import pygame
 
-from textures.texturemap import TextureMap
+from engine.textures.texturemap import TextureMap
 from .game_object import GameObject
 
 

@@ -1,7 +1,7 @@
 import pygame
 
-from textures.texturemap import TextureMap
-from textures.texturetile import TextureTile
+from engine.textures.texturemap import TextureMap
+from engine.textures.texturetile import TextureTile
 
 
 class GameObject(pygame.sprite.Sprite):
