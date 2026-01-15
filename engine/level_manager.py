@@ -1,7 +1,7 @@
 from engine.behaviours.bullet_behaviour import BulletBehaviour
 from engine.behaviours.enemy_behaviour import EnemyBehaviour
 from engine.level_objects.level import Level
-from engine.player_objects.player import Player
+from engine.entities.player import Player
 from engine.utils.exceptions import LevelCompleteException
 
 

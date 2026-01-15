@@ -3,7 +3,7 @@ from typing import Tuple
 
 import pygame
 
-from engine.game_objects.game_object import GameObject
+from engine.entities.game_object import GameObject
 from engine.utils import math_utils
 from textures.texturemap import TextureMap
 

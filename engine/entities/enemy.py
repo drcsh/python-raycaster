@@ -6,7 +6,7 @@ import pygame
 from textures.texturemap import TextureMap
 from .animated_object import AnimatedObject
 from engine.utils import math_utils
-from engine.player_objects.player import Player
+from .player import Player
 
 
 class Enemy(AnimatedObject):

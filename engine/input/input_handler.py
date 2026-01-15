@@ -2,7 +2,7 @@ import pygame
 import pygame_gui
 
 from engine.behaviours.bullet_behaviour import BulletBehaviour
-from engine.game_objects.bullet import Bullet
+from engine.entities.bullet import Bullet
 from engine.level_manager import LevelManager
 from engine.utils import math_utils
 from engine.utils.exceptions import GameExitException

@@ -4,7 +4,7 @@ import array
 import pygame
 from pygame import Rect
 
-from engine.game_objects.game_object import GameObject
+from engine.entities.game_object import GameObject
 from engine.level_objects.level import Level
 from engine.level_objects.levelmapsurface import LevelMapSurface
 from engine.utils import math_utils

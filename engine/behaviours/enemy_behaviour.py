@@ -1,8 +1,8 @@
 import pygame
 
 from engine.level_objects.level import Level
-from engine.player_objects.player import Player
-from engine.game_objects.enemy import Enemy
+from engine.entities.player import Player
+from engine.entities.enemy import Enemy
 
 
 class EnemyBehaviour:

@@ -10,9 +10,9 @@ from engine.level_manager import LevelManager
 from engine.gui.hud.hud import HUD
 from engine.gui.screens.victory_screen import VictoryScreen
 from engine.utils.exceptions import GameExitException, PlayerDeadException, LevelCompleteException
-from engine.player_objects.input_handler import InputHandler
+from engine.input.input_handler import InputHandler
 from engine.level_objects.level import Level
-from engine.player_objects.player import Player
+from engine.entities.player import Player
 from engine.raycaster import RayCaster
 
 

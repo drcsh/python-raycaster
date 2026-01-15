@@ -1,6 +1,6 @@
-from engine.game_objects.bullet import Bullet
+from engine.entities.bullet import Bullet
 from engine.level_objects.level import Level
-from engine.player_objects.player import Player
+from engine.entities.player import Player
 
 
 class BulletBehaviour:

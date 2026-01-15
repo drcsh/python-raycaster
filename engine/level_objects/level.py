@@ -3,9 +3,9 @@ import time
 
 import pygame
 
-from engine.game_objects.game_object import GameObject
+from engine.entities.game_object import GameObject
 from engine.utils import math_utils
-from engine.game_objects.enemy import Enemy
+from engine.entities.enemy import Enemy
 from engine.level_objects.levelmap import LevelMap
 from textures.texturemap import TextureMap
 

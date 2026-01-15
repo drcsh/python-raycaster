@@ -6,7 +6,7 @@ import pygame
 
 from engine.level_objects.level import Level
 from engine.level_objects.levelmap import LevelMap
-from engine.game_objects.enemy import Enemy
+from engine.entities.enemy import Enemy
 from textures.texturemap import TextureMap
 
 
