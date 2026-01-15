@@ -64,7 +64,7 @@ class Campaign:
         level_path = self.get_current_level_path()
 
         # Load and return level data
-        return LevelLoader.load_level(level_path)
+        return LevelLoader.load_level_data_from_file(level_path)
 
     def get_current_level_path(self) -> str:
         """

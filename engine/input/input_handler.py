@@ -65,9 +65,9 @@ class InputHandler:
         # TODO: Get equipped weapon
         # TODO: check weapon equipped has ammo
         # TODO: trigger weapon firing animation
-        # TODO: Get bullet characteristics for weapon
+        # TODO: Get bullet characteristics for weapon including speed, surface map, damage etc.
         b_speed = 0.2
-        b_surface_map = SurfaceMapLoader.load_common('simple_bullet.png')
+        b_surface_map = SurfaceMapLoader.load_surface_map('common/simple_bullet.png')
         b_damage = 25
 
         # create bullet object with self.angle and weapon speed

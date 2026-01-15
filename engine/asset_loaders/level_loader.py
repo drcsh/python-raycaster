@@ -14,7 +14,7 @@ class LevelLoader:
     """Static utility class for loading levels from JSON files"""
 
     @staticmethod
-    def load_level(level_file_path: str) -> dict:
+    def load_level_data_from_file(level_file_path: str) -> dict:
         """
         Load and parse a level JSON file, return level data dict
 
@@ -69,7 +69,7 @@ class LevelLoader:
 
         # Validate map structure
         map_data = level_data['map']
-        required_map_fields = ['width', 'height', 'data']
+        required_map_fields = ['wall_texture','width', 'height', 'data']
         for field in required_map_fields:
             if field not in map_data:
                 raise ValueError(f"Missing required map field: {field}")
@@ -124,6 +124,8 @@ class LevelLoader:
         map_str = map_info['data']
         map_width = map_info.get('width', 16)
         map_height = map_info.get('height', 16)
+        wall_texture_filename = map_info.get('wall_texture', 'walls.png')
+        wall_surface_map = SurfaceMapLoader.load_surface_map(wall_texture_filename)
 
         # Create LevelMap
         level_map = LevelMap(map_str, map_width, map_height)
@@ -136,7 +138,7 @@ class LevelLoader:
         enemies_data = level_data.get('enemies', [])
         for enemy_dict in enemies_data:
             # Load enemy texture
-            enemy_surface_map = SurfaceMapLoader.load_enemy(enemy_dict['texture_filename'])
+            enemy_surface_map = SurfaceMapLoader.load_surface_map(enemy_dict['texture_filename'])
 
             # Get enemy parameters with defaults
             max_hp = enemy_dict.get('max_hp', 50)
@@ -157,4 +159,4 @@ class LevelLoader:
             )
 
         # Create and return Level
-        return Level(level_map, enemies, bullets)
+        return Level(level_map, wall_surface_map, enemies, bullets)

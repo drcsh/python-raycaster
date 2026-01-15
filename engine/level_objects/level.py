@@ -7,7 +7,7 @@ from engine.entities.game_object import GameObject
 from engine.utils import math_utils
 from engine.entities.enemy import Enemy
 from engine.level_objects.levelmap import LevelMap
-from engine.asset_loaders.surface_map_loader import SurfaceMapLoader
+from engine.surfaces.surface_map import SurfaceMap
 
 
 class Level:
@@ -15,33 +15,11 @@ class Level:
     Class for keeping track of an entire level, including the map and the enemies on it
     """
 
-    @staticmethod
-    def constructor(map_str: str, enemies_list: List[dict]):
-        level_map = LevelMap(map_str)
-
-        # Initialize Groups which will keep track of our sprites
-        enemies = pygame.sprite.Group()
-        bullets = pygame.sprite.Group()
-
-        for enemy_dict in enemies_list:
-            enemy_surface_map = SurfaceMapLoader.load_enemy(enemy_dict['texture_filename'])
-
-            # Note that we don't need to do anything with the enemy object, it gets stored by the spirte_group
-            enemy_obj = Enemy(
-                sprite_group=enemies,
-                x=enemy_dict["x"],
-                y=enemy_dict["y"],
-                surface_map=enemy_surface_map,  # Temp: Will replace with file name
-                max_hp=50
-            )  # TODO: hitpoints!
-
-        return Level(level_map, enemies, bullets)
-
-    def __init__(self, level_map: LevelMap, enemies: pygame.sprite.Group, bullets: pygame.sprite.Group):
+    def __init__(self, level_map: LevelMap, wall_surface_map: SurfaceMap, enemies: pygame.sprite.Group, bullets: pygame.sprite.Group):
         self.level_map = level_map
         self.enemies = enemies
         self.bullets = bullets
-        self.wall_textures = SurfaceMapLoader.load_wall_texture("walls.png")
+        self.wall_surface_map = wall_surface_map
 
         # Track level completion stats
         self._initial_enemy_count = len(enemies)
