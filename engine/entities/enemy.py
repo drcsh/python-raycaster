@@ -3,7 +3,7 @@ from typing import Tuple
 
 import pygame
 
-from engine.textures.texturemap import TextureMap
+from engine.surfaces.surface_map import SurfaceMap
 from .animated_object import AnimatedObject
 from engine.utils import math_utils
 from .player import Player
@@ -24,7 +24,7 @@ class Enemy(AnimatedObject):
                  x: float,
                  y: float,
                  max_hp: int,
-                 texturemap: TextureMap,
+                 texturemap: SurfaceMap,
                  speed: int = DEFAULT_MOVE_SPEED,
                  attack_range: float = DEFAULT_ATTACK_RANGE,
                  attack_damage: int = DEFAULT_ATTACK_DAMAGE):

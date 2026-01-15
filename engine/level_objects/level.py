@@ -7,7 +7,7 @@ from engine.entities.game_object import GameObject
 from engine.utils import math_utils
 from engine.entities.enemy import Enemy
 from engine.level_objects.levelmap import LevelMap
-from engine.textures.texturemap import TextureMap
+from engine.surfaces.surface_map import SurfaceMap
 
 
 class Level:
@@ -24,7 +24,7 @@ class Level:
         bullets = pygame.sprite.Group()
 
         for enemy_dict in enemies_list:
-            enemy_texturemap = TextureMap.load_enemy(enemy_dict['texture_filename'])
+            enemy_texturemap = SurfaceMap.load_enemy(enemy_dict['texture_filename'])
 
             # Note that we don't need to do anything with the enemy object, it gets stored by the spirte_group
             enemy_obj = Enemy(
@@ -41,7 +41,7 @@ class Level:
         self.level_map = level_map
         self.enemies = enemies
         self.bullets = bullets
-        self.wall_textures = TextureMap.load_from_file("walls.png")
+        self.wall_textures = SurfaceMap.load_from_file("walls.png")
 
         # Track level completion stats
         self._initial_enemy_count = len(enemies)

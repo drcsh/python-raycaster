@@ -3,7 +3,7 @@ from typing import List
 import pygame
 
 
-class TextureTile:
+class SurfaceTile:
 
     def __init__(self, surface):
         self.surface = surface

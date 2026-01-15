@@ -1,7 +1,7 @@
 import pygame
 
-from engine.textures.texturemap import TextureMap
-from engine.textures.texturetile import TextureTile
+from engine.surfaces.surface_map import SurfaceMap
+from engine.surfaces.surface_tile import SurfaceTile
 
 
 class GameObject(pygame.sprite.Sprite):
@@ -13,7 +13,7 @@ class GameObject(pygame.sprite.Sprite):
     Parent for AnimatedObject which covers enemies etc.
     """
 
-    def __init__(self, sprite_group: pygame.sprite.Group, x: float, y: float, texturemap: TextureMap):
+    def __init__(self, sprite_group: pygame.sprite.Group, x: float, y: float, texturemap: SurfaceMap):
         """
         :param sprite_group: SpriteGroup for keeping track of this object
         :param x: X Coord on the map
@@ -25,7 +25,7 @@ class GameObject(pygame.sprite.Sprite):
         self.texturemap = texturemap
         super(GameObject, self).__init__(sprite_group)
 
-    def get_display_tile(self) -> TextureTile:
+    def get_display_tile(self) -> SurfaceTile:
         """
         Returns the tile from the texturemap for display.
 

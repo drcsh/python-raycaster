@@ -5,7 +5,7 @@ import pygame
 
 from engine.entities.game_object import GameObject
 from engine.utils import math_utils
-from engine.textures.texturemap import TextureMap
+from engine.surfaces.surface_map import SurfaceMap
 
 
 class Bullet(GameObject):
@@ -20,7 +20,7 @@ class Bullet(GameObject):
                  y: float,
                  angle: float,
                  speed: float,
-                 texturemap: TextureMap,
+                 texturemap: SurfaceMap,
                  size: int = DEFAULT_SIZE,
                  damage: int = DEFAULT_DAMAGE
                  ):

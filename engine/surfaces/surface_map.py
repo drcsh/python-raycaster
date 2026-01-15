@@ -4,12 +4,17 @@ from typing import Union
 
 import pygame
 
-from .exceptions import TextureLookupException
-from .texturetile import TextureTile
-from . import texture_utils
+from .surface_exceptions import TextureLookupException
+from .surface_tile import SurfaceTile
+from . import surface_utils
 
 
-class TextureMap:
+class SurfaceMap:
+    """
+    SurfaceMap is a wrapper around Pygame surfaces, it represents a collection of tiles (SurfaceTile) packed into a single surface. 
+
+    These tiles are used for rendering textures onto walls, objects, enemies, bullets, etc. and looked up by their x/y coordinates within the texture map.
+    """
     DEFAULT_TEXTURE_TILE_SIZE = 64
     # This colour can be used in textures for meta information, like tile boundaries it will be made
     # transparent before rendering
@@ -18,17 +23,17 @@ class TextureMap:
     @staticmethod
     def load_enemy(name: str):
         path = os.path.join('enemies', name)
-        return TextureMap.load_from_file(path)
+        return SurfaceMap.load_from_file(path)
 
     @staticmethod
     def load_common(name: str):
         path = os.path.join('common', name)
-        return TextureMap.load_from_file(path)
+        return SurfaceMap.load_from_file(path)
 
     @staticmethod
     def load_from_file(filename: str):
         surface = pygame.image.load(os.path.join('assets', 'textures', filename))
-        return TextureMap(surface)
+        return SurfaceMap(surface)
 
     def __init__(self, surface: pygame.Surface, tile_size: int = DEFAULT_TEXTURE_TILE_SIZE):
         """
@@ -49,7 +54,7 @@ class TextureMap:
         # Make any overlay on the texture transparent
         overlay_color = pygame.Color(self.OVERLAY_COLOR)
         replacement = pygame.Color(0, 0, 0, 0)
-        texture_utils.replace_colour_on_surface(self.surface, overlay_color, replacement)
+        surface_utils.replace_colour_on_surface(self.surface, overlay_color, replacement)
 
         # This will be a 2d array packed into a 1d one
         self._tiles = []
@@ -57,10 +62,10 @@ class TextureMap:
             for hrz in range(self.horizontal_tiles_total):
                 tile_rect = pygame.Rect(hrz * self.tile_size, vert * self.tile_size, self.tile_size, self.tile_size)
                 subsurface = self.surface.subsurface(tile_rect)
-                tile = TextureTile(subsurface)
+                tile = SurfaceTile(subsurface)
                 self._tiles.append(tile)
 
-    def get_tile_at(self, x: int, y: int) -> TextureTile:
+    def get_tile_at(self, x: int, y: int) -> SurfaceTile:
         """
         Get the TextureTile at the given x/y coordinate.
 

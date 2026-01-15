@@ -1,6 +1,6 @@
 import pygame
 
-from engine.textures.texturemap import TextureMap
+from engine.surfaces.surface_map import SurfaceMap
 from .game_object import GameObject
 
 
@@ -14,7 +14,7 @@ class AnimatedObject(GameObject):
     DEATH_ANIMATION = 2
     ANIMATION_WAIT_TICKS = 300
 
-    def __init__(self, sprite_group: pygame.sprite.Group, x: float, y: float, texturemap: TextureMap):
+    def __init__(self, sprite_group: pygame.sprite.Group, x: float, y: float, texturemap: SurfaceMap):
         """
         This is just a wrapper for the parent class' init. The params here are passed straight through.
         """
