@@ -1,13 +1,19 @@
 
 Todo:
-- Refactor file structure. I think textures and campaigns should go into an /assets folder. campaign and campaign_loader need a better place to live too. As does levelmanager.
 - Better HUD
 - Weapon cooldowns!
 - Weapons on screen
-- File format for levels + loading from file
 - Map square which ends the level and moves the player to the next one
 - Main menu
 - Saving the game (serialise/unserialise LevelManager).
+
+Further architecture improvements:
+- The classes in the entities folder have a lot of dependencies up and down the tree, it would be best
+to resolve this. At first glance it feels like something like "enemy" should be a first class entity with
+no external dependencies, but another way of looking at this is that the first class entity is actually
+animated_object, and enemy is a set of parameters which plug into it and should ultimately be loaded 
+from file. 
+
 
 Bugs:
 
