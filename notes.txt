@@ -1,5 +1,6 @@
 
 Todo:
+- Core.py is messy claude code. Need to refactor it. The game loop is buried inside campaign running for example.
 - Better HUD
 - Weapon cooldowns!
 - Weapons on screen

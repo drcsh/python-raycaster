@@ -6,6 +6,7 @@ import pygame_gui
 
 from engine.asset_loaders.campaign_loader import CampaignLoader
 from engine.asset_loaders.level_loader import LevelLoader
+from engine.game_manager import GameManager
 from engine.level_manager import LevelManager
 from engine.gui.hud.hud import HUD
 from engine.gui.screens.victory_screen import VictoryScreen
@@ -16,36 +17,8 @@ from engine.entities.player import Player
 from engine.raycaster import RayCaster
 
 
-def bootstrap():
-    """
-    Initialize pygame and create display/GUI objects
 
-    Returns:
-        tuple: (display_surface, background_surface, gui_manager, win_w, win_h, fov, dev_mode)
-    """
-    dev_mode = False
-    win_w = 1024
-    win_h = 628
-    fov = math.pi / 3  # fov is expressed as a fraction of pi
-
-    if dev_mode:
-        win_w = win_w * 2
-
-    # Pygame Setup
-    pygame.init()
-    pygame.key.set_repeat(100, 50)
-    display_surface = pygame.display.set_mode([win_w, win_h])
-    background_surface = pygame.Surface([win_w, win_h])
-
-    # General Setup
-    gui_manager = pygame_gui.UIManager((win_w, win_h))
-
-    return display_surface, background_surface, gui_manager, win_w, win_h, fov, dev_mode
-
-
-def load_level(level_data: dict, player_health: int, fov: float,
-               display_surface: pygame.Surface, gui_manager: pygame_gui.UIManager,
-               dev_mode: bool):
+def load_level(level_data: dict, player_health: int, game_manager: GameManager):
     """
     Load a level from level data dict and return game objects
 
@@ -69,9 +42,9 @@ def load_level(level_data: dict, player_health: int, fov: float,
     player.hp = player_health
 
     # Create game objects
-    raycaster = RayCaster(display_surface, level, fov, dev_mode=dev_mode)
+    raycaster = RayCaster(display_surface=game_manager.display_surface, level=level, fov=game_manager.field_of_view, dev_mode=game_manager.dev_mode)
     level_state = LevelManager(player, level)
-    hud = HUD(level_state, gui_manager)
+    hud = HUD(level_state, game_manager.gui_manager)
 
     return level, player, level_state, raycaster, hud
 
@@ -105,9 +78,7 @@ def show_campaign_complete_screen(gui_manager: pygame_gui.UIManager,
     completion_screen.show(display_surface, background_surface, clock)
 
 
-def run_campaign(campaign_path: str, display_surface: pygame.Surface,
-                 background_surface: pygame.Surface, gui_manager: pygame_gui.UIManager,
-                 fov: float, dev_mode: bool):
+def run_campaign(campaign_path: str, game_manager: GameManager):
     """
     Run a campaign from start to finish
 
@@ -137,10 +108,10 @@ def run_campaign(campaign_path: str, display_surface: pygame.Surface,
         # Load current level
         level_data = campaign.get_current_level_data()
         level, player, level_state, raycaster, hud = load_level(
-            level_data, player_health, fov, display_surface, gui_manager, dev_mode
+            level_data, player_health, game_manager
         )
 
-        input_handler = InputHandler(level_state, gui_manager)
+        input_handler = InputHandler(level_state, game_manager.gui_manager)
 
         # Reset performance tracking for this level
         level_caster_ts = []
@@ -162,12 +133,12 @@ def run_campaign(campaign_path: str, display_surface: pygame.Surface,
 
                 # Update the UI
                 hud.update()
-                gui_manager.update(time_delta)
+                game_manager.gui_manager.update(time_delta)
 
                 pygame.display.flip()
-                display_surface.blit(background_surface, (0, 0))
+                game_manager.display_surface.blit(game_manager.background_surface, (0, 0))
 
-                gui_manager.draw_ui(display_surface)
+                game_manager.gui_manager.draw_ui(game_manager.display_surface)
 
                 if len(level_caster_ts) > 100:  # stop list becoming too long
                     av = np.average(level_caster_ts)
@@ -188,9 +159,9 @@ def run_campaign(campaign_path: str, display_surface: pygame.Surface,
             # Show victory screen
             stats = level.get_completion_stats()
             level_name = level_data.get('name', 'Unknown Level')
-            victory_screen = VictoryScreen(gui_manager, level_name, stats)
+            victory_screen = VictoryScreen(game_manager.gui_manager, level_name, stats)
 
-            if not victory_screen.show(display_surface, background_surface, clock):
+            if not victory_screen.show(game_manager.display_surface, game_manager.background_surface, clock):
                 # User quit during victory screen
                 print("Exiting during victory screen")
                 return
@@ -201,8 +172,8 @@ def run_campaign(campaign_path: str, display_surface: pygame.Surface,
             # Advance campaign
             if not campaign.advance_to_next_level():
                 # Campaign complete!
-                show_campaign_complete_screen(gui_manager, display_surface,
-                                            background_surface, clock, campaign)
+                show_campaign_complete_screen(game_manager.gui_manager, game_manager.display_surface,
+                                            game_manager.background_surface, clock, campaign)
                 break
 
         except PlayerDeadException as ex:
@@ -223,12 +194,11 @@ def run_campaign(campaign_path: str, display_surface: pygame.Surface,
 def launch_game():
     """Main entry point"""
     # Initialize pygame
-    display_surface, background_surface, gui_manager, win_w, win_h, fov, dev_mode = bootstrap()
+    game_manager = GameManager()
 
     # Run campaign
     campaign_path = "assets/campaigns/default_campaign/campaign.json"
-    run_campaign(campaign_path, display_surface, background_surface,
-                 gui_manager, fov, dev_mode)
+    run_campaign(campaign_path, game_manager)
 
     # Cleanup
     pygame.quit()
