@@ -14,7 +14,9 @@ to resolve this. At first glance it feels like something like "enemy" should be 
 no external dependencies, but another way of looking at this is that the first class entity is actually
 animated_object, and enemy is a set of parameters which plug into it and should ultimately be loaded 
 from file. 
-
+- Defining a formal Finite State Machine would tidy up core.py nicely, allowing easy transitioning between menus
+and the gameplay loop. However I couldn't find (Jan 26) an actively maintained python FSM library, and didn't want to
+build one from scratch at the time.
 
 Bugs:
 
