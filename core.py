@@ -10,6 +10,11 @@ from engine.game_manager import GameManager
 from engine.level_manager import LevelManager
 from engine.gui.hud.hud import HUD
 from engine.gui.screens.victory_screen import VictoryScreen
+from engine.gui.screens.menu_action import MenuAction
+from engine.gui.screens.main_menu_screen import MainMenuScreen
+from engine.gui.screens.campaign_select_screen import CampaignSelectScreen
+from engine.gui.screens.load_game_screen import LoadGameScreen
+from engine.gui.screens.settings_screen import SettingsScreen
 from engine.utils.exceptions import GameExitException, PlayerDeadException, LevelCompleteException
 from engine.input.input_handler import InputHandler
 from engine.level_objects.level import Level
@@ -192,15 +197,79 @@ def run_campaign(campaign_path: str, game_manager: GameManager):
 
 
 def launch_game():
-    """Main entry point"""
-    # Initialize pygame
+    """Main entry point with main menu"""
     game_manager = GameManager()
+    config = game_manager.get_config()
+    clock = pygame.time.Clock()
 
-    # Run campaign
-    campaign_path = "assets/campaigns/default_campaign/campaign.json"
-    run_campaign(campaign_path, game_manager)
+    running = True
 
-    # Cleanup
+    while running:
+        # Show main menu
+        main_menu = MainMenuScreen(
+            game_manager.gui_manager,
+            config.resolution_width,
+            config.resolution_height
+        )
+        action = main_menu.show(
+            game_manager.display_surface,
+            game_manager.background_surface,
+            clock
+        )
+
+        if action == MenuAction.EXIT:
+            running = False
+
+        elif action == MenuAction.NEW_GAME:
+            # Show campaign selection
+            campaign_screen = CampaignSelectScreen(
+                game_manager.gui_manager,
+                config.resolution_width,
+                config.resolution_height
+            )
+            result = campaign_screen.show(
+                game_manager.display_surface,
+                game_manager.background_surface,
+                clock
+            )
+
+            if result == MenuAction.EXIT:
+                running = False
+            elif result != MenuAction.RETURN_TO_MAIN:
+                # result is a campaign path
+                run_campaign(result, game_manager)
+
+        elif action == MenuAction.LOAD_GAME:
+            load_screen = LoadGameScreen(
+                game_manager.gui_manager,
+                config.resolution_width,
+                config.resolution_height
+            )
+            result = load_screen.show(
+                game_manager.display_surface,
+                game_manager.background_surface,
+                clock
+            )
+
+            if result == MenuAction.EXIT:
+                running = False
+
+        elif action == MenuAction.SETTINGS:
+            settings_screen = SettingsScreen(
+                game_manager.gui_manager,
+                config.resolution_width,
+                config.resolution_height,
+                config
+            )
+            result = settings_screen.show(
+                game_manager.display_surface,
+                game_manager.background_surface,
+                clock
+            )
+
+            if result == MenuAction.EXIT:
+                running = False
+
     pygame.quit()
 
 

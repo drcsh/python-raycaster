@@ -7,6 +7,29 @@ class CampaignLoader:
     """Static utility class for loading campaigns from JSON files"""
 
     @staticmethod
+    def list_available_campaigns(campaigns_directory: str) -> list[str]:
+        """
+        List available campaign files in the specified directory
+
+        Args:
+            campaigns_directory: Directory to search for campaign JSON files
+
+        Returns:
+            list[str]: List of campaign file paths
+        """
+        campaign_files = []
+        if not os.path.exists(campaigns_directory):
+            return campaign_files
+
+        for entry in os.listdir(campaigns_directory):
+            full_path = os.path.join(campaigns_directory, entry)
+            if os.path.isfile(full_path) and entry.lower().endswith('.json'):
+                campaign_files.append(full_path)
+
+        return campaign_files
+
+
+    @staticmethod
     def load_campaign(campaign_file_path: str) -> Campaign:
         """
         Load campaign from JSON file and return Campaign object

@@ -22,3 +22,6 @@ class GameManager:
         self.gui_manager = pygame_gui.UIManager((self._config.resolution_width, self._config.resolution_height))
         self.field_of_view = self._config.field_of_view * (3.14159265 / 180)  # Convert degrees to radians
 
+    def get_config(self) -> Config:
+        """Return the configuration dataclass"""
+        return self._config
