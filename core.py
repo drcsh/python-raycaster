@@ -267,6 +267,11 @@ def launch_game():
         elif action == MainMenuAction.EXIT:
             running = False
 
+        else:
+            # Unknown action, return to main menu
+            print(f"Unknown action from main menu: {action}")
+            action = MainMenuAction.SHOW_MAIN_MENU
+
     pygame.quit()
 
 
