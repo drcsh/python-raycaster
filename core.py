@@ -10,11 +10,11 @@ from engine.game_manager import GameManager
 from engine.level_manager import LevelManager
 from engine.gui.hud.hud import HUD
 from engine.gui.screens.victory_screen import VictoryScreen
-from engine.gui.screens.menu_action import MenuAction
-from engine.gui.screens.main_menu_screen import MainMenuScreen
-from engine.gui.screens.campaign_select_screen import CampaignSelectScreen
-from engine.gui.screens.load_game_screen import LoadGameScreen
-from engine.gui.screens.settings_screen import SettingsScreen
+from engine.gui.screens.main_menu.menu_action import MainMenuAction
+from engine.gui.screens.main_menu.main_menu_screen import MainMenuScreen
+from engine.gui.screens.main_menu.campaign_select_screen import CampaignSelectScreen
+from engine.gui.screens.main_menu.load_game_screen import LoadGameScreen
+from engine.gui.screens.main_menu.settings_screen import SettingsScreen
 from engine.utils.exceptions import GameExitException, PlayerDeadException, LevelCompleteException
 from engine.input.input_handler import InputHandler
 from engine.level_objects.level import Level
@@ -204,71 +204,68 @@ def launch_game():
 
     running = True
 
+    action = MainMenuAction.SHOW_MAIN_MENU
+
     while running:
         # Show main menu
-        main_menu = MainMenuScreen(
-            game_manager.gui_manager,
-            config.resolution_width,
-            config.resolution_height
-        )
-        action = main_menu.show(
-            game_manager.display_surface,
-            game_manager.background_surface,
-            clock
-        )
+        
+        if action == MainMenuAction.SHOW_MAIN_MENU:
+            main_menu = MainMenuScreen(
+                game_manager.gui_manager,
+                config.resolution_width,
+                config.resolution_height
+            )
+            action = main_menu.show(
+                game_manager.display_surface,
+                game_manager.background_surface,
+                clock
+            )
 
-        if action == MenuAction.EXIT:
-            running = False
-
-        elif action == MenuAction.NEW_GAME:
+        elif action == MainMenuAction.NEW_GAME:
             # Show campaign selection
             campaign_screen = CampaignSelectScreen(
                 game_manager.gui_manager,
                 config.resolution_width,
                 config.resolution_height
             )
-            result = campaign_screen.show(
+            action = campaign_screen.show(
                 game_manager.display_surface,
                 game_manager.background_surface,
                 clock
             )
 
-            if result == MenuAction.EXIT:
-                running = False
-            elif result != MenuAction.RETURN_TO_MAIN:
-                # result is a campaign path
-                run_campaign(result, game_manager)
+            if action not in MainMenuAction.__members__.values():
+                # action is a campaign path 
+                #TODO: Make this nicer
+                run_campaign(action, game_manager)
 
-        elif action == MenuAction.LOAD_GAME:
+        elif action == MainMenuAction.LOAD_GAME:
             load_screen = LoadGameScreen(
                 game_manager.gui_manager,
                 config.resolution_width,
                 config.resolution_height
             )
-            result = load_screen.show(
+            action = load_screen.show(
                 game_manager.display_surface,
                 game_manager.background_surface,
                 clock
             )
 
-            if result == MenuAction.EXIT:
-                running = False
-
-        elif action == MenuAction.SETTINGS:
+        elif action == MainMenuAction.SETTINGS:
             settings_screen = SettingsScreen(
                 game_manager.gui_manager,
                 config.resolution_width,
                 config.resolution_height,
                 config
             )
-            result = settings_screen.show(
+            action = settings_screen.show(
                 game_manager.display_surface,
                 game_manager.background_surface,
                 clock
             )
 
-            if result == MenuAction.EXIT:
-                running = False
+        elif action == MainMenuAction.EXIT:
+            running = False
 
     pygame.quit()
 

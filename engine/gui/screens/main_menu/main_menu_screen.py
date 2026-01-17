@@ -4,7 +4,7 @@ import pygame
 import pygame_gui
 
 from engine.gui.screens.base_screen import BaseScreen
-from engine.gui.screens.menu_action import MenuAction
+from engine.gui.screens.main_menu.menu_action import MainMenuAction
 from engine.gui.components.menu_button import MenuButton
 
 
@@ -25,7 +25,7 @@ class MainMenuScreen(BaseScreen):
         """
         self.screen_width = screen_width
         self.screen_height = screen_height
-        self.buttons: dict[str, tuple[MenuButton, MenuAction]] = {}
+        self.buttons: dict[str, tuple[MenuButton, MainMenuAction]] = {}
         super().__init__(gui_manager)
 
     def _create_ui_elements(self):
@@ -47,10 +47,10 @@ class MainMenuScreen(BaseScreen):
         button_spacing = 70
 
         button_configs = [
-            ("new_game", "New Game", MenuAction.NEW_GAME),
-            ("load_game", "Load Game", MenuAction.LOAD_GAME),
-            ("settings", "Settings", MenuAction.SETTINGS),
-            ("exit", "Exit", MenuAction.EXIT),
+            ("new_game", "New Game", MainMenuAction.NEW_GAME),
+            ("load_game", "Load Game", MainMenuAction.LOAD_GAME),
+            ("settings", "Settings", MainMenuAction.SETTINGS),
+            ("exit", "Exit", MainMenuAction.EXIT),
         ]
 
         for i, (key, text, action) in enumerate(button_configs):

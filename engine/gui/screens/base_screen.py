@@ -4,7 +4,7 @@ from typing import Any
 import pygame
 import pygame_gui
 
-from engine.gui.screens.menu_action import MenuAction
+from engine.gui.screens.main_menu.menu_action import MainMenuAction
 
 
 class BaseScreen(ABC):
@@ -56,7 +56,7 @@ class BaseScreen(ABC):
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     self._cleanup()
-                    return MenuAction.EXIT
+                    return MainMenuAction.EXIT
 
                 # Let subclass handle the event
                 should_exit, result = self._handle_event(event)

@@ -1,10 +1,10 @@
 from enum import Enum, auto
 
 
-class MenuAction(Enum):
+class MainMenuAction(Enum):
     """Actions that can be returned from menu screens"""
     NEW_GAME = auto()
     LOAD_GAME = auto()
     SETTINGS = auto()
     EXIT = auto()
-    RETURN_TO_MAIN = auto()
+    SHOW_MAIN_MENU = auto()

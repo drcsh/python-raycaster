@@ -4,7 +4,7 @@ import pygame
 import pygame_gui
 
 from engine.gui.screens.base_screen import BaseScreen
-from engine.gui.screens.menu_action import MenuAction
+from engine.gui.screens.main_menu.menu_action import MainMenuAction
 from engine.gui.components.menu_button import MenuButton
 from engine.gui.components.selectable_list import SelectableList
 
@@ -70,7 +70,7 @@ class LoadGameScreen(BaseScreen):
         """Handle events"""
         if event.type == pygame_gui.UI_BUTTON_PRESSED:
             if self.back_button.is_clicked(event):
-                return (True, MenuAction.RETURN_TO_MAIN)
+                return (True, MainMenuAction.SHOW_MAIN_MENU)
         return (False, None)
 
     def _cleanup(self):
