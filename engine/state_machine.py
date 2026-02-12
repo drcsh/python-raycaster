@@ -94,12 +94,12 @@ class StateMachine:
             if transition:
                 self.change_state(transition.target_state_id, **transition.kwargs)
 
-    def render(self, surface: pygame.Surface, time_delta: float):
+    def render(self, time_delta: float):
         """
         Render the current state.
         """
         if self.current_state:
-            self.current_state.render(surface, time_delta)
+            self.current_state.render(time_delta)
 
     def handle_event(self, event: pygame.event.Event):
         """

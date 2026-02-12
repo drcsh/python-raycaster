@@ -28,10 +28,10 @@ class LoadGameState(State):
             self.load_screen.update(dt)
         return None
 
-    def render(self, surface: pygame.Surface, time_delta: float):
+    def render(self, time_delta: float):
         if self.load_screen:
             self.load_screen.draw(
-                surface, 
+                self.game_manager.display_surface,
                 self.game_manager.background_surface
             )
 

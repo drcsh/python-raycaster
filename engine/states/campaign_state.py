@@ -29,7 +29,7 @@ class CampaignState(State):
             self.campaign = CampaignLoader.load_campaign(self.campaign_path)
             self.player_health = self.campaign.settings.get('starting_health', 100)
             self.pending_start = True
-            print(f"{self.campaign}")
+
         else:
             raise ValueError("CampaignState entered without data to create campaign! This shouldn't happen!")
 
@@ -52,7 +52,7 @@ class CampaignState(State):
             }
         )
         
-    def render(self, surface, time_delta: float):
+    def render(self, time_delta: float):
         pass
 
     def handle_event(self, event) -> Optional[StateTransition]:

@@ -79,7 +79,7 @@ class GameplayState(State):
         except GameExitException:
             return StateTransition(StateID.MAIN_MENU)
 
-    def render(self, surface: pygame.Surface, time_delta: float):
+    def render(self, time_delta: float):
         # Clear the screen
         self.game_manager.display_surface.blit(self.game_manager.background_surface, (0, 0))
 
@@ -98,5 +98,4 @@ class GameplayState(State):
         try:
             self.input_handler.process_event(event)
         except GameExitException:
-            from engine.states.main_menu_state import MainMenuState
-            self.state_machine.change_state(MainMenuState(self.state_machine, self.game_manager))
+            return StateTransition(StateID.MAIN_MENU, kwargs={})

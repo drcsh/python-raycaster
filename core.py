@@ -59,7 +59,8 @@ def launch_game():
         state_machine.update(time_delta)
 
         # Render
-        state_machine.render(game_manager.display_surface, time_delta)
+        # TODO: Currently the render method is superflous, and could just be called from the update method, but it's theoretically nice to be able to call them independantly.
+        state_machine.render(time_delta)  
         pygame.display.flip()
 
     pygame.quit()

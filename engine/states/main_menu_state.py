@@ -30,10 +30,10 @@ class MainMenuState(State):
             self.menu_screen.update(dt)
         return None
 
-    def render(self, surface: pygame.Surface, time_delta: float):
+    def render(self, time_delta: float):
         if self.menu_screen:
             self.menu_screen.draw(
-                surface, 
+                self.game_manager.display_surface,
                 self.game_manager.background_surface
             )
 
