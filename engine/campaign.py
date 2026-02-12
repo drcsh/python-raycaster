@@ -44,6 +44,14 @@ class Campaign:
         # Initialize mutable state
         self.current_level_index = 0
 
+    def __str__(self) -> str:
+        return f"""
+        Campaign Name: {self.name}
+        Campaign Path: {self.campaign_dir}
+        Num Levels: {len(self.levels)}
+        Current Level: {self.current_level_index}
+        """
+
     def get_current_level_data(self) -> dict:
         """
         Return data for current level

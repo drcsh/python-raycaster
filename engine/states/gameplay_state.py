@@ -2,12 +2,12 @@ import pygame
 import numpy as np
 from timeit import default_timer as timer
 
+from engine.campaign import Campaign
 from engine.state_machine import State, StateTransition
 from engine.asset_loaders.level_loader import LevelLoader
 from engine.game_manager import GameManager
 from engine.level_manager import LevelManager
 from engine.states.state_ids import StateID
-from engine.states.campaign_state import CampaignState
 from engine.gui.hud.hud import HUD
 from engine.input.input_handler import InputHandler
 from engine.entities.player import Player
@@ -17,11 +17,11 @@ from engine.utils.exceptions import GameExitException, PlayerDeadException, Leve
 from typing import Optional
 
 class GameplayState(State):
-    def __init__(self, game_manager: GameManager, level_data: dict, player_health: int, campaign_state: CampaignState):
+    def __init__(self, game_manager: GameManager, level_data: dict, player_health: int, campaign: Campaign):
         self.game_manager = game_manager
         self.level_data = level_data
         self.player_health = player_health
-        self.campaign_state = campaign_state
+        self.campaign = campaign
         
         # Game objects
         self.level = None
@@ -62,13 +62,6 @@ class GameplayState(State):
     def update(self, dt: float) -> Optional[StateTransition]:
         try:
             self.level_state.trigger_all_behaviours()
-            self.hud.update()
-            
-            # The gui_manager update is handled here as well as it might need time updates?
-            # Actually GameManager.gui_manager is updated in the unified core loop if I put it there?
-            # No, I should update it here because State loop calls state.update()
-            # But wait, BaseScreen.update calls gui_manager.update().
-            # Here handle_event does process_events.
             
         except LevelCompleteException:
             # Transition to VictoryState
@@ -76,7 +69,7 @@ class GameplayState(State):
             return StateTransition(StateID.VICTORY, kwargs={
                 'level': self.level, 
                 'level_data': self.level_data, 
-                'campaign_state': self.campaign_state,
+                'campaign': self.campaign,
                 'player': self.player
             })
 

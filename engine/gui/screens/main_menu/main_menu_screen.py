@@ -63,7 +63,6 @@ class MainMenuScreen(BaseScreen):
         """Handle button clicks"""
         
         if event.type == pygame_gui.UI_BUTTON_PRESSED:
-            print(event)
             for key, (btn, action) in self.buttons.items():
                 if btn.is_clicked(event):
                     return (True, action)

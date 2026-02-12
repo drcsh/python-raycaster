@@ -1,16 +1,20 @@
 import pygame
+from engine.campaign import Campaign
+from engine.entities.player import Player
+from engine.game_manager import GameManager
+from engine.level_manager import LevelManager
 from engine.state_machine import State, StateTransition
 from engine.states.state_ids import StateID
 from engine.gui.screens.victory_screen import VictoryScreen
 from engine.utils.exceptions import GameExitException
 
 class VictoryState(State):
-    def __init__(self, game_manager, level, level_data, campaign_state, player):
+    def __init__(self, game_manager: GameManager, level: LevelManager, level_data: dict, campaign: Campaign, player: Player):
         super().__init__(game_manager)
         self.game_manager = game_manager
         self.level = level
         self.level_data = level_data
-        self.campaign_state = campaign_state
+        self.campaign = campaign
         self.player = player
         self.victory_screen = None
 
@@ -48,8 +52,7 @@ class VictoryState(State):
             
             if should_continue:
                 # Proceed to next level
-                return StateTransition(StateID.GAMEPLAY, kwargs={
-                    'level_data': self.level_data,
+                return StateTransition(StateID.CAMPAIGN, kwargs={
                     'player_health': self.player.hp,
-                    'campaign_state': self.campaign_state
+                    'campaign': self.campaign
                 })
