@@ -66,16 +66,16 @@ class LoadGameScreen(BaseScreen):
         )
         self.ui_elements.append(self.back_button.button)
 
-    def _handle_event(self, event: pygame.event.Event) -> tuple[bool, Any]:
+    def handle_event(self, event: pygame.event.Event) -> tuple[bool, Any]:
         """Handle events"""
         if event.type == pygame_gui.UI_BUTTON_PRESSED:
             if self.back_button.is_clicked(event):
                 return (True, MainMenuAction.SHOW_MAIN_MENU)
         return (False, None)
 
-    def _cleanup(self):
+    def cleanup(self):
         if self.save_list:
             self.save_list.kill()
         if self.back_button:
             self.back_button.kill()
-        super()._cleanup()
+        super().cleanup()

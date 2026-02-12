@@ -115,7 +115,7 @@ class CampaignSelectScreen(BaseScreen):
         self.selected_campaign_path = campaign_path
         self.start_button.button.enable()
 
-    def _handle_event(self, event: pygame.event.Event) -> tuple[bool, Any]:
+    def handle_event(self, event: pygame.event.Event) -> tuple[bool, Any]:
         """Handle events for campaign selection"""
         # Check for campaign list selection
         self.campaign_list.handle_event(event)
@@ -130,7 +130,7 @@ class CampaignSelectScreen(BaseScreen):
 
         return (False, None)
 
-    def _cleanup(self):
+    def cleanup(self):
         """Clean up all UI elements"""
         if self.campaign_list:
             self.campaign_list.kill()
@@ -138,4 +138,4 @@ class CampaignSelectScreen(BaseScreen):
             self.start_button.kill()
         if self.back_button:
             self.back_button.kill()
-        super()._cleanup()
+        super().cleanup()
