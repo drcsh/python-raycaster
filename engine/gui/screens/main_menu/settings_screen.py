@@ -65,14 +65,14 @@ class SettingsScreen(BaseScreen):
             f"<b>Developer Mode:</b> {'Enabled' if self.config.dev_mode else 'Disabled'}"
         )
 
-    def _handle_event(self, event: pygame.event.Event) -> tuple[bool, Any]:
+    def handle_event(self, event: pygame.event.Event) -> tuple[bool, Any]:
         """Handle events"""
         if event.type == pygame_gui.UI_BUTTON_PRESSED:
             if self.back_button.is_clicked(event):
                 return (True, MainMenuAction.SHOW_MAIN_MENU)
         return (False, None)
 
-    def _cleanup(self):
+    def cleanup(self):
         if self.back_button:
             self.back_button.kill()
-        super()._cleanup()
+        super().cleanup()

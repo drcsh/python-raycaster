@@ -27,33 +27,38 @@ class InputHandler:
         self.RIGHT_K = pygame.K_d
         self.SHOOT_K = pygame.K_SPACE
 
-    def handle(self):
+    def process_event(self, event: pygame.event.Event):
+        """
+        Process a single event
+        :param event:
+        :return:
+        """
+        if event.type == pygame.QUIT:
+            raise GameExitException("Pygame Quit event")
+        if event.type == pygame.KEYDOWN and event.key == self.QUIT_K:
+            raise GameExitException("Player pressed Quit key")
 
-        # TODO: different behaviours based on menu active or game active etc.
+        if event.type == pygame.KEYDOWN and event.key == self.SHOOT_K:
+            self.player_attack()
+            return
 
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                raise GameExitException("Pygame Quit event")
-            if event.type == pygame.KEYDOWN and event.key == self.QUIT_K:
-                raise GameExitException("Player pressed Quit key")
+        if event.type == pygame.KEYDOWN and event.key == self.FORWARD_K:
+            self.player_moves_forward()
+            return
+            
+        if event.type == pygame.KEYDOWN and event.key == self.BACK_K:
+            self.player_moves_backwards()
+            return
+            
+        if event.type == pygame.KEYDOWN and event.key == self.LEFT_K:
+            self.level_state.player.turn_left()
+            return
+            
+        if event.type == pygame.KEYDOWN and event.key == self.RIGHT_K:
+            self.level_state.player.turn_right()
+            return
 
-            if event.type == pygame.KEYDOWN and event.key == self.SHOOT_K:
-                self.player_attack()
-                continue
-            if event.type == pygame.KEYDOWN and event.key == self.FORWARD_K:
-                self.player_moves_forward()
-                continue
-            if event.type == pygame.KEYDOWN and event.key == self.BACK_K:
-                self.player_moves_backwards()
-                continue
-            if event.type == pygame.KEYDOWN and event.key == self.LEFT_K:
-                self.level_state.player.turn_left()
-                continue
-            if event.type == pygame.KEYDOWN and event.key == self.RIGHT_K:
-                self.level_state.player.turn_right()
-                continue
-
-            self.gui_manager.process_events(event)
+        self.gui_manager.process_events(event)
 
     def player_attack(self):
         """

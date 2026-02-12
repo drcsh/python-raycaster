@@ -74,48 +74,27 @@ class VictoryScreen:
         )
         self.ui_elements.append(continue_label)
 
-    def show(self, display_surface: pygame.Surface, background_surface: pygame.Surface, clock: pygame.time.Clock):
+    def handle_event(self, event: pygame.event.Event) -> bool:
         """
-        Display the victory screen and wait for player input
-
-        Args:
-            display_surface: Main display surface
-            background_surface: Background surface
-            clock: Pygame clock for frame timing
-
+        Handle events
         Returns:
             bool: True when player wants to continue
         """
-        waiting = True
-        time_delta = 0
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_SPACE:
+                return True
+        return False
 
-        while waiting:
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    return False
+    def update(self, dt: float):
+        self.gui_manager.update(dt)
 
-                if event.type == pygame.KEYDOWN:
-                    if event.key == pygame.K_SPACE:
-                        waiting = False
+    def draw(self, display_surface: pygame.Surface, background_surface: pygame.Surface):
+        display_surface.blit(background_surface, (0, 0))
+        self.gui_manager.draw_ui(display_surface)
 
-                self.gui_manager.process_events(event)
-
-            # Update and draw UI
-            self.gui_manager.update(time_delta)
-
-            display_surface.blit(background_surface, (0, 0))
-            self.gui_manager.draw_ui(display_surface)
-
-            pygame.display.flip()
-
-            time_delta = clock.tick(60) / 1000.0
-
-        # Clean up UI elements
-        self._cleanup()
-        return True
-
-    def _cleanup(self):
+    def cleanup(self):
         """Remove all UI elements"""
         for element in self.ui_elements:
             element.kill()
         self.ui_elements.clear()
+

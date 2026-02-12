@@ -59,17 +59,19 @@ class MainMenuScreen(BaseScreen):
             self.buttons[key] = (btn, action)
             self.ui_elements.append(btn.button)
 
-    def _handle_event(self, event: pygame.event.Event) -> tuple[bool, Any]:
+    def handle_event(self, event: pygame.event.Event) -> tuple[bool, Any]:
         """Handle button clicks"""
+        
         if event.type == pygame_gui.UI_BUTTON_PRESSED:
+            print(event)
             for key, (btn, action) in self.buttons.items():
                 if btn.is_clicked(event):
                     return (True, action)
         return (False, None)
 
-    def _cleanup(self):
+    def cleanup(self):
         """Clean up buttons and UI elements"""
         for key, (btn, action) in self.buttons.items():
             btn.kill()
         self.buttons.clear()
-        super()._cleanup()
+        super().cleanup()
