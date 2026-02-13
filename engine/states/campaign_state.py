@@ -1,6 +1,6 @@
 from engine.campaign import Campaign
 from engine.game_manager import GameManager
-from engine.state_machine import State, StateTransition
+from engine.states.state_machine import State, StateTransition
 from engine.states.state_ids import StateID
 from engine.asset_loaders.campaign_loader import CampaignLoader
 from typing import Optional

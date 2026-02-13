@@ -3,7 +3,7 @@ import numpy as np
 from timeit import default_timer as timer
 
 from engine.campaign import Campaign
-from engine.state_machine import State, StateTransition
+from engine.states.state_machine import State, StateTransition
 from engine.asset_loaders.level_loader import LevelLoader
 from engine.game_manager import GameManager
 from engine.level_manager import LevelManager

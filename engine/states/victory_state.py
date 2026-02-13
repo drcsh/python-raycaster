@@ -3,7 +3,7 @@ from engine.campaign import Campaign
 from engine.entities.player import Player
 from engine.game_manager import GameManager
 from engine.level_manager import LevelManager
-from engine.state_machine import State, StateTransition
+from engine.states.state_machine import State, StateTransition
 from engine.states.state_ids import StateID
 from engine.gui.screens.victory_screen import VictoryScreen
 from engine.utils.exceptions import GameExitException

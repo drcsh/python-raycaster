@@ -1,6 +1,6 @@
 import pygame
 import pygame_gui
-from engine.state_machine import State, StateTransition
+from engine.states.state_machine import State, StateTransition
 from engine.states.state_ids import StateID
 from engine.gui.screens.main_menu.settings_screen import SettingsScreen
 from engine.gui.screens.main_menu.menu_action import MainMenuAction
