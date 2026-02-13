@@ -13,9 +13,12 @@ from engine.surfaces.surface_map import SurfaceMap
 class Level:
     """
     Class for keeping track of an entire level, including the map and the enemies on it
+
+    TODO: Refactor into data class only, move behaviors up to Level Manager
     """
 
-    def __init__(self, level_map: LevelMap, wall_surface_map: SurfaceMap, enemies: pygame.sprite.Group, bullets: pygame.sprite.Group):
+    def __init__(self, level_name: str, level_map: LevelMap, wall_surface_map: SurfaceMap, enemies: pygame.sprite.Group, bullets: pygame.sprite.Group):
+        self.name = level_name
         self.level_map = level_map
         self.enemies = enemies
         self.bullets = bullets

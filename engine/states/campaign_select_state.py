@@ -1,5 +1,4 @@
 import pygame
-import pygame_gui
 from engine.states.state_machine import State, StateTransition
 from engine.states.state_ids import StateID
 from engine.gui.screens.main_menu.campaign_select_screen import CampaignSelectScreen

@@ -7,6 +7,13 @@ CONFIG_PATH = 'config.json'
 
 
 class GameManager:
+    """
+    The GameManager initializes and keeps track of key dependencies needed to run the game. 
+
+    Its purpose is to provide one place to initialize key dependencies and to avoid the need to pass multiple objects around between classes.
+
+    TODO: turn this into an adapter for PyGame, abstracting away how Pygame works from the game state machine.
+    """
     def __init__(self):
         # Load configuration
         self._config: Config = ConfigLoader.load_config(CONFIG_PATH)

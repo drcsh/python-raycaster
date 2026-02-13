@@ -1,9 +1,10 @@
 import os
 from typing import List, Dict
 from engine.asset_loaders.level_loader import LevelLoader
+from engine.level_manager import LevelManager, LevelManagerFactory
 
 
-class Campaign:
+class CampaignManager:
     """
     Manages campaign state and progression through levels
 
@@ -51,8 +52,16 @@ class Campaign:
         Num Levels: {len(self.levels)}
         Current Level: {self.current_level_index}
         """
+    
+    def get_current_level_manager(self) -> LevelManager:
+        """
+        Returns a LevelManager object for the present Level. 
+        """
+        level_data = self._get_current_level_data()
+        
+        return LevelManagerFactory.create_from_level_data(level_data)
 
-    def get_current_level_data(self) -> dict:
+    def _get_current_level_data(self) -> dict:
         """
         Return data for current level
 
@@ -69,12 +78,12 @@ class Campaign:
         level_filename = level_entry['level_file']
 
         # Construct full path to level file
-        level_path = self.get_current_level_path()
+        level_path = self._get_current_level_path()
 
         # Load and return level data
         return LevelLoader.load_level_data_from_file(level_path)
 
-    def get_current_level_path(self) -> str:
+    def _get_current_level_path(self) -> str:
         """
         Return full path to current level JSON file
 

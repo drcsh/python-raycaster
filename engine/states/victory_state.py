@@ -1,5 +1,5 @@
 import pygame
-from engine.campaign import Campaign
+from engine.campaign_manager import CampaignManager
 from engine.entities.player import Player
 from engine.game_manager import GameManager
 from engine.level_manager import LevelManager
@@ -9,24 +9,18 @@ from engine.gui.screens.victory_screen import VictoryScreen
 from engine.utils.exceptions import GameExitException
 
 class VictoryState(State):
-    def __init__(self, game_manager: GameManager, level: LevelManager, level_data: dict, campaign: Campaign, player: Player):
+    def __init__(self, game_manager: GameManager, level_manager: LevelManager, campaign_manager: CampaignManager):
         super().__init__(game_manager)
         self.game_manager = game_manager
-        self.level = level
-        self.level_data = level_data
-        self.campaign = campaign
-        self.player = player
+        self.level_manager = level_manager
+        self.campaign_manager = campaign_manager
         self.victory_screen = None
 
     def enter(self):
-        # Calculate stats
-        stats = self.level.get_completion_stats()
-        level_name = self.level_data.get('name', 'Unknown Level')
-        
         self.victory_screen = VictoryScreen(
             self.game_manager.gui_manager,
-            level_name,
-            stats
+            self.level_manager.level.name,
+            self.level_manager.level.get_completion_stats()
         )
 
     def exit(self):
@@ -53,6 +47,5 @@ class VictoryState(State):
             if should_continue:
                 # Proceed to next level
                 return StateTransition(StateID.CAMPAIGN, kwargs={
-                    'player_health': self.player.hp,
-                    'campaign': self.campaign
+                    'campaign_manager': self.campaign_manager
                 })

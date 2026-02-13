@@ -2,7 +2,7 @@ import pygame
 import numpy as np
 from timeit import default_timer as timer
 
-from engine.campaign import Campaign
+from engine.campaign_manager import CampaignManager
 from engine.states.state_machine import State, StateTransition
 from engine.asset_loaders.level_loader import LevelLoader
 from engine.game_manager import GameManager
@@ -17,40 +17,30 @@ from engine.utils.exceptions import GameExitException, PlayerDeadException, Leve
 from typing import Optional
 
 class GameplayState(State):
-    def __init__(self, game_manager: GameManager, level_data: dict, player_health: int, campaign: Campaign):
+    def __init__(self, game_manager: GameManager, campaign_manager: CampaignManager):
         self.game_manager = game_manager
-        self.level_data = level_data
-        self.player_health = player_health
-        self.campaign = campaign
+        self.campaign_manager = campaign_manager
         
         # Game objects
-        self.level = None
-        self.player = None
-        self.level_state = None
+        self.level_manager = None
         self.raycaster = None
         self.hud = None
         self.input_handler = None
         self.clock = pygame.time.Clock()
 
     def enter(self):
-        # Create level using MapLoader
-        self.level = LevelLoader.create_level_from_data(self.level_data)
-
-        # Create player at spawn position
-        spawn = self.level_data['player_spawn']
-        self.player = Player(spawn['x'], spawn['y'], spawn['angle'])
-        self.player.hp = self.player_health
+        self.level_manager = self.campaign_manager.get_current_level_manager()
 
         # Create game objects
         self.raycaster = RayCaster(
             display_surface=self.game_manager.display_surface, 
-            level=self.level, 
+            level=self.level_manager.level, 
             fov=self.game_manager.field_of_view, 
             dev_mode=self.game_manager.dev_mode
         )
-        self.level_state = LevelManager(self.player, self.level)
-        self.hud = HUD(self.level_state, self.game_manager.gui_manager)
-        self.input_handler = InputHandler(self.level_state, self.game_manager.gui_manager)
+        
+        self.hud = HUD(self.level_manager, self.game_manager.gui_manager)
+        self.input_handler = InputHandler(self.level_manager, self.game_manager.gui_manager)
 
         # Performance tracking (optional, keeping it simple for now)
         self.caster_ts = []
@@ -61,16 +51,14 @@ class GameplayState(State):
 
     def update(self, dt: float) -> Optional[StateTransition]:
         try:
-            self.level_state.trigger_all_behaviours()
+            self.level_manager.trigger_all_behaviours()
             
         except LevelCompleteException:
             # Transition to VictoryState
             from engine.states.victory_state import VictoryState
             return StateTransition(StateID.VICTORY, kwargs={
-                'level': self.level, 
-                'level_data': self.level_data, 
-                'campaign': self.campaign,
-                'player': self.player
+                'level_manager': self.level_manager, 
+                'campaign_manager': self.campaign_manager,
             })
 
         except PlayerDeadException:
@@ -84,8 +72,8 @@ class GameplayState(State):
         self.game_manager.display_surface.blit(self.game_manager.background_surface, (0, 0))
 
         # RayCaster renders everything.
-        self.raycaster.cast(self.player.x, self.player.y, self.player.angle)
-        self.raycaster.render_game_objects(self.player.x, self.player.y, self.player.angle)
+        self.raycaster.cast(self.level_manager.player.x, self.level_manager.player.y, self.level_manager.player.angle)
+        self.raycaster.render_game_objects(self.level_manager.player.x, self.level_manager.player.y, self.level_manager.player.angle)
         
          # Update the UI
         self.hud.update()

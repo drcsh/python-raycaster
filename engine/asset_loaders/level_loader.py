@@ -119,6 +119,8 @@ class LevelLoader:
         Returns:
             Level: Initialized Level object
         """
+        level_name=level_data.get("name", "Unnamed Level")
+
         # Extract map data
         map_info = level_data['map']
         map_str = map_info['data']
@@ -159,4 +161,4 @@ class LevelLoader:
             )
 
         # Create and return Level
-        return Level(level_map, wall_surface_map, enemies, bullets)
+        return Level(level_name, level_map, wall_surface_map, enemies, bullets)

@@ -1,3 +1,5 @@
+from abc import abstractmethod
+from engine.asset_loaders.level_loader import LevelLoader
 from engine.behaviours.bullet_behaviour import BulletBehaviour
 from engine.behaviours.enemy_behaviour import EnemyBehaviour
 from engine.level_objects.level import Level
@@ -19,7 +21,8 @@ class LevelManager:
     Lower level entities (e.g. enemies) shouldn't really reach 'up' into the LevelManager, they should be acted upon from
     'above'.
 
-    Todo: provide save and load functionality!
+    TODO: provide save and load functionality!
+    TODO: Collapse functionality from level into level_manager, too many places reach across level_manager.level to get at something. 
     """
 
     def __init__(self, player: Player, level: Level):
@@ -49,3 +52,12 @@ class LevelManager:
             BulletBehaviour.act(bullet, self.level, self.player)
 
 
+class LevelManagerFactory:
+
+    @abstractmethod
+    def create_from_level_data(level_data: dict) -> LevelManager:
+        level = LevelLoader.create_level_from_data(level_data)
+        spawn = level_data['player_spawn']
+        player = Player(spawn['x'], spawn['y'], spawn['angle'])
+
+        return LevelManager(player=player, level=level)

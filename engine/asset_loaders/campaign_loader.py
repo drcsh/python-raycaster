@@ -1,6 +1,6 @@
 import json
 import os
-from engine.campaign import Campaign
+from engine.campaign_manager import CampaignManager
 
 
 class CampaignLoader:
@@ -30,7 +30,7 @@ class CampaignLoader:
 
 
     @staticmethod
-    def load_campaign(campaign_file_path: str) -> Campaign:
+    def load_campaign(campaign_file_path: str) -> CampaignManager:
         """
         Load campaign from JSON file and return Campaign object
 
@@ -68,7 +68,7 @@ class CampaignLoader:
         levels_directory = campaign_data.get('levels_directory', 'levels')
 
         # Create and return Campaign object
-        return Campaign(campaign_data, campaign_dir, levels_directory)
+        return CampaignManager(campaign_data, campaign_dir, levels_directory)
 
     @staticmethod
     def validate_campaign_data(campaign_data: dict) -> bool:
